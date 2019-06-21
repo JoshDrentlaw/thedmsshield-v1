@@ -1,0 +1,57 @@
+{
+  "name": "gatsby-boilerplate",
+  "private": true,
+  "description": "My personal Gatsby boilerplate.",
+  "version": "0.1.0",
+  "author": "Josh Drentlaw <joshdrentlaw@gmail.com>",
+  "dependencies": {
+    "autoprefixer": "^9.5.1",
+    "babel-plugin-styled-components": "^1.10.0",
+    "gatsby": "^2.5.5",
+    "gatsby-image": "^2.1.1",
+    "gatsby-plugin-manifest": "^2.1.1",
+    "gatsby-plugin-netlify": "^2.0.17",
+    "gatsby-plugin-offline": "^2.1.1",
+    "gatsby-plugin-postcss": "^2.0.7",
+    "gatsby-plugin-react-helmet": "^3.0.12",
+    "gatsby-plugin-react-svg": "^2.1.1",
+    "gatsby-plugin-sharp": "^2.0.37",
+    "gatsby-plugin-styled-components": "^3.0.7",
+    "gatsby-plugin-web-font-loader": "^1.0.4",
+    "gatsby-source-filesystem": "^2.0.36",
+    "gatsby-transformer-sharp": "^2.1.19",
+    "is_js": "^0.9.0",
+    "prop-types": "^15.7.2",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6",
+    "react-helmet": "^5.2.1",
+    "react-html-parser": "^2.0.2",
+    "styled-components": "^4.2.0",
+    "tailwind.macro": "^0.5.10"
+  },
+  "devDependencies": {
+    "babel-plugin-tailwind-components": "^0.5.10",
+    "prettier": "^1.17.1",
+    "tailwindcss": "^1.0.1"
+  },
+  "keywords": [
+    ""
+  ],
+  "license": "MIT",
+  "scripts": {
+    "build": "gatsby build",
+    "develop": "gatsby develop",
+    "format": "prettier --write src/**/*.{js,jsx}",
+    "start": "npm run develop",
+    "serve": "gatsby serve",
+    "prod": "npm run build && npm run serve",
+    "netlify": "netlify dev --live"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/JoshDrentlaw/"
+  },
+  "bugs": {
+    "url": "https://github.com/JoshDrentlaw/"
+  }
+}
