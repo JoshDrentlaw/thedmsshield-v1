@@ -1,46 +1,21 @@
 import { state } from './state.js';
 
 $(document).ready(function() {
-    const displace = window.displacejs
-    console.log(state);
-
-    // Set map markers
-    state.points.map((set, i) => {
-        $('#map-container')
-            .append(`
-                <button
-                    id="marker${i}"
-                    class="marker btn show-marker"
-                    data-index="${i}"
-                    data-container="body"
-                    data-toggle="popover"
-                    data-placement="top"
-                    data-content="${state.notes[i].note}"
-                ></button>
-            `);
-            let marker = $(`#marker${i}`);
-        marker.offset({ top: set[0], left: set[1] }).popover();
-        displace(marker, {
-            constrain: true,
-            relativeTo: $('#raimica-map')
-        });
-    });
+    $('.marker').popover();
 
     // Event listener to make markers draggable
-    $('.marker')
-        /* .on('mouseenter', function() {
-            $(this).addClass('draggable');
+    /* $('.marker')
+        .on('drag', function() {
+            let [x, y] = [$(this).offset().top, $(this).offset().left];
+            $(this).css('transform', `translate(1px, 1px)`)
         })
-        .on('mousedown', function() {
-            console.log('down');
-            $(this).removeAttr('style');
-        }) */
         .on('mouseup', function() {
             console.log('up');
             let i = $(this).data('index');
             let [x, y] = [$(this).offset().top, $(this).offset().left];
-            $(this).removeClass('draggable').offset({ top: x, left: y });
-        });
+            state.points.splice(i, 1, [x, y]);
+            console.log(state.points);
+        }); */
 
     $('#toggle-markers').on('click', function() {
         $('.marker').toggleClass('show-marker');
