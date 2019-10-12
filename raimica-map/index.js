@@ -1,7 +1,8 @@
 import { state } from './state.js';
+const displace = window.displacejs
+
 $(document).ready(function() {
     console.log(state);
-    let displace = window.displacejs
 
     // Set map markers
     state.points.map((set, i) => {
@@ -17,8 +18,9 @@ $(document).ready(function() {
                     data-content="${state.notes[i].note}"
                 ></button>
             `);
-        $(`#marker${i}`).offset({ top: set[0], left: set[1] }).popover();
-        displace($(`#marker${i}`), {
+            let marker = $(`#marker${i}`);
+        marker.offset({ top: set[0], left: set[1] }).popover();
+        displace(marker, {
             constrain: true,
             relativeTo: $('#raimica-map')
         });
