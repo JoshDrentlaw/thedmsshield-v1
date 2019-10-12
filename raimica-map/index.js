@@ -1,7 +1,7 @@
 import { state } from './state.js';
-const displace = window.displacejs
 
 $(document).ready(function() {
+    const displace = window.displacejs
     console.log(state);
 
     // Set map markers
