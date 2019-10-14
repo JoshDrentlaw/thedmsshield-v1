@@ -16,9 +16,6 @@ include '../header.php';
     $pdo = new PDO($dsn, $user, $password);
     $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_OBJ);
 
-    # PDO QUERY
-    $stmt = $pdo->query('SELECT * FROM posts');
-
     // Named Params
     $sql = 'SELECT * FROM thedmsshield.raimica_markers';
     $stmt = $pdo->prepare($sql);
@@ -26,7 +23,17 @@ include '../header.php';
 
     $markers = $stmt->fetchAll();
 
-    console_log($markers);
+    if (isset($_POST['title'])) {
+        console_log($_POST);
+        $sql = 'UPDATE raimica_markers SET note_title = :note_title, note_body = :note_body WHERE id = :index';
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute([
+            'index' => $_POST['index'],
+            'note_title' => $_POST['title'],
+            'note_body' => $_POST['note_body']
+        ]);
+        print('updated');
+    }
 ?>
 
 <main class="container">
@@ -54,13 +61,18 @@ include '../header.php';
                         data-container="body"
                         data-toggle="popover"
                         data-placement="top"
-                        data-content="' . $marker->note_body . '"
-                        style="top: ' . $marker->x . 'px; left: ' . $marker->y . 'px;"
+                        data-title="' . $marker->note_title . '"
+                        data-content="
+                            <p class=\'note-body\'>' . $marker->note_body . '</p>
+                            <button class=\'edit d-block ml-auto btn btn-primary btn-sm\'>Edit</button>
+                            <button class=\'save d-block ml-auto btn btn-primary btn-sm invisible\'>Save</button>
+                        "
+                        style="top: ' . $marker->top . '%; left: ' . $marker->left . '%;"
                     ></button>
                 ';
             }
         ?>
-        <img id="raimica-map" class="d-block" src="https://res.cloudinary.com/josh-drentlaw-web-development/image/upload/v1570429648/thedmsshield.com/Rimica_Region.jpg" />
+        <img id="raimica-map" src="https://res.cloudinary.com/josh-drentlaw-web-development/image/upload/v1570429648/thedmsshield.com/Rimica_Region.jpg" />
     </section>
 </main>
 
