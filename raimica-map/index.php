@@ -1,6 +1,5 @@
 <?php
-
-include '../header.php';
+    include '../header.php';
     
     $host = 'localhost';
     $user = 'root';
