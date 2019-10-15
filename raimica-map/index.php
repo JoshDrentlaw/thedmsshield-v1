@@ -1,7 +1,5 @@
 <?php
 
-use function PHPSTORM_META\type;
-
 include '../header.php';
     
     $host = 'localhost';
