@@ -1,6 +1,6 @@
 <?php
 
-include '../header.php';
+include '/header.php';
     
     $host = 'localhost';
     $user = 'root';
@@ -74,4 +74,4 @@ include '../header.php';
     </section>
 </main>
 
-<?php include '../footer.php'; ?>
+<?php include '/footer.php'; ?>
