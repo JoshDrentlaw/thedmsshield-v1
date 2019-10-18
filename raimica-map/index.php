@@ -1,7 +1,7 @@
 <?php
     include '../header.php';
     
-    $host = 'thedmsshield.com';
+    $host = '192.168.1.9';
     $user = 'root';
     $password = '';
     $dbname = 'thedmsshield';
