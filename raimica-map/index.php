@@ -29,7 +29,6 @@
             'note_title' => $_POST['title'],
             'note_body' => $_POST['note_body']
         ]);
-        print('updated');
     }
 ?>
 

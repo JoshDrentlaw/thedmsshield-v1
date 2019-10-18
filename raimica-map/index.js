@@ -26,13 +26,13 @@ $(document).ready(function() {
         $('.save').on('click', function() {
             let index = $(e.target).data('index');
             let title = $(this).parents().find('.title-edit').val();
-            let body = $(this).parent().find('textarea').val();
+            let note_body = $(this).parent().find('textarea').val();
             $.ajax({
                 method: 'POST',
                 data: {
                     index,
                     title,
-                    note_body: body
+                    note_body
                 }
             });
             $(this).parents().find('h3').html(`${title}`);
