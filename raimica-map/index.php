@@ -68,7 +68,7 @@
                 ';
             }
         ?>
-        <img id="raimica-map" src="https://res.cloudinary.com/josh-drentlaw-web-development/image/upload/v1570429648/thedmsshield.com/Rimica_Region.jpg" />
+        <img id="raimica-map" src="./raimica_map.jpg" />
     </section>
 </main>
 
