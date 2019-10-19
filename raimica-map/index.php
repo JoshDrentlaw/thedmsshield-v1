@@ -1,9 +1,19 @@
 <?php
     include '../header.php';
+    use Symfony\Component\Dotenv\Dotenv;
+
+    $dotenv = new Dotenv();
+    $dotenv->load('../.env');
+
+
+    echo '<pre>';
+    getenv('USER');
+    echo '</pre>';
+    
     
     $host = '192.168.1.9';
-    $user = 'root';
-    $password = '';
+    $user = $_ENV['USER'];
+    $password = $_ENV['PASSWORD'];
     $dbname = 'thedmsshield';
 
     // Set DSN
