@@ -13,32 +13,33 @@ $(document).ready(function() {
         $('.marker').toggleClass('show-marker');
     });
 
-    $('.marker').on('click', function(e) {
-        $('.edit').on('click', function() {
-            let title = $(this).parents().find('h3').text();
-            let body = $(this).parent().find('p').text();
-            $(this).parents().find('h3').html(`<input type="text" class="title-edit form-control" value="${title}">`)
-            $(this).parent().find('p').replaceWith(`<textarea class="edit-box form-control" rows="4">${body}</textarea>`);
-            $(this).toggleClass('invisible');
-            $(this).siblings('.save').toggleClass('invisible');
-        });
+    $(document).on('click', '.edit', function() {
+        let id = $(this).data('id');
+        let note_title = $(this).parents().find('h3').text();
+        let note_body = $(this).parent().find('p').text();
+        $(this).parents().find('h3').html(`<input type="text" data-id="${id}" class="title-edit form-control" value="${note_title}">`);
+        $(this).parent().find('p').replaceWith(`<textarea data-id="${id}" class="edit-box form-control" rows="4">${note_body}</textarea>`);
+        $(this).prop('disabled', true);
+        $(this).siblings('.save').prop('disabled', false);
+    });
 
-        $('.save').on('click', function() {
-            let index = $(e.target).data('index');
-            let title = $(this).parents().find('.title-edit').val();
-            let note_body = $(this).parent().find('textarea').val();
-            $.ajax({
-                method: 'POST',
-                data: {
-                    index,
-                    title,
-                    note_body
-                }
-            });
-            $(this).parents().find('h3').html(`${title}`);
-            $(this).parent().find('.edit-box').replaceWith(`<p class="note-body">${body}</p>`);
-            $(this).toggleClass('invisible');
-            $(this).siblings('.edit').toggleClass('invisible');
+    $(document).on('click', '.save', function() {
+        let id = $(this).data('id');
+        let note_title = $(this).parents('.popover-body').siblings('h3').find('input').val();
+        let note_body = $(this).parent().find('textarea').val();
+        $.ajax({
+            method: 'POST',
+            data: {
+                id,
+                note_title,
+                note_body
+            },
+            success: function(res) {
+                $(`input[data-id=${id}]`).parent().html(note_title);
+                $(`textarea[data-id=${id}]`).replaceWith(`<p class="note-body">${note_body}</p>`);
+                $(`button.save[data-id=${id}]`).prop('disabled', true);
+                $(`button.edit[data-id=${id}]`).prop('disabled', false);
+            }
         });
     });
 });

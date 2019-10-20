@@ -1,17 +1,11 @@
 <?php
-    include '../header.php';
+    include '../includes/header.php';
     use Symfony\Component\Dotenv\Dotenv;
 
     $dotenv = new Dotenv();
-    $dotenv->load('../.env');
-
-
-    echo '<pre>';
-    getenv('USER');
-    echo '</pre>';
+    $dotenv->load('../.env');    
     
-    
-    $host = '192.168.1.9';
+    $host = $_ENV['HOST'];
     $user = $_ENV['USER'];
     $password = $_ENV['PASSWORD'];
     $dbname = 'thedmsshield';
@@ -30,14 +24,16 @@
 
     $markers = $stmt->fetchAll();
 
-    if (isset($_POST['title'])) {
-        console_log($_POST);
-        $sql = 'UPDATE raimica_markers SET note_title = :note_title, note_body = :note_body WHERE id = :index';
+    if (isset($_POST['note_title'])) {
+        $post['id'] = filter_input(INPUT_POST, 'id');
+        $post['note_title'] = filter_input(INPUT_POST, 'note_title');
+        $post['note_body'] = filter_input(INPUT_POST, 'note_body');
+        $sql = 'UPDATE raimica_markers SET note_title = :note_title, note_body = :note_body WHERE id = :id';
         $stmt = $pdo->prepare($sql);
         $stmt->execute([
-            'index' => $_POST['index'],
-            'note_title' => $_POST['title'],
-            'note_body' => $_POST['note_body']
+            'id' => $post['id'],
+            'note_title' => $post['note_title'],
+            'note_body' => $post['note_body']
         ]);
     }
 ?>
@@ -63,15 +59,15 @@
                     <button
                         id="marker' . $marker->id . '"
                         class="marker btn show-marker"
-                        data-index="' . $marker->id . '"
+                        data-id="' . $marker->id . '"
                         data-container="body"
                         data-toggle="popover"
                         data-placement="top"
                         data-title="' . $marker->note_title . '"
                         data-content="
-                            <p class=\'note-body\'>' . $marker->note_body . '</p>
-                            <button class=\'edit d-block ml-auto btn btn-primary btn-sm\'>Edit</button>
-                            <button class=\'save d-block ml-auto btn btn-primary btn-sm invisible\'>Save</button>
+                            <p data-id=\'' . $marker->id . '\' class=\'note-body\'>' . $marker->note_body . '</p>
+                            <button data-id=\'' . $marker->id . '\' class=\'edit btn btn-primary btn-sm\'>Edit</button>
+                            <button data-id=\'' . $marker->id . '\' class=\'save btn btn-primary btn-sm\' disabled>Save</button>
                         "
                         style="top: ' . $marker->top . '%; left: ' . $marker->left . '%;"
                     ></button>
@@ -82,4 +78,4 @@
     </section>
 </main>
 
-<?php include '../footer.php'; ?>
+<?php include '../includes/footer.php'; ?>
