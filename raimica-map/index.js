@@ -36,10 +36,13 @@ $(document).ready(function() {
                 note_body
             },
             success: function(res) {
-                $(`input[data-id=${id}]`).replaceWith(`<span data-id="${id}" class="note-title">${note_title}</span>`);
-                $(`textarea[data-id=${id}]`).replaceWith(`<p data-id="${id}" class="note-body">${note_body}</p>`);
-                $(`button.save[data-id=${id}]`).prop('disabled', true);
-                $(`button.edit[data-id=${id}]`).prop('disabled', false);
+                $(`#marker${id}]`)
+                    .data('title', `<span data-id="${id}" class="note-title">${note_title}</span>`)
+                    .data('content', `
+                        <p data-id="${id}" class="note-body">${note_body}</p>
+                        <button data-id="${id}" class="edit btn btn-primary btn-sm">Edit</button>
+                        <button data-id="${id}" class="save btn btn-primary btn-sm" disabled>Save</button>
+                    `);
             }
         });
     });
