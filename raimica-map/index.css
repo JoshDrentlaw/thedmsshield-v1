@@ -5,6 +5,7 @@
 
 #raimica-map {
     width: 1024px; height: auto;
+    cursor: pointer;
 }
 
 .marker {

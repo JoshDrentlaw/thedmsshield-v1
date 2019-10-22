@@ -47,10 +47,7 @@
             <span class="slider"></span>
         </label>
         <label class="ml-4 font-weight-bold">Add marker: </label>
-        <label class="switch ml-2">
-            <input type="checkbox" id="toggle-markers">
-            <span class="slider"></span>
-        </label>
+        <button class="ml-2 mb-2 btn btn-primary btn-sm" id="add-marker">Add Marker</button>
     </section>
     <section id="map-container">
         <?php
@@ -63,7 +60,7 @@
                         data-container="body"
                         data-toggle="popover"
                         data-placement="top"
-                        data-title="' . $marker->note_title . '"
+                        data-title="<span class=\'note-title\' data-id=\'' . $marker->id . '\'>' . $marker->note_title . '</span>"
                         data-content="
                             <p data-id=\'' . $marker->id . '\' class=\'note-body\'>' . $marker->note_body . '</p>
                             <button data-id=\'' . $marker->id . '\' class=\'edit btn btn-primary btn-sm\'>Edit</button>
@@ -74,7 +71,7 @@
                 ';
             }
         ?>
-        <img id="raimica-map" src="./raimica_map.jpg" />
+        <img id="raimica-map" src="./raimica_map.jpg" data-click="false" />
     </section>
 </main>
 
