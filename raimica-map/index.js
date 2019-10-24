@@ -17,7 +17,7 @@ $(document).ready(function() {
         let id = $(this).data('id');
         let note_title = $(`span[data-id=${id}]`).text();
         let note_body = $(`p[data-id=${id}]`).text();
-        console.log(note_title, note_body);
+
         $(`span[data-id=${id}]`).replaceWith(`<input type="text" data-id="${id}" class="title-edit form-control" value="${note_title}">`);
         $(`p[data-id=${id}]`).replaceWith(`<textarea data-id="${id}" class="edit-box form-control" rows="4">${note_body}</textarea>`);
         $(this).prop('disabled', true);
@@ -36,13 +36,29 @@ $(document).ready(function() {
                 note_body
             },
             success: function(res) {
-                $(`#marker${id}]`)
-                    .data('title', `<span data-id="${id}" class="note-title">${note_title}</span>`)
-                    .data('content', `
+                $(`input[data-id=${id}]`).replaceWith(`<span data-id="${id}" class="note-title">${note_title}</span>`);
+                $(`textarea[data-id=${id}]`).replaceWith(`<p data-id="${id}" class="note-body">${note_body}</p>`);
+                $(`button.save[data-id=${id}]`).prop('disabled', true);
+                $(`button.edit[data-id=${id}]`).prop('disabled', false);
+                $(`#marker${id}`).on('hidden.bs.popover', function() {
+                    $(this).popover('dispose').popover({
+                        container: 'body',
+                        toggle: 'popover',
+                        html: true,
+                        title: `<span data-id="${id}" class="note-title">${note_title}</span>`,
+                        content: `
+                            <p data-id="${id}" class="note-body">${note_body}</p>
+                            <button data-id="${id}" class="edit btn btn-primary btn-sm">Edit</button>
+                            <button data-id="${id}" class="save btn btn-primary btn-sm" disabled>Save</button>
+                        `
+                    });
+                });
+                    /* .attr('data-title', `<span data-id="${id}" class="note-title">${note_title}</span>`)
+                    .attr('data-content', `
                         <p data-id="${id}" class="note-body">${note_body}</p>
                         <button data-id="${id}" class="edit btn btn-primary btn-sm">Edit</button>
                         <button data-id="${id}" class="save btn btn-primary btn-sm" disabled>Save</button>
-                    `);
+                    `); */
             }
         });
     });
