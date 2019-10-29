@@ -8,14 +8,18 @@
     $host = $_ENV['HOST'];
     $user = $_ENV['USER'];
     $password = $_ENV['PASSWORD'];
-    $dbname = 'thedmsshield';
+    $dbname = $_ENV['DB'];
 
     // Set DSN
     $dsn = 'mysql:host=' . $host . ';dbname=' . $dbname;
 
     // Create PDO instance
-    $pdo = new PDO($dsn, $user, $password);
-    $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_OBJ);
+    try {
+        $pdo = new PDO($dsn, $user, $password);
+        $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_OBJ, PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    } catch(PDOException $e) {
+        echo 'ERROR: ' . $e->getMessage();
+    }
 
     // Named Params
     $sql = 'SELECT * FROM thedmsshield.raimica_markers';
