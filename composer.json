@@ -1,8 +1,0 @@
-{
-    "require": {
-        "symfony/dotenv": "^4.3"
-    },
-    "config": {
-        "optimize-autoloader": true
-    }
-}
