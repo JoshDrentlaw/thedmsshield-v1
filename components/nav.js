@@ -1,56 +1,33 @@
-import React from 'react'
+import React, { useState } from 'react'
 import Link from 'next/link'
 
-const links = [
-  { href: 'https://zeit.co/now', label: 'ZEIT' },
-  { href: 'https://github.com/zeit/next.js', label: 'GitHub' }
-].map(link => {
-  link.key = `nav-link-${link.href}-${link.label}`
-  return link
-})
+import { Dropdown, Menu } from 'semantic-ui-react'
 
-const Nav = () => (
-  <nav>
-    <ul>
-      <li>
-        <Link href='/'>
-          <a>Home</a>
-        </Link>
-      </li>
-      {links.map(({ key, href, label }) => (
-        <li key={key}>
-          <a href={href}>{label}</a>
-        </li>
-      ))}
-    </ul>
+const Nav = () => {
+    const [active, setActive] = useState('home');
 
-    <style jsx>{`
-      :global(body) {
-        margin: 0;
-        font-family: -apple-system, BlinkMacSystemFont, Avenir Next, Avenir,
-          Helvetica, sans-serif;
-      }
-      nav {
-        text-align: center;
-      }
-      ul {
-        display: flex;
-        justify-content: space-between;
-      }
-      nav > ul {
-        padding: 4px 16px;
-      }
-      li {
-        display: flex;
-        padding: 6px 8px;
-      }
-      a {
-        color: #067df7;
-        text-decoration: none;
-        font-size: 13px;
-      }
-    `}</style>
-  </nav>
-)
+    return (
+        <Menu size='massive'>
+            <Menu.Item
+                name="home"
+                onClick={() => setActive('home')}
+                active={active === 'home'}
+            />
+            <Menu.Menu position="left">
+                <Dropdown item text="Maps">
+                    <Dropdown.Menu>
+                        <Dropdown.Item>
+                            <Menu.Item
+                                name="raimica-map"
+                                onClick={() => setActive('raimica-map')}
+                                active={active === 'raimica-map'}
+                            />
+                        </Dropdown.Item>
+                    </Dropdown.Menu>
+                </Dropdown>
+            </Menu.Menu>
+        </Menu>
+    )
+}
 
 export default Nav
