@@ -63,11 +63,6 @@ $(document).ready(function() {
         });
     });
 
-    $('#raimica-map').on('click', function(e) {
-        console.log(e)
-        console.log('top:', ((e.offsetY-12)/666.781)*100, 'left:', ((e.offsetX-12)/1024)*100);
-    });
-
     /* $('#add-marker').on('click', function() {
         let current = $('#raimica-map').data('click');
         $('#raimica-map').data('click', !current);

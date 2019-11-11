@@ -48,7 +48,7 @@
         <h1 class="mx-4">The Raimica Region</h1>
         <label class="font-weight-bold">Show markers: </label>
         <label class="switch ml-2">
-            <input type="checkbox" id="toggle-markers" checked>
+            <input type="checkbox" id="toggle-markers">
             <span class="slider"></span>
         </label>
         <label class="ml-4 font-weight-bold">Add marker: </label>
@@ -60,7 +60,7 @@
                 echo '
                     <button
                         id="marker' . $marker->id . '"
-                        class="marker btn show-marker"
+                        class="marker btn"
                         data-id="' . $marker->id . '"
                         data-container="body"
                         data-toggle="popover"
@@ -79,5 +79,9 @@
         <img id="raimica-map" src="./raimica_map.jpg" data-click="false" />
     </section>
 </main>
-
+<script>
+<?php
+    echo json_encode(["markers" => $markers]);
+?>
+</script>
 <?php include '../includes/footer.php'; ?>
