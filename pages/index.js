@@ -1,16 +1,14 @@
 import React from 'react'
-import Head from 'next/head'
-import Nav from '../components/nav'
+import { Container, Header } from 'semantic-ui-react'
+
+import Layout from '../components/layout'
 
 const Home = () => (
-    <div>
-        <Head>
-            <title>Home</title>
-            <link rel='icon' href='/favicon.ico' />
-        </Head>
-
-        <Nav />
-    </div>
+    <Layout>
+        <Container>
+            <Header as="h1">Home</Header>
+        </Container>
+    </Layout>
 )
 
 export default Home
