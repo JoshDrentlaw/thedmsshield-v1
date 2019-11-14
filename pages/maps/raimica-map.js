@@ -1,5 +1,9 @@
 import React from 'react'
 import { Container, Header } from 'semantic-ui-react'
+const ReactCanvas = require('react-canvas');
+
+var Surface = ReactCanvas.Surface;
+var Image = ReactCanvas.Image;
 
 import Layout from '../../components/layout'
 
