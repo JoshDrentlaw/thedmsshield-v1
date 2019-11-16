@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "prod": "yarn build && yarn start"
   },
   "dependencies": {
     "@zeit/next-source-maps": "^0.0.3",
