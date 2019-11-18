@@ -2,10 +2,10 @@ import React from 'react'
 import Head from 'next/head'
 import styled from 'styled-components'
 
-import Nav from '../components/nav'
+import Nav from './nav'
 
 const Main = styled.main`
-    height: calc(100vh - 53.41px);
+    height: calc(100vh - 66px);
 `
 
 const Layout = ({ children }) => (

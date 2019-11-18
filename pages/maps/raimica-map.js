@@ -2,7 +2,7 @@ import React from 'react'
 import { Container, Header } from 'semantic-ui-react'
 import styled from 'styled-components'
 
-import Layout from '../../components/layout'
+import Layout from '../../components/Layout'
 import Canvas from '../../components/canvas'
 
 const SContainer = styled(Container)`
