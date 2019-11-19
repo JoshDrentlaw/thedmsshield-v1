@@ -5,6 +5,7 @@ var mysql = require('mysql')
 
 const app = next()
 const handle = app.getRequestHandler()
+console.log(handle)
 
 var connection = mysql.createConnection({
     host: process.env.ENDPOINT,
@@ -17,7 +18,10 @@ connection.connect()
 
 global.connection = connection
 
+console.log(connection)
+
 app.prepare().then(() => {
+    console.log('prepared')
     const server = express()
 
     server.all('*', (req, res) => {

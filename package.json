@@ -9,7 +9,9 @@
     "dev": "next dev",
     "build": "next build && next export",
     "start": "next start",
-    "prod": "yarn build && yarn start"
+    "prod": "yarn build && yarn start",
+    "mysql": "mysql",
+    "server": "node server.js"
   },
   "dependencies": {
     "@zeit/next-css": "^1.0.1",
