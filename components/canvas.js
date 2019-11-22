@@ -44,9 +44,9 @@ class Canvas extends React.Component {
 
     render() {
         let zoom;
-        if (typeof window !== undefined) {
+        /* if (typeof window !== undefined) {
             zoom = document.querySelector('#map').style.zoom;
-        }
+        } */
         return (
             <SCanvas onClick={() => this.getCursor()}>
                 <Img id="map" src="/raimica_map.jpg" />
