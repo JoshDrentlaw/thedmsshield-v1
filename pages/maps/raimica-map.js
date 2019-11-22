@@ -9,13 +9,19 @@ const SContainer = styled(Container)`
     height: 100%;
 `
 
-const RaimicaMap = () => (
+const RaimicaMap = (props) => (
     <Layout>
         <SContainer>
             <Header as="h1">The Raimica Region</Header>
-            <Canvas />
+            <Canvas markers={props.markers} />
         </SContainer>
     </Layout>
 )
+
+RaimicaMap.getInitialProps = async () => {
+        const res = await fetch('http://localhost:4000/raimica-map/getMarkers')
+        const markers = await res.json()
+        return { markers }
+    }
 
 export default RaimicaMap

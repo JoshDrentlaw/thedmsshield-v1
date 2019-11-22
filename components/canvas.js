@@ -1,5 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
+import fetch from 'isomorphic-unfetch'
 
 const SCanvas = styled.div`
     width: 100%;
@@ -13,15 +14,22 @@ const Img = styled.img`
     zoom: 0.5;
 `
 
+const Marker = styled.div`
+    top: ${props => props.top};
+    left: ${props => props.left};
+    width: 1rem;
+    height: 1rem;
+    border-radius: 999999px;
+    background-color: black;
+    position: absolute;
+`
+
 class Canvas extends React.Component {
     constructor(props) {
         super(props)
-
-        this.getCursor = this.getCursor.bind(this);
     }
 
     componentDidMount() {
-        
     }
 
     getCursor = (props) => {
@@ -35,9 +43,22 @@ class Canvas extends React.Component {
     }
 
     render() {
+        let zoom;
+        if (typeof window !== undefined) {
+            zoom = document.querySelector('#map').style.zoom;
+        }
         return (
-            <SCanvas onClick={this.getCursor}>
-                <Img src="/raimica_map.jpg" />
+            <SCanvas onClick={() => this.getCursor()}>
+                <Img id="map" src="/raimica_map.jpg" />
+                {this.props.markers.map(marker => {
+                    return <Marker
+                                key={marker._id}
+                                data-title={marker.note_title}
+                                data-body={marker.note_body}
+                                top={marker.top*zoom}
+                                left={marker.left*zoom}
+                            />
+                })}
             </SCanvas>
         )
     }
