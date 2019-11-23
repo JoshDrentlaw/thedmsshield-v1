@@ -1,5 +1,6 @@
-const withSourceMaps = require('@zeit/next-source-maps')
+const path = require('path');
 
+const withSourceMaps = require('@zeit/next-source-maps')
 module.exports = withSourceMaps({
     webpack(config, options) {
         return config
@@ -16,3 +17,16 @@ module.exports = {
         password: process.env.PASSWORD
     },
 }
+
+const withCSS = require('@zeit/next-css')
+module.exports = withCSS({
+    cssModules: true
+})
+
+const withReactSvg = require('next-react-svg')
+module.exports = withReactSvg({
+    include: path.resolve(__dirname, 'public/svg'),
+    webpack(config, options) {
+        return config
+    }
+})
