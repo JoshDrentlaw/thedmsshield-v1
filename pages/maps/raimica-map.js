@@ -24,7 +24,7 @@ const RaimicaMap = (props) => {
 RaimicaMap.getInitialProps = async () => {
         const url =
             process.env.MODE === 'production' ?
-            '/raimica-map/getMarkers' :
+            'https://raimica.netlify.com/maps/raimica-map/getMarkers' :
             `http://localhost:${process.env.PORT}/raimica-map/getMarkers`
         const res = await fetch(url)
         const markers = await res.json()
