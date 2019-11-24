@@ -1,7 +1,7 @@
 import React from 'react'
 import { Container, Header } from 'semantic-ui-react'
 
-import Layout from '../components/Layout'
+import Layout from '../components/layout'
 
 const Home = () => (
     <Layout>
