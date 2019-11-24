@@ -22,7 +22,7 @@ const RaimicaMap = (props) => {
 }
 
 RaimicaMap.getInitialProps = async () => {
-        const res = await fetch('http://localhost:4000/raimica-map/getMarkers')
+        const res = await fetch('http://localhost:${process.env.PORT}/raimica-map/getMarkers')
         const markers = await res.json()
         return { markers }
     }
