@@ -3,7 +3,7 @@ import { Container, Header } from 'semantic-ui-react'
 import styled from 'styled-components'
 import fetch from 'isomorphic-unfetch'
 
-import Layout from '../../components/Layout'
+import Layout from '../../components/layout'
 import Canvas from '../../components/canvas'
 
 const SContainer = styled(Container)`
