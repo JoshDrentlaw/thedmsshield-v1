@@ -7,9 +7,9 @@
   "private": true,
   "scripts": {
     "dev": "node server/index.js",
-    "build": "next build && next export",
-    "start": "next start",
-    "prod": "yarn build && yarn start",
+    "build": "next build",
+    "start": "cross-env NODE_ENV=production node server/index.js",
+    "prod": "npm run build && npm run start",
     "mysql": "mysql",
     "server": "node server.js"
   },
@@ -34,6 +34,7 @@
   },
   "devDependencies": {
     "@fortawesome/fontawesome-free": "^5.11.2",
+    "cross-env": "^6.0.3",
     "webpack": "^4.0.0"
   }
 }
