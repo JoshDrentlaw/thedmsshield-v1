@@ -4,6 +4,8 @@ import window from 'global'
 
 import ZoomIn from '../public/svg/zoom-in.svg'
 import ZoomOut from '../public/svg/zoom-out.svg'
+import Show from '../public/svg/show.svg'
+import Hide from '../public/svg/hide.svg'
 
 const SCanvas = styled.div`
     width: 100%;
@@ -28,6 +30,8 @@ const Marker = styled.div.attrs(props => ({
     border-radius: 999999px;
     background-color: black;
     position: absolute;
+    transition: opacity 300ms cubic-bezier(.18,.03,.83,.95);
+    opacity: ${props => props.opacity};
 `
 
 const Buttons = styled.section`
@@ -50,6 +54,7 @@ const IconWrapper = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
+    border: 1px solid #a3a3a3;
 
     svg {
         width: 40%;
@@ -57,11 +62,18 @@ const IconWrapper = styled.div`
     }
 `
 
+const ShowIcon = styled(Show)`
+
+`
+
 class Canvas extends React.Component {
     constructor(props) {
         super(props)
 
-        this.state = { zoom: 1 }
+        this.state = {
+            zoom: 0.7,
+            opacity: 0
+        }
 
         this.image = React.createRef();
     }
@@ -103,26 +115,40 @@ class Canvas extends React.Component {
                         return (
                             <Marker
                                 key={marker._id}
-                                data-title={marker.note_title}
-                                data-body={marker.note_body}
+                                data-id={marker._id}
                                 top={marker.top*this.state.zoom}
                                 left={marker.left*this.state.zoom}
                                 radius={50*this.state.zoom}
+                                opacity={this.state.opacity}
                             />
                         )
                     })}
                 </SCanvas>
                 <Buttons>
                     <ButtonContainer>
-                        <IconWrapper onClick={() => this.zoomIn()}>
+                        <IconWrapper onClick={() => (this.state.zoom < 1 ? this.setState({ zoom: this.state.zoom + 0.1 }) : false)}>
                             <ZoomIn />
                         </IconWrapper>
-                        <IconWrapper onClick={() => this.zoomOut()}>
+                        <IconWrapper onClick={() => (this.state.zoom > 0.1 ? this.setState({ zoom: this.state.zoom - 0.1 }) : false)}>
                             <ZoomOut />
                         </IconWrapper>
                     </ButtonContainer>
-                    <ButtonContainer></ButtonContainer>
-                    <ButtonContainer></ButtonContainer>
+                    <ButtonContainer>
+                        <IconWrapper onClick={() => this.setState({ opacity: 1 })}>
+                            <Show  />
+                        </IconWrapper>
+                        <IconWrapper onClick={() => this.setState({ opacity: 0 })}>
+                            <Hide />
+                        </IconWrapper>
+                    </ButtonContainer>
+                    <ButtonContainer>
+                        <IconWrapper>
+                            
+                        </IconWrapper>
+                        <IconWrapper>
+                            
+                        </IconWrapper>
+                    </ButtonContainer>
                 </Buttons>
             </>
         )
