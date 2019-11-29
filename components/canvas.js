@@ -75,8 +75,9 @@ const Note = (props) => {
     }, [edit]) */
 
     const saveNote = () => {
+        const url =  (process.env.NODE_ENV === 'production' ? `http://thedmsshield.com:3000/api/getMarkers/${id}` : `http://localhost:3000/api/markers/${id}`)
         if (title !== props.title || body !== props.body) {
-            fetch(`http://localhost:3000/api/markers/${props._id}`, {
+            fetch(url, {
                 method: 'PUT',
                 headers: {
                 'Accept': 'application/json',
@@ -154,7 +155,7 @@ class Canvas extends React.Component {
 
     saveNote = (marker) => {
         const url =  (process.env.NODE_ENV === 'production' ? `http://thedmsshield.com:3000/api/getMarkers/${id}` : `http://localhost:3000/api/markers/${id}`)
-        fetch(`http://thedmsshield.com:3000/api/getMarkers/${id}`, {
+        fetch(url, {
             method: 'PUT',
             headers: {
             'Accept': 'application/json',
