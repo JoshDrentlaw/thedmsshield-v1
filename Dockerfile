@@ -12,4 +12,7 @@ RUN npm install
 COPY . .
 
 # Building app
-RUN npm run prod
+RUN npm run build
+
+# Running the app
+CMD [ "npm", "start" ]
