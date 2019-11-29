@@ -77,7 +77,7 @@ const Note = (props) => {
     const saveNote = () => {
         const url =  (process.env.NODE_ENV === 'production' ? `http://thedmsshield.com:3000/api/getMarkers/${props._id}` : `http://localhost:3000/api/markers/${props._id}`)
         if (title !== props.title || body !== props.body) {
-            fetch(`http://thedmsshield.com:3000/api/getMarkers/${props._id}`, {
+            fetch(`http://thedmsshield.com:3000/api/markers/${props._id}`, {
                 method: 'PUT',
                 headers: {
                 'Accept': 'application/json',
