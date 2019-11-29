@@ -75,7 +75,7 @@ const Note = (props) => {
     }, [edit]) */
 
     const saveNote = () => {
-        const url =  (process.env.NODE_ENV === 'production' ? `http://thedmsshield.com:3000/api/getMarkers/${id}` : `http://localhost:3000/api/markers/${id}`)
+        const url =  (process.env.NODE_ENV === 'production' ? `http://thedmsshield.com:3000/api/getMarkers/${props._id}` : `http://localhost:3000/api/markers/${props._id}`)
         if (title !== props.title || body !== props.body) {
             fetch(url, {
                 method: 'PUT',
