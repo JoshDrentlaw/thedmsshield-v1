@@ -19,7 +19,7 @@ nextApp.prepare().then(() => {
 
     app.use(bodyParser.json());
     app.use(bodyParser.urlencoded({ extended: true }));
-    app.use('/raimica-map/getMarkers', require('./routes/index')) 
+    app.use('/api/markers', require('./routes/index')) 
 
     app.get('*', (req,res) => {
         return handle(req,res) // for all the react stuff
