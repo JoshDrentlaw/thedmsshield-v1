@@ -154,7 +154,7 @@ class Canvas extends React.Component {
 
     saveNote = (marker) => {
         const url =  (process.env.NODE_ENV === 'production' ? `http://thedmsshield.com:3000/api/getMarkers/${id}` : `http://localhost:3000/api/markers/${id}`)
-        fetch(url, {
+        fetch(`http://thedmsshield.com:3000/api/getMarkers/${id}`, {
             method: 'PUT',
             headers: {
             'Accept': 'application/json',
