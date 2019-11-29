@@ -12,7 +12,8 @@ module.exports = {
     env: {
         // Reference a variable that was defined in the .env file and make it available at Build Time
         ENDPOINT: process.env.ENDPOINT,
-        PORT: process.env.PORT
+        PORT: process.env.PORT,
+        NODE_ENV: process.env.NODE_ENV
     },
 }
 
