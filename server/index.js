@@ -4,14 +4,12 @@ const next = require('next')
 const bodyParser = require('body-parser')
 
 const PORT = process.env.PORT || 3000
-const dev = process.env.NODE_DEV !== 'production' //true false
+const app = next({ dev: process.env.NODE_ENV !== 'production' });
+const handler = routes.getRequestHandler(app);
+const env = process.env.NODE_ENV || 'dev';
 
-const nextApp = next({ dev: false })
-const handle = nextApp.getRequestHandler() //part of next config
 const mongoose = require('mongoose')
-
 const db = mongoose.connect(process.env.ENDPOINT, { useNewUrlParser: true, useUnifiedTopology: true })
-console.log(db)
 
 nextApp.prepare().then(() => {
     // express code here
