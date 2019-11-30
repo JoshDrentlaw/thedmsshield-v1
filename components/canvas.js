@@ -75,12 +75,12 @@ const Note = (props) => {
     }, [edit]) */
 
     const saveNote = () => {
-        const url =  (process.env.NODE_ENV === 'production' ? `https://thedmsshield.com/api/getMarkers/${props._id}` : `http://localhost:3000/api/markers/${props._id}`)
+        const url =  (process.env.NODE_ENV === 'production' ? `https://thedmsshield.com/api/markers/${props._id}` : `http://localhost:3000/api/markers/${props._id}`)
         if (title !== props.title || body !== props.body) {
-            fetch(`http://localhost:3000/api/markers/${props._id}`, {
+            fetch(url, {
                 method: 'PUT',
                 headers: {
-                'Accept': 'application/json',
+                    'Accept': 'application/json',
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({note_title: title, note_body: body})
