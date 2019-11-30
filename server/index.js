@@ -3,6 +3,8 @@ const express = require('express')
 const next = require('next')
 const bodyParser = require('body-parser')
 
+const routes = require('./routes/index.js')
+
 const PORT = process.env.PORT || 3000
 const app = next({ dev: process.env.NODE_ENV !== 'production' });
 const handler = routes.getRequestHandler(app);
