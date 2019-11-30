@@ -21,7 +21,7 @@ router
     .get('/:id', (req, res) => {
         return res.json( req.marker )
     })
-    .put('/:id', (req, res) =>{
+    .post('/:id', (req, res) =>{
         Object.keys(req.body).map(key=>{
             req.marker[key] = req.body[key]
         })
