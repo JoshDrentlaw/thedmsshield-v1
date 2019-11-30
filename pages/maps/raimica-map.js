@@ -22,8 +22,8 @@ const RaimicaMap = (props) => {
 }
 
 RaimicaMap.getInitialProps = async () => {
-        const url =  (process.env.NODE_ENV === 'production' ? 'https://thedmsshield.com/api/getMarkers' : `http://localhost:3000/api/markers`)
-        const res = await fetch(`http://localhost:3000/api/markers`)
+        const url =  (process.env.NODE_ENV === 'production' ? 'https://thedmsshield.com/api/markers' : `http://localhost:3000/api/markers`)
+        const res = await fetch(url)
         const markers = await res.json()
         return { markers }
     }
