@@ -9,7 +9,8 @@
     "dev": "node server/index.js",
     "build": "next build",
     "start": "cross-env NODE_ENV=production node server/index.js",
-    "prod": "npm run build && npm run start"
+    "prod": "npm run build && npm run start",
+    "rebuild": "git pull && next build"
   },
   "dependencies": {
     "@zeit/next-css": "^1.0.1",
