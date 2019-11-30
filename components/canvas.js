@@ -78,7 +78,7 @@ const Note = (props) => {
         const url =  (process.env.NODE_ENV === 'production' ? `https://thedmsshield.com/api/markers/${props._id}` : `http://localhost:3000/api/markers/${props._id}`)
         if (title !== props.title || body !== props.body) {
             fetch(url, {
-                method: 'POST',
+                method: 'PUT',
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json'
