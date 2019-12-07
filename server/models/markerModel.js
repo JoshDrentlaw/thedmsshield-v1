@@ -5,7 +5,7 @@ const markerModel = new schema({
     top: { type: Number } ,
     left: { type: Number },
     note_title: { type: String },
-    note_body: { type: String }
+    note_body: { type: {} }
 })
 
 module.exports = mongoose.model('raimica_markers', markerModel)

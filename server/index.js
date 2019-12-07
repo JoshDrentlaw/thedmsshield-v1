@@ -6,12 +6,11 @@ const bodyParser = require('body-parser')
 const PORT = process.env.PORT || 3000
 const dev = process.env.NODE_DEV !== 'production' //true false
 
-const nextApp = next({ dev: false })
+const nextApp = next({ dev })
 const handle = nextApp.getRequestHandler() //part of next config
 const mongoose = require('mongoose')
 
 const db = mongoose.connect(process.env.ENDPOINT, { useNewUrlParser: true, useUnifiedTopology: true })
-console.log(db)
 
 nextApp.prepare().then(() => {
     // express code here
@@ -19,7 +18,9 @@ nextApp.prepare().then(() => {
 
     app.use(bodyParser.json());
     app.use(bodyParser.urlencoded({ extended: true }));
-    app.use('/api/markers', require('./routes/index')) 
+    app.use('/api/markers', require('./routes/index'));
+
+    console.log('loaded middleware')
 
     app.get('*', (req,res) => {
         return handle(req,res) // for all the react stuff

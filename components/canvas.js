@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import styled from 'styled-components'
 import window from 'global'
-import fetch from 'isomorphic-unfetch'
-import { Button, Form, TextArea, Icon, Modal } from 'semantic-ui-react'
+import { Icon } from 'semantic-ui-react'
+import Note from './note'
 
 const SCanvas = styled.div`
     width: 100%;
@@ -17,8 +17,8 @@ const Img = styled.img`
 `
 
 const Marker = styled.div.attrs(props => ({
-    x: props.left - (props.radius/2),
-    y: props.top - (props.radius/2)
+    x: props.left - (props.radius / 2),
+    y: props.top - (props.radius / 2)
 }))`
     top: ${props => props.y}px;
     left: ${props => props.x}px;
@@ -62,73 +62,12 @@ const IconWrapper = styled.div`
     }
 `
 
-const Note = (props) => {
-    const [edit, setEdit] = useState(false);
-    const [title, setTitle] = useState(props.title);
-    const [body, setBody] = useState(props.body);
-
-    /* useEffect(() => {
-        if (open && !edit) {
-            console.log('saving')
-            
-        }
-    }, [edit]) */
-
-    const saveNote = () => {
-        const url =  (process.env.NODE_ENV === 'production' ? `https://thedmsshield.com/api/markers/${props._id}` : `http://localhost:3000/api/markers/${props._id}`)
-        if (title !== props.title || body !== props.body) {
-            fetch(url, {
-                method: 'PUT',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({note_title: title, note_body: body})
-            })
-        }
-        setEdit(!edit)
-    }
-
-    return (
-        <Modal
-            trigger={props.children}
-            dimmer="inverted"
-            closeOnEscape={edit ? false : true}
-            closeOnDimmerClick={edit ? false : true}
-            closeIcon={edit ? false : true}
-        >
-            <Modal.Header>
-                {edit ?
-                    <Form.Input value={title} onChange={({ target }) => setTitle(target.value)} />
-                    : title
-                }
-            </Modal.Header>
-            <Modal.Content>
-                <Modal.Description>
-                    {edit ?
-                        <Form><TextArea value={body} onChange={({ target }) => setBody(target.value)} /></Form>
-                        : <p>{body}</p>
-                    }
-                    
-                </Modal.Description>
-            </Modal.Content>
-            <Modal.Actions>
-                <Button color="blue" onClick={() => saveNote()}>
-                    <Icon name={edit ? "save" : "edit"} />
-                    {edit ? "Save" : "Edit"}
-                </Button>
-            </Modal.Actions>
-        </Modal>
-        
-    )
-}
-
 class Canvas extends React.Component {
     constructor(props) {
         super(props)
 
         this.state = {
-            zoom: 0.7,
+            zoom: 0.5,
             opacity: 0
         }
 
@@ -162,13 +101,13 @@ class Canvas extends React.Component {
                         return (
                             <Note key={marker._id} title={marker.note_title} body={marker.note_body} _id={marker._id}>
                                 <Marker
-                                    top={marker.top*this.state.zoom}
-                                    left={marker.left*this.state.zoom}
-                                    radius={50*this.state.zoom}
+                                    top={marker.top * this.state.zoom}
+                                    left={marker.left * this.state.zoom}
+                                    radius={50 * this.state.zoom}
                                     opacity={this.state.opacity}
                                 />
                             </Note>
-                            
+
                         )
                     })}
                 </SCanvas>
@@ -191,10 +130,10 @@ class Canvas extends React.Component {
                     </ButtonContainer>
                     <ButtonContainer>
                         <IconWrapper>
-                            
+
                         </IconWrapper>
                         <IconWrapper>
-                            
+
                         </IconWrapper>
                     </ButtonContainer>
                 </Buttons>
