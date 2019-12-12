@@ -1,6 +1,10 @@
 import App from 'next/app'
 import React from 'react'
 import { ThemeProvider } from 'styled-components'
+/* import PNotify from 'pnotify/dist/es/PNotify'
+import PNotifyButtons from 'pnotify/dist/es/PNotifyButtons'
+
+export {PNotify, PNotifyButtons} */
 
 const theme = {
     colors: {

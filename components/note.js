@@ -1,10 +1,12 @@
 import React, { useState, useRef } from 'react'
 import styled from 'styled-components'
 import fetch from 'isomorphic-unfetch'
-import { Button, Form, Icon, Modal } from 'semantic-ui-react'
+import { Button, Form, Icon, Modal, Loader } from 'semantic-ui-react'
 import { EditorState, RichUtils, ContentState, convertToRaw, convertFromRaw, convertFromHTML } from 'draft-js'
 import Editor from 'draft-js-plugins-editor'
 import createHighlightPlugin from './plugins/highlightPlugin'
+//import PNotify from 'pnotify/dist/es/PNotify'
+//import PNotifyButtons from 'pnotify/dist/es/PNotifyButtons'
 
 const EditorContainer = styled.div`
     border: ${props => props.edit ? '1px solid #cdcdcd' : 'none'};
@@ -31,7 +33,7 @@ const Note = (props) => {
     const [active, setActive] = useState();
     const [title, setTitle] = useState(props.title);
     const [body, setBody] = useState(props.body);
-    const [plainText, setPlainText] = useState();
+    const [loading, setLoading] = useState(false);
 
     const content = convertFromRaw(JSON.parse(body))
     const [editorState, setEditorState] = useState(EditorState.createWithContent(content)) //.createEmpty()
@@ -44,6 +46,7 @@ const Note = (props) => {
     const saveNote = () => {
         const url = (process.env.NODE_ENV === 'production' ? `https://thedmsshield.com/api/markers/${props._id}` : `http://localhost:3000/api/markers/${props._id}`)
         if (title !== props.title || body !== props.body) {
+            setLoading(true)
             fetch(url, {
                 method: 'PUT',
                 headers: {
@@ -54,9 +57,25 @@ const Note = (props) => {
             })
             .then(res => {
                 console.log(res)
+                const { status } = res
+                if (status === 200) {
+                    setEdit(!edit)
+                    setLoading(false)
+                    /* PNotify.success({
+                        title: "Success!",
+                        text: "Note successfully updated!",
+                        Animate: {
+                            animate: true,
+                            inClass: 'flipInY',
+                            outClass: 'flipOutY'
+                        }
+                    }) */
+                }
             })
         }
-        setEdit(!edit)
+        else {
+            setEdit(!edit)
+        }
     }
 
     const onChange = (editorState) => {
@@ -143,10 +162,15 @@ const Note = (props) => {
                 </Modal.Description>
             </Modal.Content>
             <Modal.Actions>
-                <Button color="blue" onClick={() => saveNote()}>
-                    <Icon name={edit ? "save" : "edit"} />
-                    {edit ? "Save" : "Edit"}
-                </Button>
+                    {
+                        loading ?
+                            <Loader />
+                            :
+                            (<Button color="blue" onClick={() => saveNote()}>
+                                <Icon name={edit ? "save" : "edit"} />
+                                {edit ? "Save" : "Edit"}
+                            </Button>)
+                    }
             </Modal.Actions>
         </Modal>
     )
