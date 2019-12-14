@@ -7,7 +7,7 @@ const Home = () => (
     <Layout>
         <Container>
             <Header as="h1">Home</Header>
-            <h2>{process.env.NODE_ENV}</h2>
+            <h2>{process.env.DEV}</h2>
         </Container>
     </Layout>
 )

@@ -10,7 +10,7 @@
     "node": "node server/index.js",
     "build": "next build",
     "local": "cross-env DEV=production node server/index.js",
-    "start": "DEV=production node server/index.js",
+    "start": "pm2 start server/index.js",
     "prod": "npm run build && npm run start",
     "rebuild": "git pull && next build"
   },
