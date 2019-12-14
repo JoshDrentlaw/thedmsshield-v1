@@ -16,7 +16,7 @@ module.exports = withPlugins(
             // Reference a variable that was defined in the .env file and make it available at Build Time
             ENDPOINT: process.env.ENDPOINT,
             URL: process.env.URL,
-            NODE_DEV: process.env.NODE_DEV
+            DEV: process.env.DEV
         },
         cssLoaderOptions: {
             url: false
