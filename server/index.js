@@ -6,7 +6,7 @@ const fileUpload = require('express-fileupload')
 
 const PORT = process.env.PORT || 3000
 const dev = process.env.NODE_DEV !== 'production' //true false
-console.log(process.env.NODE_DEV)
+console.log(process.env)
 console.log(dev)
 
 const nextApp = next({ dev })

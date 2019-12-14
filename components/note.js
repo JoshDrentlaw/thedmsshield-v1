@@ -44,7 +44,7 @@ const Note = (props) => {
     ]
 
     const saveNote = () => {
-        const url = (process.env.NODE_ENV === 'production' ? `https://thedmsshield.com/api/markers/${props._id}` : `http://localhost:3000/api/markers/${props._id}`)
+        const url = process.env.URL + props._id
         if (title !== props.title || body !== props.body) {
             setLoading(true)
             fetch(url, {
