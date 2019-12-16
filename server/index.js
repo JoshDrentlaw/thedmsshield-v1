@@ -6,11 +6,8 @@ const fileUpload = require('express-fileupload')
 
 const PORT = process.env.PORT || 3000
 const dev = process.env.DEV !== 'production' //true false
-console.log(process.env)
-console.log(dev)
 
 const nextApp = next({ dev })
-console.log(nextApp)
 const handle = nextApp.getRequestHandler() //part of next config
 const mongoose = require('mongoose')
 
