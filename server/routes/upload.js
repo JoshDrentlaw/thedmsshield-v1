@@ -1,5 +1,10 @@
 const express = require('express')
 const router = express.Router()
+const fileUpload = require('express-fileupload')
+const path = require('path')
+
+// default options
+express().use(fileUpload())
 
 router.post('/', function(req, res) {
     if (!req.files || Object.keys(req.files).length === 0) {
@@ -8,7 +13,7 @@ router.post('/', function(req, res) {
 
     let newMap = req.files.newMap;
 
-    newMap.mv('/public/raimica_map.jpg', function(err) {
+    newMap.mv(__dirname + '/../../public/raimica_map.jpg', function(err) {
         if (err) {
             return res.status(500).send(err);
         }

@@ -1,20 +1,41 @@
 import React, { useState, useRef } from 'react'
 import styled from 'styled-components'
-import { Button, Header, Form, Icon, Modal, Loader } from 'semantic-ui-react'
+import { Button, Header, Form, Icon, Modal, Loader, Image } from 'semantic-ui-react'
 import Axios from 'axios'
 
 const Upload = (props) => {
-    const [img, setImg] = useState(null)
+    const [newMap, setNewMap] = useState(null)
+    const [preview, setPreview] = useState(null)
+    const [loading, setLoading] = useState(false)
 
     const handleChange = ({ target }) => {
-        setImg(target.value)
+        setNewMap(target.files[0])
+        handlePreview(target.files[0])
+    }
+
+    const handlePreview = (file) => {
+        const reader = new FileReader()
+        reader.onload = () => {
+            setPreview(reader.result)
+        }
+        reader.readAsDataURL(file)
     }
 
     const handleSubmit = (e) => {
         e.preventDefault()
-        Axios.post('/api/uploadMap', img)
+        setLoading(true)
+        const formData = new FormData()
+        formData.append('newMap', newMap)
+        Axios.post('/upload/map', formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        })
             .then(res => {
-                console.log(res)
+                if (res.status === 200) {
+                    setLoading(false)
+                    window.location.reload();
+                }
             })
     }
 
@@ -27,6 +48,11 @@ const Upload = (props) => {
                     encType="multipart/form-data"
                 >
                     <Form.Input type="file" name="newMap" onChange={handleChange} />
+                {
+                    newMap ?
+                        <Image children={loading ? <Loader /> : null} src={preview} size="large" centered />
+                        : null
+                }
                 </Form>
             </Modal.Content>
             <Modal.Actions>
