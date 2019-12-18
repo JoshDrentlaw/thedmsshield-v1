@@ -1,22 +1,28 @@
 import React from 'react'
-import { Container, Header } from 'semantic-ui-react'
+import { Header } from 'semantic-ui-react'
 import styled from 'styled-components'
 import fetch from 'isomorphic-unfetch'
 
 import Layout from '../../components/layout'
 import Canvas from '../../components/canvas'
 
-const SContainer = styled(Container)`
+const Container = styled.section`
     height: 100%;
+    width: 90%;
+    margin: 0 auto;
+
+    @media(min-width: 568px) {
+        width: 100%;
+        margin: 0;
+    }
 `
 
 const RaimicaMap = (props) => {
     return (
         <Layout>
-            <SContainer>
-                <Header as="h1">The Raimica Region</Header>
+            <Container>
                 <Canvas markers={props.markers} />
-            </SContainer>
+            </Container>
         </Layout>
     )
 }
