@@ -7,13 +7,14 @@ import { Dropdown, Menu } from 'semantic-ui-react'
 
 const Nav = (props) => {
     let path;
-    if (window.location.pathname === '/') {
-        path = 'home'
+    if (typeof window !== 'undefined') {
+        if (window.location.pathname === '/') {
+            path = 'home'
+        }
+        else {
+            path = window.location.pathname
+        }
     }
-    else {
-        path = window.location.pathname
-    }
-    console.log(path)
     const [active, setActive] = useState(path);
 
     return (
