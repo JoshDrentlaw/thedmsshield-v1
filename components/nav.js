@@ -1,10 +1,11 @@
 import React, { useState } from 'react'
 import Link from 'next/link'
+import window from 'global'
 
 import { Dropdown, Menu } from 'semantic-ui-react'
 
 
-const Nav = () => {
+const Nav = (props) => {
     let path;
     if (typeof window !== 'undefined') {
         if (window.location.pathname === '/') {
@@ -14,14 +15,17 @@ const Nav = () => {
             path = window.location.pathname
         }
     }
-    const [active, setActive] = useState();
+    const [active, setActive] = useState(path);
 
     return (
         <Menu size='massive' as="nav">
             <Link href="/">
                 <Menu.Item
                     name="home"
-                    onClick={() => setActive('home')}
+                    onClick={() => {
+                        setActive('home')
+                        props.setTitle('Home')
+                    }}
                     active={active === 'home'}
                 />
             </Link>
@@ -30,7 +34,10 @@ const Nav = () => {
                     <Link href="/maps/raimica-map">
                         <Dropdown.Item
                             text="Raimica Map"
-                            onClick={() => setActive('/maps/raimica-map')}
+                            onClick={() => {
+                                setActive('/maps/raimica-map')
+                                props.setTitle('Raimica Map')
+                            }}
                             active={active === '/maps/raimica-map'}
                         >
                         </Dropdown.Item>

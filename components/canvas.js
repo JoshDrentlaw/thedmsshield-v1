@@ -18,6 +18,12 @@ const SCanvas = styled.div`
     background-color: black;
     margin-bottom: 0.75em;
 
+    @media(min-width: 568px) {
+        width: 100%;
+        height: calc(100vh - 53.41px);
+        margin: -14px 0 0;
+    }
+
     ::-webkit-scrollbar {
         width: 5px;
         height: 5px;
@@ -59,31 +65,56 @@ const Marker = styled.div.attrs(props => ({
     opacity: ${props => props.opacity};
 `
 
-const Buttons = styled(Grid)`
-    /* width: 50%;
-    display: flex; */
-`
-
-const Row = styled(Grid.Row)`
-    /* width: 33.33333333%;
+const Buttons = styled.div`
     display: flex;
-    flex-direction: column; */
-    height: 75px;
+    flex-direction: row;
+
+    @media(min-width: 568px) {
+        position: fixed;
+        top: 60px;
+        left: 8px;
+        background-color: beige;
+        opacity: 0.2;
+        transition: opacity 0.2s ease-in;
+
+        &:hover {
+            opacity: 1;
+        }
+    }
+
+    @media(min-width: 1024px) {
+        flex-direction: column;
+    }
 `
 
-const Column = styled(Grid.Column)`
+const Column = styled.div`
     width: 100%;
-    height: 100%;
-    /* display: flex;
-    justify-content: center;
-    align-items: center; */
+    height: 150px;
+
+    @media(min-width: 568px) {
+        display: flex;
+        height: 60px;
+    }
+
+    @media(min-width: 1024px) {
+        flex-direction: column;
+        height: 150px;
+    }
 `
 
-const Item = styled(({pushed, ...props}) => <Icon {...props} />)`
+const Item = styled.div`
     text-shadow: ${props => props.pushed ? '0px 0px 13px #00a1ff' : 'none'};
-    height: 100%;
+    height: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 
-    &.zoomer:active, &.zoomer:hover {
+    @media(min-width: 568px) {
+        padding: 1em;
+        height: 100%;
+    }
+
+    & i:active, & i:hover {
         text-shadow: 0px 0px 13px #00a1ff;
     }
 `
@@ -91,9 +122,19 @@ const Item = styled(({pushed, ...props}) => <Icon {...props} />)`
 class Canvas extends React.Component {
     constructor(props) {
         super(props)
+        let zoom;
+        if (window.innerWidth >= 1024) {
+            zoom = 1
+        }
+        else if (window.innerWidth >= 568) {
+            zoom = 0.7
+        }
+        else {
+            zoom = 0.5
+        }
 
         this.state = {
-            zoom: 0.5,
+            zoom: zoom,
             opacity: 0
         }
 
@@ -138,32 +179,34 @@ class Canvas extends React.Component {
                     })}
                 </SCanvas>
                 <Buttons columns="3" textAlign="center" padded={true}>
-                    <Row>
-                        <Column onClick={() => (this.state.zoom < 1 ? this.setState({ zoom: this.state.zoom + 0.1 }) : false)}>
-                            <Item className="zoomer" name="zoom-in" size="big" />
-                        </Column>
-                        <Column onClick={() => this.setState({ opacity: 1 })}>
-                            <Item name="eye" size="big" pushed={this.state.opacity} />
-                        </Column>
-                        <Column>
-                            <Item name="plus" size="big" />
-                        </Column>
-                    </Row>
-                    <Row>
-                        <Column onClick={() => (this.state.zoom > 0.1 ? this.setState({ zoom: this.state.zoom - 0.1 }) : false)}>
-                            <Item className="zoomer" name="zoom-out" size="big" />
-                        </Column>
-                        <Column onClick={() => this.setState({ opacity: 0 })}>
-                            <Item name="eye slash" size="big" pushed={!this.state.opacity} />
-                        </Column>
-                        <Column>
+                    <Column>
+                        <Item onClick={() => (this.state.zoom < 1 ? this.setState({ zoom: this.state.zoom + 0.1 }) : false)}>
+                            <Icon className="zoomer" name="zoom-in" size="big" />
+                        </Item>
+                        <Item onClick={() => (this.state.zoom > 0.1 ? this.setState({ zoom: this.state.zoom - 0.1 }) : false)}>
+                            <Icon className="zoomer" name="zoom-out" size="big" />
+                        </Item>
+                    </Column>
+                    <Column>
+                        <Item pushed={this.state.opacity} onClick={() => this.setState({ opacity: 1 })}>
+                            <Icon name="eye" size="big" />
+                        </Item>
+                        <Item pushed={!this.state.opacity} onClick={() => this.setState({ opacity: 0 })}>
+                            <Icon name="eye slash" size="big" />
+                        </Item>
+                    </Column>
+                    <Column>
+                        <Item>
+                            <Icon name="plus" size="big" />
+                        </Item>
+                        <Item>
                             <Upload>
                                 <div>
-                                    <Item name="upload" size="big" />
+                                    <Icon name="upload" size="big" />
                                 </div>
                             </Upload>
-                        </Column>
-                    </Row>
+                        </Item>
+                    </Column>
                 </Buttons>
             </>
         )

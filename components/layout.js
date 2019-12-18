@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import Head from 'next/head'
 import styled from 'styled-components'
 
@@ -8,19 +8,35 @@ const Main = styled.main`
     height: calc(100vh - 66px);
 `
 
-const Layout = ({ children }) => (
-    <>
-        <Head>
-            <title>Home</title>
-            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css" />
-            <link rel='icon' href='/favicon.ico' />
-        </Head>
+class Layout extends React.Component {
+    constructor(props) {
+        super(props)
 
-        <Nav />
-        <Main>
-            {children}
-        </Main>
-    </>
-)
+        this.state = {
+            title: ''
+        }
+    }
+
+    setTitle = (title) => {
+        this.setState({ title })
+    }
+
+    render () {
+        return (
+            <>
+                <Head>
+                    <title>{this.state.title}</title>
+                    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css" />
+                    <link rel='icon' href='/favicon.ico' />
+                </Head>
+
+                <Nav setTitle={this.setTitle} title={this.state.title} />
+                <Main>
+                    {this.props.children}
+                </Main>
+            </>
+        )
+    }
+}
 
 export default Layout
