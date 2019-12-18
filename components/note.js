@@ -8,12 +8,22 @@ import createHighlightPlugin from './plugins/highlightPlugin'
 //import PNotify from 'pnotify/dist/es/PNotify'
 //import PNotifyButtons from 'pnotify/dist/es/PNotifyButtons'
 
+const Header = styled(Modal.Header)`
+    @media(min-width: 1024px) {
+        font-size: 30px !important;
+    }
+`
+
 const EditorContainer = styled.div`
     border: ${props => props.edit ? '1px solid #cdcdcd' : 'none'};
     border-radius: 5px;
     margin-top: ${props => props.edit ? '1em' : 0};
     padding: ${props => props.edit ? '1em' : 0};
     height: ${props => props.edit ? '50vh' : 'auto'};
+
+    @media(min-width: 1024px) {
+        font-size: 22px;
+    }
 
     & > div {
         height: 100%;
@@ -112,12 +122,12 @@ const Note = (props) => {
             closeOnDimmerClick={edit ? false : true}
             closeIcon={edit ? false : true}
         >
-            <Modal.Header>
+            <Header>
                 {edit ?
                     <Form.Input value={title} onChange={({ target }) => setTitle(target.value)} />
                     : title
                 }
-            </Modal.Header>
+            </Header>
             <Modal.Content>
                 <Modal.Description>
                     {edit ?
