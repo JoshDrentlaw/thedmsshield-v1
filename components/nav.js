@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 import window from 'global'
 
@@ -7,15 +7,19 @@ import { Dropdown, Menu } from 'semantic-ui-react'
 
 const Nav = (props) => {
     let path;
-    if (typeof window !== 'undefined') {
-        if (window.location.pathname === '/') {
-            path = 'home'
-        }
-        else {
-            path = window.location.pathname
-        }
-    }
     const [active, setActive] = useState(path);
+    const [dropItem, setDropItem] = useState(false);
+
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            if (window.location.pathname === '/') {
+                path = 'home'
+            }
+            else {
+                path = window.location.pathname
+            }
+        }
+    })
 
     return (
         <Menu size='massive' as="nav">
@@ -36,6 +40,7 @@ const Nav = (props) => {
                             text="Raimica Map"
                             onClick={() => {
                                 setActive('/maps/raimica-map')
+                                setDropItem(true)
                                 props.setTitle('Raimica Map')
                             }}
                             active={active === '/maps/raimica-map'}

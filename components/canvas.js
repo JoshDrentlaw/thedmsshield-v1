@@ -1,7 +1,7 @@
-import React from 'react'
+import React, { useState } from 'react'
 import styled from 'styled-components'
 import window from 'global'
-import { Icon, Grid, Button } from 'semantic-ui-react'
+import { Icon, Menu, Segment, Sidebar } from 'semantic-ui-react'
 
 import Note from './note'
 import Upload from './upload'
@@ -16,12 +16,13 @@ const SCanvas = styled.div`
     overflow: ${props => props.show ? 'hidden' : 'scroll'};
     position: relative;
     background-color: black;
+    margin-top: -1rem;
     margin-bottom: 0.75em;
 
     @media(min-width: 568px) {
-        width: 100%;
+        width: calc(100% - 65px);
         height: calc(100vh - 53.41px);
-        margin: -14px 0 0;
+        margin: -14px 0 0 65px;
     }
 
     ::-webkit-scrollbar {
@@ -70,20 +71,13 @@ const Buttons = styled.div`
     flex-direction: row;
 
     @media(min-width: 568px) {
-        position: fixed;
-        top: 60px;
-        left: 8px;
-        background-color: beige;
-        opacity: 0.2;
-        transition: opacity 0.2s ease-in;
-
-        &:hover {
-            opacity: 1;
-        }
-    }
-
-    @media(min-width: 1024px) {
         flex-direction: column;
+        position: fixed;
+        top: 53px;
+        left: 0px;
+        width: 65px;
+        background-color: black;
+        color: white;
     }
 `
 
@@ -103,7 +97,7 @@ const Column = styled.div`
 `
 
 const Item = styled.div`
-    text-shadow: ${props => props.pushed ? '0px 0px 13px #00a1ff' : 'none'};
+    color: ${props => props.pushed ? '#00a1ff' : 'white'};
     height: 50%;
     display: flex;
     justify-content: center;
@@ -115,13 +109,23 @@ const Item = styled.div`
     }
 
     & i:active, & i:hover {
-        text-shadow: 0px 0px 13px #00a1ff;
+        color: #00a1ff;
     }
 `
 
 class Canvas extends React.Component {
     constructor(props) {
         super(props)
+
+        this.state = {
+            zoom: 0.5,
+            opacity: 0
+        }
+
+        this.image = React.createRef();
+    }
+
+    componentDidMount() {
         let zoom;
         if (window.innerWidth >= 1024) {
             zoom = 1
@@ -132,17 +136,6 @@ class Canvas extends React.Component {
         else {
             zoom = 0.5
         }
-
-        this.state = {
-            zoom: zoom,
-            opacity: 0
-        }
-
-        this.image = React.createRef();
-    }
-
-    componentDidMount() {
-        const zoom = parseFloat(window.getComputedStyle(this.image.current).zoom)
         this.setState({ zoom })
     }
 

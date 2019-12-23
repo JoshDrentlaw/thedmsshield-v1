@@ -5,7 +5,8 @@ import styled from 'styled-components'
 import Nav from './nav'
 
 const Main = styled.main`
-    height: calc(100vh - 66px);
+    height: calc(100vh - 53px);
+    background-color: ${props => props.bg ? props.bg : 'white'};
 `
 
 class Layout extends React.Component {
@@ -31,7 +32,7 @@ class Layout extends React.Component {
                 </Head>
 
                 <Nav setTitle={this.setTitle} title={this.state.title} />
-                <Main>
+                <Main bg={this.props.bg}>
                     {this.props.children}
                 </Main>
             </>
