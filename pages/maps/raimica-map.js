@@ -2,13 +2,14 @@ import React from 'react'
 import { Header } from 'semantic-ui-react'
 import styled from 'styled-components'
 import fetch from 'isomorphic-unfetch'
+import window from 'global'
 
 import Layout from '../../components/layout'
 import Canvas from '../../components/canvas'
 
 const Container = styled.section`
     height: 100%;
-    width: 90%;
+    width: 100%;
     margin: 0 auto;
 
     @media(min-width: 568px) {
@@ -19,7 +20,7 @@ const Container = styled.section`
 
 const RaimicaMap = (props) => {
     return (
-        <Layout>
+        <Layout bg="black">
             <Container>
                 <Canvas markers={props.markers} />
             </Container>
