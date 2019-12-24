@@ -2,8 +2,9 @@ import React, { useState, useRef } from 'react'
 import styled from 'styled-components'
 import fetch from 'isomorphic-unfetch'
 import { Button, Form, Icon, Modal, Loader } from 'semantic-ui-react'
-import { EditorState, RichUtils, ContentState, convertToRaw, convertFromRaw, convertFromHTML } from 'draft-js'
+import { EditorState, RichUtils, convertToRaw, convertFromRaw } from 'draft-js'
 import Editor from 'draft-js-plugins-editor'
+import 'draft-js/dist/Draft.css'
 import createHighlightPlugin from './plugins/highlightPlugin'
 //import PNotify from 'pnotify/dist/es/PNotify'
 //import PNotifyButtons from 'pnotify/dist/es/PNotifyButtons'
@@ -53,6 +54,8 @@ const Note = (props) => {
         hightlightPlugin,
     ]
 
+    const editor = useRef(null)
+
     const saveNote = () => {
         const url = process.env.URL + props._id
         if (title !== props.title || body !== props.body) {
@@ -89,7 +92,14 @@ const Note = (props) => {
     }
 
     const onChange = (editorState) => {
-        setEditorState(editorState)
+        window.onbeforeunload = () => "Your work will be lost!"
+        switch (active) {
+            case 'BOLD':
+                RichUtils.toggleInlineStyle(editorState, active)
+                break;
+            default:
+                setEditorState(editorState)
+        }
         const content = editorState.getCurrentContent()
         const raw = JSON.stringify(convertToRaw(content))
         setBody(raw)
@@ -106,7 +116,7 @@ const Note = (props) => {
     }
 
     const buttonCommand = (command) => {
-        onChange(RichUtils.toggleInlineStyle(editorState, command));
+        editor.current.focus()
         if (active === command) {
             setActive(null);
         }
@@ -147,13 +157,13 @@ const Note = (props) => {
                                 </Button>
                             </Button.Group>{' '}
                             <Button.Group>
-                                <Button icon toggle active={active === 'BOLD' ? true : false} onClick={() => buttonCommand('BOLD')}>
+                                <Button icon toggle active={active === 'BOLD'} onClick={() => buttonCommand('BOLD')}>
                                     <Icon name='bold' />
                                 </Button>
-                                <Button icon toggle active={active === 'UNDERLINE' ? true : false} onClick={() => buttonCommand('UNDERLINE')}>
+                                <Button icon toggle active={active === 'UNDERLINE'} onClick={() => buttonCommand('UNDERLINE')}>
                                     <Icon name='underline' />
                                 </Button>
-                                <Button icon toggle active={active === 'ITALIC' ? true : false} onClick={() => buttonCommand('ITALIC')}>
+                                <Button icon toggle active={active === 'ITALIC'} onClick={() => buttonCommand('ITALIC')}>
                                     <Icon name='italic' />
                                 </Button>
                             </Button.Group>
@@ -162,11 +172,12 @@ const Note = (props) => {
                     }
                     <EditorContainer edit={edit}>
                         <Editor
+                            ref={editor}
                             editorState={editorState}
                             onChange={onChange}
                             handleKeyCommand={handleKeyCommand}
                             plugins={plugins}
-                            readOnly={edit ? false : true}
+                            readOnly={!edit}
                         />
                     </EditorContainer>
                 </Modal.Description>
