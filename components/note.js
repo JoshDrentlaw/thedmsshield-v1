@@ -21,6 +21,8 @@ const EditorContainer = styled.div`
     margin-top: ${props => props.edit ? '1em' : 0};
     padding: ${props => props.edit ? '1em' : 0};
     height: ${props => props.edit ? '50vh' : 'auto'};
+    max-height: 60vh;
+    overflow-y: scroll;
 
     @media(min-width: 1024px) {
         font-size: 22px;
