@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
 import window from 'global'
-import interact from 'interactjs'
+//import interact from 'interactjs'
 import { Icon, Menu, Segment, Sidebar } from 'semantic-ui-react'
 
 import Note from './note'
