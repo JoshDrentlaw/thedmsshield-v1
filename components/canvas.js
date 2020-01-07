@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
 import window from 'global'
+import interact from 'interactjs'
 import { Icon, Menu, Segment, Sidebar } from 'semantic-ui-react'
 
 import Note from './note'
@@ -18,6 +19,7 @@ const SCanvas = styled.div`
     background-color: black;
     margin-top: -1rem;
     margin-bottom: 0.75em;
+    user-select: none;
 
     @media(min-width: 568px) {
         width: calc(100% - 65px);
@@ -52,18 +54,24 @@ const Img = styled.img`
 `
 
 const Marker = styled.div.attrs(props => ({
-    x: props.left - (props.radius / 2),
-    y: props.top - (props.radius / 2)
+    x: props.left - (props.width / 2),
+    y: props.top - (props.height / 2)
 }))`
     top: ${props => props.y}px;
     left: ${props => props.x}px;
-    width: ${props => props.radius}px;
-    height: ${props => props.radius}px;
+    width: ${props => props.width || 50}px;
+    height: ${props => props.height || 50}px;
     border-radius: 999999px;
     background-color: black;
     position: absolute;
     transition: opacity 300ms cubic-bezier(.18,.03,.83,.95);
     opacity: ${props => props.opacity};
+    touch-action: none;
+    user-select: none;
+
+    &:hover {
+        cursor: pointer;
+    }
 `
 
 const Buttons = styled.div`
@@ -87,10 +95,6 @@ const Column = styled.div`
 
     @media(min-width: 568px) {
         display: flex;
-        height: 60px;
-    }
-
-    @media(min-width: 1024px) {
         flex-direction: column;
         height: 150px;
     }
@@ -123,6 +127,7 @@ class Canvas extends React.Component {
         }
 
         this.image = React.createRef();
+        this.marker = React.createRef();
     }
 
     componentDidMount() {
@@ -137,6 +142,42 @@ class Canvas extends React.Component {
             zoom = 0.5
         }
         this.setState({ zoom })
+
+        let self = this
+        interact('.marker')
+            .draggable({
+                inertia: false,
+                modifiers: [
+                    interact.modifiers.restrictRect({
+                        restriction: 'parent',
+                        endOnly: true
+                    })
+                ],
+                autoScroll: true,
+                onmove: function(event) {
+                    console.log(event)
+                    const { target, dx, dy } = event
+                    // keep the dragged position in the x/y attributes
+                    var x = (parseFloat(target.getAttribute('x')) || 0) + dx
+                    var y = (parseFloat(target.getAttribute('y')) || 0) + dy
+                    console.log({x, y, dx, dy})
+                    console.log('translate x:', (x + (50 / 2)) * self.state.zoom)
+                    console.log('translate y:', (y + (50 / 2)) * self.state.zoom)
+                    // translate the element
+                    target.style.transform =
+                        `translate(
+                            ${((x + (50 / 2)) * self.state.zoom)}px,
+                            ${((y + (50 / 2)) * self.state.zoom)}px
+                        )`
+
+                    // update the posiion attributes
+                    target.setAttribute('x', x)
+                    target.setAttribute('y', y)
+                },
+                onend: function(e) {
+                    console.log(e)
+                }
+            })
     }
 
     zoomIn = () => {
@@ -163,8 +204,12 @@ class Canvas extends React.Component {
                                 <Marker
                                     top={marker.top * this.state.zoom}
                                     left={marker.left * this.state.zoom}
-                                    radius={50 * this.state.zoom}
+                                    width={(marker.width ? marker.width : 50) * this.state.zoom}
+                                    height={(marker.height ? marker.height : 50) * this.state.zoom}
                                     opacity={this.state.opacity}
+                                    onMouseDown={this.handleDrag}
+                                    ref={this.marker}
+                                    className="marker"
                                 />
                             </Note>
 
@@ -181,7 +226,7 @@ class Canvas extends React.Component {
                         </Item>
                     </Column>
                     <Column>
-                        <Item pushed={this.state.opacity} onClick={() => this.setState({ opacity: 1 })}>
+                        <Item pushed={this.state.opacity} onClick={() => this.setState({ opacity: 0.6 })}>
                             <Icon name="eye" size="big" />
                         </Item>
                         <Item pushed={!this.state.opacity} onClick={() => this.setState({ opacity: 0 })}>
