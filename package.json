@@ -27,6 +27,7 @@
     "express": "^4.17.1",
     "express-fileupload": "^1.1.6",
     "global": "^4.4.0",
+    "interactjs": "^1.7.3",
     "isomorphic-unfetch": "^3.0.0",
     "markdown-it": "^10.0.0",
     "micro-cors": "^0.1.1",
