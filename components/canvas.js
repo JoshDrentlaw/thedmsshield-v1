@@ -143,7 +143,7 @@ class Canvas extends React.Component {
         }
         this.setState({ zoom })
 
-        let self = this
+        /* let self = this
         interact('.marker')
             .draggable({
                 inertia: false,
@@ -177,7 +177,7 @@ class Canvas extends React.Component {
                 onend: function(e) {
                     console.log(e)
                 }
-            })
+            }) */
     }
 
     zoomIn = () => {
