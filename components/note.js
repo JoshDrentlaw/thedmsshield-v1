@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import styled from 'styled-components'
 import fetch from 'isomorphic-unfetch'
 import { Button, Form, Icon, Modal, Loader } from 'semantic-ui-react'
@@ -23,6 +23,12 @@ const Note = (props) => {
     const [loading, setLoading] = useState(false);
     const content = convertFromRaw(JSON.parse(body))
     const [editorState, setEditorState] = useState(EditorState.createWithContent(content)) //.createEmpty()
+
+    const editor = useRef(null)
+
+    useEffect(() => {
+        window.onbeforeunload = editNote ? () => "Your work will be lost!" : undefined
+    }, [editNote])
 
     const saveNote = () => {
         const url = process.env.URL + props._id
@@ -60,7 +66,6 @@ const Note = (props) => {
     }
 
     const onChange = (editorState) => {
-        window.onbeforeunload = () => "Your work will be lost!"
         switch (active) {
             case 'BOLD':
                 RichUtils.toggleInlineStyle(editorState, active)
@@ -109,6 +114,7 @@ const Note = (props) => {
             <Modal.Content>
                 <Modal.Description>
                     <NoteEditor
+                        editor={editor}
                         editNote={editNote}
                         onChange={onChange}
                         handleKeyCommand={handleKeyCommand}
