@@ -1,13 +1,12 @@
-import React, { useState, useRef } from 'react'
+import React, { useState } from 'react'
 import styled from 'styled-components'
 import fetch from 'isomorphic-unfetch'
 import { Button, Form, Icon, Modal, Loader } from 'semantic-ui-react'
 import { EditorState, RichUtils, convertToRaw, convertFromRaw } from 'draft-js'
-import Editor from 'draft-js-plugins-editor'
-import 'draft-js/dist/Draft.css'
-import createHighlightPlugin from './plugins/highlightPlugin'
 //import PNotify from 'pnotify/dist/es/PNotify'
 //import PNotifyButtons from 'pnotify/dist/es/PNotifyButtons'
+
+import NoteEditor from './editor'
 
 const Header = styled(Modal.Header)`
     @media(min-width: 1024px) {
@@ -15,48 +14,15 @@ const Header = styled(Modal.Header)`
     }
 `
 
-const EditorContainer = styled.div`
-    border: ${props => props.edit ? '1px solid #cdcdcd' : 'none'};
-    border-radius: 5px;
-    margin-top: ${props => props.edit ? '1em' : 0};
-    padding: ${props => props.edit ? '1em' : 0};
-    height: ${props => props.edit ? '50vh' : 'auto'};
-    max-height: 60vh;
-    overflow-y: scroll;
-
-    @media(min-width: 1024px) {
-        font-size: 22px;
-    }
-
-    & > div {
-        height: 100%;
-
-        & > div {
-            height: 100%;
-
-            & > div {
-                height: 100%;
-            }
-        }
-    }
-`
-
 const Note = (props) => {
-    const [edit, setEdit] = useState(false);
+    const [editNote, setEditNote] = useState(false);
+    const [editMarker, setEditMarker] = useState(false);
     const [active, setActive] = useState();
     const [title, setTitle] = useState(props.title);
     const [body, setBody] = useState(props.body);
     const [loading, setLoading] = useState(false);
-
     const content = convertFromRaw(JSON.parse(body))
     const [editorState, setEditorState] = useState(EditorState.createWithContent(content)) //.createEmpty()
-
-    const hightlightPlugin = createHighlightPlugin()
-    let plugins = [
-        hightlightPlugin,
-    ]
-
-    const editor = useRef(null)
 
     const saveNote = () => {
         const url = process.env.URL + props._id
@@ -74,7 +40,7 @@ const Note = (props) => {
                 console.log(res)
                 const { status } = res
                 if (status === 200) {
-                    setEdit(!edit)
+                    setEditNote(!editNote)
                     setLoading(false)
                     /* PNotify.success({
                         title: "Success!",
@@ -89,7 +55,7 @@ const Note = (props) => {
             })
         }
         else {
-            setEdit(!edit)
+            setEditNote(!editNote)
         }
     }
 
@@ -130,58 +96,26 @@ const Note = (props) => {
     return (
         <Modal
             trigger={props.children}
-            closeOnEscape={edit ? false : true}
-            closeOnDimmerClick={edit ? false : true}
-            closeIcon={edit ? false : true}
+            closeOnEscape={editNote ? false : true}
+            closeOnDimmerClick={editNote ? false : true}
+            closeIcon={editNote ? false : true}
         >
             <Header>
-                {edit ?
+                {editNote ?
                     <Form.Input value={title} onChange={({ target }) => setTitle(target.value)} />
                     : title
                 }
             </Header>
             <Modal.Content>
                 <Modal.Description>
-                    {edit ?
-                        <>
-                            <Button.Group>
-                                <Button icon>
-                                    <Icon name='align left' />
-                                </Button>
-                                <Button icon>
-                                    <Icon name='align center' />
-                                </Button>
-                                <Button icon>
-                                    <Icon name='align right' />
-                                </Button>
-                                <Button icon>
-                                    <Icon name='align justify' />
-                                </Button>
-                            </Button.Group>{' '}
-                            <Button.Group>
-                                <Button icon toggle active={active === 'BOLD'} onClick={() => buttonCommand('BOLD')}>
-                                    <Icon name='bold' />
-                                </Button>
-                                <Button icon toggle active={active === 'UNDERLINE'} onClick={() => buttonCommand('UNDERLINE')}>
-                                    <Icon name='underline' />
-                                </Button>
-                                <Button icon toggle active={active === 'ITALIC'} onClick={() => buttonCommand('ITALIC')}>
-                                    <Icon name='italic' />
-                                </Button>
-                            </Button.Group>
-                        </>
-                        : null
-                    }
-                    <EditorContainer edit={edit}>
-                        <Editor
-                            ref={editor}
-                            editorState={editorState}
-                            onChange={onChange}
-                            handleKeyCommand={handleKeyCommand}
-                            plugins={plugins}
-                            readOnly={!edit}
-                        />
-                    </EditorContainer>
+                    <NoteEditor
+                        editNote={editNote}
+                        onChange={onChange}
+                        handleKeyCommand={handleKeyCommand}
+                        buttonCommand={buttonCommand}
+                        active={active}
+                        editorState={editorState}
+                    />
                 </Modal.Description>
             </Modal.Content>
             <Modal.Actions>
@@ -189,9 +123,18 @@ const Note = (props) => {
                         loading ?
                             <Loader />
                             :
+                            (<Button color="blue" onClick={() => setEditMarker(!editMarker)}>
+                                <Icon name={editMarker ? "save" : "target"} />
+                                {editMarker ? "Save" : "Edit Marker"}
+                            </Button>)
+                    }
+                    {
+                        loading ?
+                            <Loader />
+                            :
                             (<Button color="blue" onClick={() => saveNote()}>
-                                <Icon name={edit ? "save" : "edit"} />
-                                {edit ? "Save" : "Edit"}
+                                <Icon name={editNote ? "save" : "edit"} />
+                                {editNote ? "Save" : "Edit Note"}
                             </Button>)
                     }
             </Modal.Actions>
