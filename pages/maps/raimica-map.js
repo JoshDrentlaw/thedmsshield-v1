@@ -8,8 +8,8 @@ import Layout from '../../components/layout'
 import Canvas from '../../components/canvas'
 
 const Container = styled.section`
-    height: 100%;
     width: 100%;
+    height: calc(100vh - 97.406px);
     margin: 0 auto;
 
     @media(min-width: 568px) {

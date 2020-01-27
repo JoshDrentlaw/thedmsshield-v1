@@ -9,7 +9,7 @@ import Upload from './upload'
 
 const SCanvas = styled.div`
     width: 100%;
-    height: calc(75% - 34px);
+    height: calc(100vh - 100.406px);
     border-top: 7px solid black;
     border-left: 7px solid black;
     border-bottom: 2px solid black;
@@ -17,14 +17,10 @@ const SCanvas = styled.div`
     overflow: ${props => props.show ? 'hidden' : 'scroll'};
     position: relative;
     background-color: black;
-    margin-top: -1rem;
-    margin-bottom: 0.75em;
     user-select: none;
 
     @media(min-width: 568px) {
-        width: calc(100% - 65px);
-        height: calc(100vh - 53.41px);
-        margin: -14px 0 0 65px;
+        width: 100%;
     }
 
     ::-webkit-scrollbar {
@@ -53,38 +49,14 @@ const Img = styled.img`
     zoom: ${props => props.zoom};
 `
 
-const Marker = styled.div.attrs(props => ({
-    x: props.left - (props.width / 2),
-    y: props.top - (props.height / 2)
-}))`
-    top: ${props => props.y}px;
-    left: ${props => props.x}px;
-    width: ${props => props.width || 50}px;
-    height: ${props => props.height || 50}px;
-    border-radius: 999999px;
-    background-color: black;
-    position: absolute;
-    transition: opacity 300ms cubic-bezier(.18,.03,.83,.95);
-    opacity: ${props => props.opacity};
-    touch-action: none;
-    user-select: none;
-
-    &:hover {
-        cursor: pointer;
-    }
-`
-
 const Buttons = styled.div`
     display: flex;
     flex-direction: row;
+    background-color: #171717;
 
     @media(min-width: 568px) {
         flex-direction: column;
-        position: fixed;
-        top: 53px;
-        left: 0px;
         width: 65px;
-        background-color: black;
         color: white;
     }
 `
@@ -123,7 +95,8 @@ class Canvas extends React.Component {
 
         this.state = {
             zoom: 0.5,
-            opacity: 0
+            opacity: 0,
+            visible: false
         }
 
         this.image = React.createRef();
@@ -182,70 +155,87 @@ class Canvas extends React.Component {
 
     zoomIn = () => {
         if (this.state.zoom < 1) {
-            this.setState({ zoom: this.state.zoom + 0.1 })
+            this.setState({ zoom: parseFloat((this.state.zoom + 0.1).toFixed(1)) })
 
         }
     }
 
     zoomOut = () => {
         if (this.state.zoom > 0.1) {
-            this.setState({ zoom: this.state.zoom - 0.1 })
+            this.setState({ zoom: parseFloat((this.state.zoom - 0.1).toFixed(1)) })
         }
     }
 
     render() {
         return (
             <>
-                <SCanvas show={this.state.show}>
-                    <Img ref={this.image} zoom={this.state.zoom} id="map" src="/raimica_map.jpg" />
-                    {this.props.markers.map(marker => {
-                        return (
-                            <Note key={marker._id} title={marker.note_title} body={marker.note_body} _id={marker._id}>
-                                <Marker
-                                    top={marker.top * this.state.zoom}
-                                    left={marker.left * this.state.zoom}
-                                    width={(marker.width ? marker.width : 50) * this.state.zoom}
-                                    height={(marker.height ? marker.height : 50) * this.state.zoom}
-                                    opacity={this.state.opacity}
-                                    onMouseDown={this.handleDrag}
-                                    ref={this.marker}
-                                    className="marker"
-                                />
-                            </Note>
-
-                        )
-                    })}
-                </SCanvas>
-                <Buttons columns="3" textAlign="center" padded={true}>
-                    <Column>
-                        <Item onClick={() => (this.state.zoom < 1 ? this.setState({ zoom: this.state.zoom + 0.1 }) : false)}>
-                            <Icon className="zoomer" name="zoom-in" size="big" />
-                        </Item>
-                        <Item onClick={() => (this.state.zoom > 0.1 ? this.setState({ zoom: this.state.zoom - 0.1 }) : false)}>
-                            <Icon className="zoomer" name="zoom-out" size="big" />
-                        </Item>
-                    </Column>
-                    <Column>
-                        <Item pushed={this.state.opacity} onClick={() => this.setState({ opacity: 0.6 })}>
-                            <Icon name="eye" size="big" />
-                        </Item>
-                        <Item pushed={!this.state.opacity} onClick={() => this.setState({ opacity: 0 })}>
-                            <Icon name="eye slash" size="big" />
-                        </Item>
-                    </Column>
-                    <Column>
-                        <Item>
-                            <Icon name="plus" size="big" />
-                        </Item>
-                        <Item>
-                            <Upload>
-                                <div>
-                                    <Icon name="upload" size="big" />
-                                </div>
-                            </Upload>
-                        </Item>
-                    </Column>
-                </Buttons>
+                <Sidebar.Pushable as={Segment} style={{ margin: '-14px 0 0 !important',  overflow: 'hidden' }}>
+                    <Sidebar.Pusher>
+                        <SCanvas show={this.state.show}>
+                            <Img ref={this.image} zoom={this.state.zoom} id="map" src="/raimica_map.jpg" />
+                            {this.props.markers.map(marker => {
+                                return (
+                                    <Note
+                                        key={marker._id}
+                                        type={marker.type}
+                                        title={marker.note_title}
+                                        body={marker.note_body}
+                                        zoom={this.state.zoom}
+                                        top={marker.top * this.state.zoom}
+                                        left={marker.left * this.state.zoom}
+                                        width={(marker.width ? marker.width : 50) * this.state.zoom}
+                                        height={(marker.height ? marker.height : 50) * this.state.zoom}
+                                        _id={marker._id}
+                                        opacity={this.state.opacity}
+                                    />
+                                )
+                            })}
+                        </SCanvas>
+                    </Sidebar.Pusher>
+                    <Sidebar
+                        animation='overlay'
+                        direction={window.innerWidth > 568 ? 'bottom' : 'left'}
+                        onHide={() => this.setState({ visible: false })}
+                        visible={this.state.visible}
+                    >
+                        <Buttons columns="3" textAlign="center" padded={true}>
+                            <Column>
+                                <Item onClick={() => (this.state.zoom < 1 ? this.setState({ zoom: parseFloat((this.state.zoom + 0.1).toFixed(1)) }) : false)}>
+                                    <Icon className="zoomer" name="zoom-in" size="big" />
+                                </Item>
+                                <Item onClick={() => (this.state.zoom > 0.1 ? this.setState({ zoom: parseFloat((this.state.zoom - 0.1).toFixed(1)) }) : false)}>
+                                    <Icon className="zoomer" name="zoom-out" size="big" />
+                                </Item>
+                            </Column>
+                            <Column>
+                                <Item pushed={this.state.opacity} onClick={() => this.setState({ opacity: 0.6 })}>
+                                    <Icon name="eye" size="big" />
+                                </Item>
+                                <Item pushed={!this.state.opacity} onClick={() => this.setState({ opacity: 0 })}>
+                                    <Icon name="eye slash" size="big" />
+                                </Item>
+                            </Column>
+                            <Column>
+                                <Item>
+                                    <Icon name="plus" size="big" />
+                                </Item>
+                                <Item>
+                                    <Upload>
+                                        <div>
+                                            <Icon name="upload" size="big" />
+                                        </div>
+                                    </Upload>
+                                </Item>
+                            </Column>
+                        </Buttons>
+                    </Sidebar>
+                </Sidebar.Pushable>
+                <Menu as="nav" style={{ margin: '0px !important' }}>
+                    <Menu.Item
+                        name="Map Actions"
+                        onClick={() => this.setState({ visible: !this.state.visible })}
+                    />
+                </Menu>
             </>
         )
     }
