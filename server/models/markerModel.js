@@ -6,6 +6,7 @@ const markerModel = new schema({
     left: { type: Number },
     width: { type: Number },
     height: { type: Number },
+    type: { type: String },
     note_title: { type: String },
     note_body: { type: {} }
 })
