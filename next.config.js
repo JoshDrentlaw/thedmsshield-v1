@@ -16,12 +16,16 @@ module.exports = withPlugins(
             // Reference a variable that was defined in the .env file and make it available at Build Time
             ENDPOINT: process.env.ENDPOINT,
             URL: process.env.URL,
-            DEV: process.env.DEV
+            DEV: process.env.DEV,
+            PUSHER_KEY: process.env.PUSHER_KEY
         },
         cssLoaderOptions: {
             url: false
         },
         webpack(config, options) {
+            if (options.dev) {
+                config.output.crossOriginLoading = 'anonymous'
+            }
             return config
         }
     }

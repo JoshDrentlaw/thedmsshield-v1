@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { Header } from 'semantic-ui-react'
 import styled from 'styled-components'
 import fetch from 'isomorphic-unfetch'
@@ -19,6 +19,7 @@ const Container = styled.section`
 `
 
 const RaimicaMap = (props) => {
+
     return (
         <Layout bg="black">
             <Container>
