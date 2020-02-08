@@ -2,10 +2,12 @@ import React, { useState } from 'react'
 import styled from 'styled-components'
 import window from 'global'
 //import interact from 'interactjs'
-import { Icon, Menu, Segment, Sidebar } from 'semantic-ui-react'
+import { Icon, Menu, Segment, Sidebar, Popup } from 'semantic-ui-react'
+import Pusher from 'pusher-js'
 
 import Note from './note'
 import Upload from './upload'
+import MarkerEditor from './marker-editor'
 
 const SCanvas = styled.div`
     width: 100%;
@@ -21,6 +23,11 @@ const SCanvas = styled.div`
 
     @media(min-width: 568px) {
         width: 100%;
+
+        ::-webkit-scrollbar {
+            width: 15px;
+            height: 15px;
+        }
     }
 
     ::-webkit-scrollbar {
@@ -53,12 +60,6 @@ const Buttons = styled.div`
     display: flex;
     flex-direction: row;
     background-color: #171717;
-
-    @media(min-width: 568px) {
-        flex-direction: column;
-        width: 65px;
-        color: white;
-    }
 `
 
 const Column = styled.div`
@@ -67,8 +68,8 @@ const Column = styled.div`
 
     @media(min-width: 568px) {
         display: flex;
-        flex-direction: column;
-        height: 150px;
+        justify-content: space-evenly;
+        height: 75px;
     }
 `
 
@@ -78,6 +79,7 @@ const Item = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
+    cursor: pointer;
 
     @media(min-width: 568px) {
         padding: 1em;
@@ -89,11 +91,19 @@ const Item = styled.div`
     }
 `
 
+const pusher = new Pusher(process.env.PUSHER_KEY, {
+    cluster: 'us3',
+    forceTLS: true
+})
+
+const channel = pusher.subscribe('markerChannel')
+
 class Canvas extends React.Component {
     constructor(props) {
         super(props)
 
         this.state = {
+            markers: this.props.markers,
             zoom: 0.5,
             opacity: 0,
             visible: false
@@ -115,6 +125,10 @@ class Canvas extends React.Component {
             zoom = 0.5
         }
         this.setState({ zoom })
+
+        /* channel.bind('markerAdded', data => {
+            this.setState({ markers: [...this.state.markers, data]})
+        }) */
 
         /* let self = this
         interact('.marker')
@@ -153,17 +167,37 @@ class Canvas extends React.Component {
             }) */
     }
 
+    /* componentDidUpdate(prevProps, prevState) {
+        if (this.state.markers !== prevState.markers) {
+            
+        }
+    } */
+
     zoomIn = () => {
         if (this.state.zoom < 1) {
-            this.setState({ zoom: parseFloat((this.state.zoom + 0.1).toFixed(1)) })
+            this.setState({ zoom: parseFloat((this.state.zoom + 0.1)).toFixed(1) })
 
         }
     }
 
     zoomOut = () => {
         if (this.state.zoom > 0.1) {
-            this.setState({ zoom: parseFloat((this.state.zoom - 0.1).toFixed(1)) })
+            this.setState({ zoom: parseFloat((this.state.zoom - 0.1)).toFixed(1) })
         }
+    }
+
+    handleNewMarker = () => {
+        fetch('/api/markers/new', {
+            method: 'POST',
+            headers: { "Content-Type": "application/json" }
+        })
+            .then(res => {
+                return res.json()
+            })
+            .then(res => {
+                //res = JSON.parse(res)
+                this.setState({ markers: [...this.state.markers, res ] })
+            })
     }
 
     render() {
@@ -173,7 +207,7 @@ class Canvas extends React.Component {
                     <Sidebar.Pusher>
                         <SCanvas show={this.state.show}>
                             <Img ref={this.image} zoom={this.state.zoom} id="map" src="/raimica_map.jpg" />
-                            {this.props.markers.map(marker => {
+                            {this.state.markers.map(marker => {
                                 return (
                                     <Note
                                         key={marker._id}
@@ -181,10 +215,10 @@ class Canvas extends React.Component {
                                         title={marker.note_title}
                                         body={marker.note_body}
                                         zoom={this.state.zoom}
-                                        top={marker.top * this.state.zoom}
-                                        left={marker.left * this.state.zoom}
-                                        width={(marker.width ? marker.width : 50) * this.state.zoom}
-                                        height={(marker.height ? marker.height : 50) * this.state.zoom}
+                                        top={parseFloat((marker.top * this.state.zoom)).toFixed(2)}
+                                        left={parseFloat((marker.left * this.state.zoom)).toFixed(2)}
+                                        width={parseFloat(((marker.width ? marker.width : 50) * this.state.zoom)).toFixed(2)}
+                                        height={parseFloat(((marker.height ? marker.height : 50) * this.state.zoom)).toFixed(2)}
                                         _id={marker._id}
                                         opacity={this.state.opacity}
                                     />
@@ -200,10 +234,10 @@ class Canvas extends React.Component {
                     >
                         <Buttons columns="3" textAlign="center" padded={true}>
                             <Column>
-                                <Item onClick={() => (this.state.zoom < 1 ? this.setState({ zoom: parseFloat((this.state.zoom + 0.1).toFixed(1)) }) : false)}>
+                                <Item onClick={() => (this.state.zoom < 1 ? this.setState({ zoom: parseFloat((this.state.zoom + 0.1)).toFixed(1) }) : false)}>
                                     <Icon className="zoomer" name="zoom-in" size="big" />
                                 </Item>
-                                <Item onClick={() => (this.state.zoom > 0.1 ? this.setState({ zoom: parseFloat((this.state.zoom - 0.1).toFixed(1)) }) : false)}>
+                                <Item onClick={() => (this.state.zoom > 0.1 ? this.setState({ zoom: parseFloat((this.state.zoom - 0.1)).toFixed(1) }) : false)}>
                                     <Icon className="zoomer" name="zoom-out" size="big" />
                                 </Item>
                             </Column>
@@ -217,7 +251,7 @@ class Canvas extends React.Component {
                             </Column>
                             <Column>
                                 <Item>
-                                    <Icon name="plus" size="big" />
+                                    <Icon name="plus" size="big" onClick={() => this.handleNewMarker()} />
                                 </Item>
                                 <Item>
                                     <Upload>

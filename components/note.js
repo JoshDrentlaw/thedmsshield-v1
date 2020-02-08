@@ -4,8 +4,10 @@ import fetch from 'isomorphic-unfetch'
 import { Button, Form, Icon, Modal, Loader, Popup } from 'semantic-ui-react'
 import { EditorState, RichUtils, convertToRaw, convertFromRaw } from 'draft-js'
 import window from 'global'
-//import PNotify from 'pnotify/dist/es/PNotify'
-//import PNotifyButtons from 'pnotify/dist/es/PNotifyButtons'
+//import Pusher from 'pusher-js'
+import withPusher from 'react-pusher-hoc'
+/* import PNotify from 'pnotify/dist/es/PNotify'
+import PNotifyButtons from 'pnotify/dist/es/PNotifyButtons' */
 
 import NoteEditor from './note-editor'
 import MarkerEditor from './marker-editor'
@@ -32,13 +34,22 @@ const Marker = styled.div.attrs(props => ({
     box-shadow: ${props => props.shadow ? '0 0 0px 5px #039BE5' : 'none'};
     touch-action: none;
     user-select: none;
+    cursor: pointer;
 
     &:hover {
         cursor: pointer;
     }
 `
 
+/* const pusher = new Pusher(process.env.PUSHER_KEY, {
+    cluster: 'us3',
+    forceTLS: true
+});
+
+const channel = pusher.subscribe('marker-channel'); */
+
 const Note = (props) => {
+    const [mounted, setMounted] = useState(false)
     const [editNote, setEditNote] = useState(false);
     const [editMarker, setEditMarker] = useState(false)
     const [active, setActive] = useState();
@@ -51,6 +62,7 @@ const Note = (props) => {
     const [left, setLeft] = useState(props.left)
     const [width, setWidth] = useState(props.width)
     const [height, setHeight] = useState(props.height)
+    const [type, setType] = useState(props.type)
 
     const editor = useRef(null)
 
@@ -65,11 +77,35 @@ const Note = (props) => {
         setHeight(props.height)
     }, [props.top, props.left, props.width, props.height])
 
+    useEffect(() => {
+        if (!mounted) {
+            //receiveUpdateFromPusher()
+            setMounted(true)
+        }
+    }, [mounted])
+
+    const receiveUpdateFromPusher = () => {
+        channel.bind('markerUpdated', data => {
+            if (props._id === data.marker._id) {
+                console.log('correct marker', data.marker)
+                console.log('top:', top, 'props.top:', props.top, 'data.marker.top:', data.marker.top)
+                /* setTop(data.marker.top * props.zoom)
+                setLeft(data.marker.left * props.zoom)
+                setWidth(data.marker.width * props.zoom)
+                setHeight(data.marker.height * props.zoom)
+                setTitle(data.marker.note_title)
+                const content = convertFromRaw(JSON.parse(data.marker.note_body))
+                setEditorState(content)
+                setType(data.marker.type) */
+            }
+        });
+    }
+
     const saveNote = () => {
         const url = process.env.URL + props._id
         if (title !== props.title || body !== props.body) {
             setLoading(true)
-            fetch(`/api/markers/${props._id}`, {
+            fetch(`/api/markers/noteEditor/${props._id}`, {
                 method: 'PUT',
                 headers: {
                     'Accept': 'application/json',
@@ -139,25 +175,23 @@ const Note = (props) => {
                 <Popup
                     open
                     basic
-                    pinned
                     position="top center"
                     trigger={
                         <Marker
-                            data-id={props._id}
                             top={top}
                             left={left}
                             width={width}
                             height={height}
                             opacity={0.6}
                             shadow={true}
-                            //ref={this.marker}
                             className="marker"
                         />
                     }
                     content={<MarkerEditor
                         editMarker={editMarker}
                         setEditMarker={setEditMarker}
-                        type={props.type}
+                        type={type}
+                        setType={setType}
                         top={top}
                         setTop={setTop}
                         left={left}
@@ -175,10 +209,10 @@ const Note = (props) => {
                     trigger={
                         <Marker
                             data-id={props._id}
-                            top={props.top}
-                            left={props.left}
-                            width={props.width}
-                            height={props.height}
+                            top={top}
+                            left={left}
+                            width={width}
+                            height={height}
                             opacity={props.opacity}
                             //ref={this.marker}
                             className="marker"
@@ -233,4 +267,4 @@ const Note = (props) => {
     )
 }
 
-export default Note;
+export default Note

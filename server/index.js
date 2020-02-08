@@ -3,6 +3,7 @@ const express = require('express')
 const next = require('next')
 const bodyParser = require('body-parser')
 const fileUpload = require('express-fileupload')
+const Pusher = require('pusher')
 
 const PORT = process.env.PORT || 3000
 const dev = process.env.DEV !== 'production' //true false
@@ -22,6 +23,15 @@ nextApp.prepare().then(() => {
     app.use(fileUpload());
 
     console.log('loaded middleware');
+
+    var pusher = new Pusher({
+        appId: '940826',
+        key: '830e71168fc6cf18d014',
+        secret: 'a2e77b2e4ac20b31f540',
+        cluster: 'us3',
+        encrypted: true
+    });
+    module.exports = pusher
 
     app.use('/api/markers', require('./routes/api'));
     console.log('loaded marker routes')

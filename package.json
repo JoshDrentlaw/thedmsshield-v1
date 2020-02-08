@@ -10,7 +10,7 @@
     "node": "node server/index.js",
     "build": "next build",
     "local": "cross-env DEV=production node server/index.js",
-    "start": "pm2 start server/index.js",
+    "start": "pm2 start server/index.js --watch",
     "prod": "npm run build && npm run start",
     "rebuild": "git pull && next build"
   },
@@ -36,13 +36,17 @@
     "next-compose-plugins": "^2.2.0",
     "next-react-svg": "1.1.0",
     "pnotify": "^4.0.0",
+    "pusher": "^3.0.0",
+    "pusher-js": "^5.0.3",
     "react": "^16.11.0",
     "react-dom": "16.11.0",
     "react-markdown-editor-lite": "^0.5.0",
+    "react-pusher-hoc": "^1.0.5",
     "react-spring": "^8.0.27",
     "semantic-ui-css": "^2.4.1",
     "semantic-ui-react": "^0.88.1",
-    "styled-components": "^4.4.1"
+    "styled-components": "^4.4.1",
+    "uuid": "^3.4.0"
   },
   "devDependencies": {
     "@fortawesome/fontawesome-free": "^5.11.2",
