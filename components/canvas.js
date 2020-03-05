@@ -175,14 +175,17 @@ class Canvas extends React.Component {
 
     zoomIn = () => {
         if (this.state.zoom < 1) {
-            this.setState({ zoom: parseFloat((this.state.zoom + 0.1)).toFixed(1) })
-
+            let newZoom = this.state.zoom + 0.1
+            newZoom.toFixed(1)
+            this.setState({ zoom: newZoom })
         }
     }
 
     zoomOut = () => {
         if (this.state.zoom > 0.1) {
-            this.setState({ zoom: parseFloat((this.state.zoom - 0.1)).toFixed(1) })
+            let newZoom = this.state.zoom - 0.1
+            newZoom.toFixed(1)
+            this.setState({ zoom: newZoom })
         }
     }
 
@@ -234,10 +237,14 @@ class Canvas extends React.Component {
                     >
                         <Buttons columns="3" textAlign="center" padded={true}>
                             <Column>
-                                <Item onClick={() => (this.state.zoom < 1 ? this.setState({ zoom: parseFloat((this.state.zoom + 0.1)).toFixed(1) }) : false)}>
+                                <Item
+                                    onClick={this.zoomIn}
+                                >
                                     <Icon className="zoomer" name="zoom-in" size="big" />
                                 </Item>
-                                <Item onClick={() => (this.state.zoom > 0.1 ? this.setState({ zoom: parseFloat((this.state.zoom - 0.1)).toFixed(1) }) : false)}>
+                                <Item
+                                    onClick={this.zoomOut}
+                                >
                                     <Icon className="zoomer" name="zoom-out" size="big" />
                                 </Item>
                             </Column>

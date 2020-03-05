@@ -3,6 +3,7 @@ import styled from 'styled-components'
 import { Form } from 'semantic-ui-react'
 import Pusher from 'pusher-js'
 import withPusher from 'react-pusher-hoc'
+import window from 'global'
 //import pnotify from 'pnotify/dist/es/PNotify'
 //import PNotifyButtons from 'pnotify/dist/es/PNotifyButtons'
 
@@ -73,11 +74,26 @@ const MarkerEditor = (props) => {
         })
     }
 
+    const handleKeyUp = (event, setter) => {
+        event.persist()
+        console.log(event            )
+        const { key, ctrlKey, altKey, target: { value } } = event
+        const up = key === 'ArrowUp'
+        const down = key === 'ArrowDown'
+
+        console.log(!ctrlKey, !altKey, !up, !down)
+        if (!ctrlKey && !altKey && !up && !down) {
+            console.log(value)
+            setter(value)
+        }
+    }
+
     const handleKeyDown = (event, setter) => {
         event.persist()
         const { key, ctrlKey, shiftKey, altKey, target: { value } } = event
         const up = key === 'ArrowUp'
         const down = key === 'ArrowDown'
+        const backspace = key === 'Backspace'
         
         if (up && ctrlKey && shiftKey) {
             setter(parseFloat(value)+100)
@@ -147,7 +163,16 @@ const MarkerEditor = (props) => {
                         fluid
                         type="number"
                         value={props.width}
-                        onKeyDown={(event) => {handleKeyDown(event, props.setWidth);handleKeyDown(event, props.setHeight)}}//props.setWidth(parseFloat(value).toFixed(2));props.setHeight(parseFloat(value).toFixed(2))
+                        onChange={({target:{value}}) => {
+                            if (window.innerWidth <= 576) {
+                                props.setWidth(value)
+                                props.setHeight(value)
+                            }
+                        }}
+                        onKeyDown={(event) => {
+                            handleKeyDown(event, props.setWidth)
+                            handleKeyDown(event, props.setHeight)
+                        }}
                     />
                 </Form.Group>
             :
@@ -158,6 +183,11 @@ const MarkerEditor = (props) => {
                         fluid
                         type="number"
                         value={props.width}
+                        onChange={({target:{value}}) => {
+                            if (window.innerWidth <= 576) {
+                                props.setWidth(value)
+                            }
+                        }}
                         onKeyDown={(event) => handleKeyDown(event, props.setWidth)}
                     />
                     <Form.Input
@@ -166,6 +196,11 @@ const MarkerEditor = (props) => {
                         fluid
                         type="number"
                         value={props.height}
+                        onChange={({target:{value}}) => {
+                            if (window.innerWidth <= 576) {
+                                props.setHeight(value)
+                            }
+                        }}
                         onKeyDown={(event) => handleKeyDown(event, props.setHeight)}
                     />
                 </Form.Group>
@@ -177,6 +212,11 @@ const MarkerEditor = (props) => {
                     fluid
                     type="number"
                     value={props.left}
+                    onChange={({target:{value}}) => {
+                        if (window.innerWidth <= 576) {
+                            props.setLeft(value)
+                        }
+                    }}
                     onKeyDown={(event) => handleKeyDown(event, props.setLeft)}
                 />
                 <Form.Input
@@ -185,6 +225,11 @@ const MarkerEditor = (props) => {
                     fluid
                     type="number"
                     value={props.top}
+                    onChange={({target:{value}}) => {
+                        if (window.innerWidth <= 576) {
+                            props.setTop(value)
+                        }
+                    }}
                     onKeyDown={(event) => handleKeyDown(event, props.setTop)}
                 />
             </Form.Group>
