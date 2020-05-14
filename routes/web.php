@@ -13,6 +13,14 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', 'PagesController@index');
+
+Route::get('/cypher_roller', 'PagesController@cypher_roller');
+
+/* Route::get('/cypher-roller/{id}', function ($id) {
+    return view('pages.cypher-roller.'.$id);
+}); */
+
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');
