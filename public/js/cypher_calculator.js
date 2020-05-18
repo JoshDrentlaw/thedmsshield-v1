@@ -8,14 +8,14 @@ $(document).ready(function() {
     let bonus = 0
 
     function calcFinalDifficulty() {
-        let finalDifficulty = difficulty - (assets + skills + effort)
+        let finalDifficulty = difficulty - (assets + skills + effort + mods)
         if (finalDifficulty > 10) {
             finalDifficulty = 10
         }
         if (finalDifficulty < 0) {
             finalDifficulty = 0
         }
-        $('#final-difficulty').text(finalDifficulty)
+        $('#final-difficulty').text(finalDifficulty+'/'+(finalDifficulty*3))
     }
 
     function calcEffortCost() {
@@ -50,5 +50,15 @@ $(document).ready(function() {
     $('#edge-select').on('change', function() {
         edge = parseInt($(this).val())
         calcEffortCost()
+    })
+
+    $('.mod-checkbox').on('click', function() {
+        if ($(this).prop('checked')) {
+            mods += parseInt($(this).val())
+        }
+        else {
+            mods -= parseInt($(this).val())
+        }
+        calcFinalDifficulty()
     })
 })

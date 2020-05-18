@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', 'PagesController@index');
 
-Route::get('/cypher_roller', 'PagesController@cypher_roller');
+Route::get('/cypher_calculator', 'PagesController@cypher_calculator');
 
 /* Route::get('/cypher-roller/{id}', function ($id) {
     return view('pages.cypher-roller.'.$id);

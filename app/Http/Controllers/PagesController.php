@@ -11,7 +11,7 @@ class PagesController extends Controller
         return view('pages.index')->with(['title' => $title]);
     }
 
-    public function cypher_roller() {
-        return view('pages.cypher_roller');
+    public function cypher_calculator() {
+        return view('pages.cypher_calculator');
     }
 }

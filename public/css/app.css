@@ -10935,3 +10935,33 @@ a.text-dark:focus {
   }
 }
 
+.form-check {
+  height: auto;
+  font-size: x-large;
+}
+
+.mod-checkbox {
+  width: 35px;
+  height: 35px;
+}
+
+.form-check-label {
+  padding-left: 1em;
+}
+
+@media (min-width: 1024px) {
+  .form-check {
+    height: auto;
+    font-size: initial;
+  }
+
+  .mod-checkbox {
+    width: initial;
+    height: initial;
+  }
+
+  .form-check-label {
+    padding-left: 0;
+  }
+}
+
