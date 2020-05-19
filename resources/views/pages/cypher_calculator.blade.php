@@ -7,7 +7,7 @@
     <div id="form-container" class="border border-dark bg-danger mx-auto p-4 rounded">
         <form class="">
             <div class="row">
-                <div class="col-md-6">
+                <div class="col-md-6 order-0-md order-1">
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
@@ -68,7 +68,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-6 order-0 order-md-1">
                     <p class="display-4 text-center text-light">Difficulty</p>
                     <div class="row justify-content-center align-items-center">
                         <div class="col-sm-12 col-md-8">
