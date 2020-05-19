@@ -10938,6 +10938,11 @@ a.text-dark:focus {
 .form-check {
   height: auto;
   font-size: x-large;
+  margin: 0.5em 0 1em;
+}
+
+.checkbox-header {
+  margin-top: 1em;
 }
 
 .mod-checkbox {
@@ -10949,10 +10954,19 @@ a.text-dark:focus {
   padding-left: 1em;
 }
 
+#form-container {
+  width: 100%;
+}
+
 @media (min-width: 1024px) {
   .form-check {
     height: auto;
     font-size: initial;
+    margin: initial;
+  }
+
+  .checkbox-header {
+    margin-top: initial;
   }
 
   .mod-checkbox {
@@ -10962,6 +10976,10 @@ a.text-dark:focus {
 
   .form-check-label {
     padding-left: 0;
+  }
+
+  #form-container {
+    width: 75%;
   }
 }
 

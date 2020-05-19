@@ -4,7 +4,7 @@
     <div class="jumbotron text-center">
         <h1 class="display-4">Cypher System Calculator</h1>
     </div>
-    <div class="border border-dark bg-danger mx-auto p-4 rounded w-75">
+    <div id="form-container" class="border border-dark bg-danger mx-auto p-4 rounded">
         <form class="">
             <div class="row">
                 <div class="col-md-6">
@@ -71,7 +71,7 @@
                 <div class="col-md-6">
                     <p class="display-4 text-center text-light">Difficulty</p>
                     <div class="row justify-content-center align-items-center">
-                        <div class="col-8">
+                        <div class="col-sm-12 col-md-8">
                             <select id="difficulty-input" class="form-control-lg w-100">
                                 <option value="0">0 Routine: Anyone can do this basically every time.</option>
                                 <option value="1">1 Simple: Most people can do this most of the time.</option>
@@ -96,7 +96,7 @@
                         <label for="modifiers"><h3 class="font-weight-bold text-light">Modifiers:</h3></label>
                         <div class="row">
                             <div class="col-md-6">
-                                <h4 class="font-weight-bold text-light">Attacking</h4>
+                                <h4 class="font-weight-bold text-light checkbox-header">Attacking</h4>
                                 <div class="form-check">
                                     <input type="checkbox" class="form-check-input mod-checkbox" id="prone-melee" value="1">
                                     <label for="prone-melee" class="form-check-label text-light">Prone target (melee) <span class="mod-amt font-italic">-1</span></label>
@@ -163,7 +163,7 @@
                                 </div>
                             </div>
                             <div class="col-md-6">
-                                <h4 class="font-weight-bold text-light">Defending</h4>
+                                <h4 class="font-weight-bold text-light checkbox-header">Defending</h4>
                                 <div class="form-check">
                                     <input type="checkbox" class="form-check-input mod-checkbox" id="prone-melee-defend" value="-1">
                                     <label for="prone-melee-defend" class="form-check-label text-light">Prone (melee attacker) <span class="mod-amt font-italic">+1</span></label>
