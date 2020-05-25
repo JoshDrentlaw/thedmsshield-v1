@@ -13,7 +13,7 @@ class RaimicaMarkers extends Migration
      */
     public function up()
     {
-        Schema::create('maps', function (Blueprint $table) {
+        Schema::create('raimica_markers', function (Blueprint $table) {
             $table->id();
             $table->decimal('top', 10, 2);
             $table->decimal('left', 10, 2);
