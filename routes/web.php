@@ -15,12 +15,15 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', 'PagesController@index');
 
+Route::get('/home', 'HomeController@index')->name('home');
+
 Route::get('/cypher_calculator', 'PagesController@cypher_calculator');
+
+Route::resource('markers', 'MarkersController');
+Route::resource('maps', 'MapsController');
 
 /* Route::get('/cypher-roller/{id}', function ($id) {
     return view('pages.cypher-roller.'.$id);
 }); */
 
 Auth::routes();
-
-Route::get('/home', 'HomeController@index')->name('home');
