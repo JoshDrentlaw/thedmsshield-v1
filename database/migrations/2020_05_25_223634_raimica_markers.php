@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateMapsTable extends Migration
+class RaimicaMarkers extends Migration
 {
     /**
      * Run the migrations.
@@ -15,12 +15,12 @@ class CreateMapsTable extends Migration
     {
         Schema::create('maps', function (Blueprint $table) {
             $table->id();
-            $table->string('map_name');
-            $table->string('map_url');
-            $table->string('map_image_url');
-            $table->string('map_preview_url');
-            $table->string('map_width');
-            $table->string('map_height');
+            $table->decimal('top', 10, 2);
+            $table->decimal('left', 10, 2);
+            $table->decimal('width', 10, 2);
+            $table->decimal('height', 10, 2);
+            $table->string('note_title');
+            $table->string('note_body');
             $table->timestamps();
         });
     }
@@ -32,6 +32,6 @@ class CreateMapsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('maps');
+        //
     }
 }
