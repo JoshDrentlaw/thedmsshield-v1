@@ -69,10 +69,17 @@ class MarkersController extends Controller
      */
     public function update(Request $request, Marker $marker)
     {
-        return Marker::where('id', $marker->id)->update([
-            'top' => $request['top'],
-            'left' => $request['left']
-        ]);
+        switch ($request['type']) {
+            case 'movement':
+                return Marker::where('id', $marker->id)->update([
+                    'top' => $request['top'],
+                    'left' => $request['left']
+                ]);
+            case 'note_body':
+                return Marker::where('id', $marker->id)->update([
+                    'note_body' => $request['note_body']
+                ]);
+        }
     }
 
     /**

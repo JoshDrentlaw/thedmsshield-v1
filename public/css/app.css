@@ -10990,8 +10990,17 @@ a.text-dark:focus {
   left: 0;
 }
 
-.marker-note {
-  width: 1000px;
+.marker-popup {
+  width: 500px;
+}
+
+.marker-popup .leaflet-popup-content-wrapper {
+  width: 100%;
+}
+
+.marker-popup .leaflet-popup-content {
+  width: 460px !important;
+  height: 500px;
 }
 
 #note-body-editor {
