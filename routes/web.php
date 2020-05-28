@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,8 +16,6 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', 'PagesController@index');
 
-Route::get('/home', 'HomeController@index')->name('home');
-
 Route::get('/cypher_calculator', 'PagesController@cypher_calculator');
 
 Route::resource('markers', 'MarkersController');
@@ -27,3 +26,5 @@ Route::resource('maps', 'MapsController');
 }); */
 
 Auth::routes();
+
+Route::get('/dashboard', 'DashboardController@index')->name('dashboard');

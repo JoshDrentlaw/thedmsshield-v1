@@ -8,6 +8,9 @@
         @include('inc.css_libraries')
         @yield('styles')
 
+        <!-- CSRF Token -->
+        <meta name="csrf-token" content="{{ csrf_token() }}">
+
         <title>{{config('app.name', 'The DM\'s Shield')}}</title>
 
         <!-- Fonts -->

@@ -14,6 +14,7 @@ class MarkersController extends Controller
      */
     public function index()
     {
+        // auth()->user()->id;
         return Marker::all();
     }
 

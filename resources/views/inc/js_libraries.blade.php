@@ -3,4 +3,4 @@
     crossorigin="">
 </script>
 
-<script src="https://cdn.tiny.cloud/1/mgo48ld97thvgwazs6s0j9jgwzm6k4utodpke9540pal7ara/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
+<script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>

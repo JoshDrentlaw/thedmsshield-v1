@@ -1,4 +1,4 @@
-@extends('layout.app')
+@extends('layouts.app')
 {{-- @section('styles')
     <link rel="stylesheet" href="{{asset('css/maps.css')}}">
 @endsection --}}

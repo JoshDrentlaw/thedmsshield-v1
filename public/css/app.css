@@ -11000,10 +11000,5 @@ a.text-dark:focus {
 
 .marker-popup .leaflet-popup-content {
   width: 460px !important;
-  height: 500px;
-}
-
-#note-body-editor {
-  width: 100%;
 }
 
