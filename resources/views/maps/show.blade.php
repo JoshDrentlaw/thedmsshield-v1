@@ -33,7 +33,7 @@
                     </div>
                 </div>
                 <div class="leaflet-sidebar-pane" id="marker">
-                    <h1 class="leaflet-sidebar-header mb-4"><span id="note-title" contenteditable="true">{{$markers[0]->note_title}}</span><div class="leaflet-sidebar-close"><i class="fa fa-caret-left"></i></div></h1>
+                    <h1 class="leaflet-sidebar-header mb-4"><span id="note-title" contenteditable="true"></span><div class="leaflet-sidebar-close"><i class="fa fa-caret-left"></i></div></h1>
                     <input id="marker-id" type="hidden" value="${marker.id}">
                     <div id="note-editor"></div>
                     <button id="note-submit" class="mt-3 btn btn-primary btn-block">Submit</button>
