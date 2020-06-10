@@ -20,4 +20,16 @@ class Map extends Model
     public function user() {
         return $this->belongsTo('App\User');
     }
+
+    public function markers() {
+        return $this->hasMany('App\Marker');
+    }
+
+    protected static function booted()
+    {
+        parent::boot();
+        static::deleted(function ($map) {
+            $map->markers()->delete();
+        });
+    }
 }

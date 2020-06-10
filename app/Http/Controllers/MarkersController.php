@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Debug;
+use App\Map;
 use App\Marker;
 use Illuminate\Http\Request;
+use Notify;
 
 class MarkersController extends Controller
 {
@@ -25,7 +28,7 @@ class MarkersController extends Controller
      */
     public function create()
     {
-        //
+        
     }
 
     /**
@@ -36,7 +39,14 @@ class MarkersController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $marker = new Marker;
+        $marker->note_title = 'New marker';
+        $marker->note_body = '<p>New note</p>';
+        $marker->top = $request->post('top');
+        $marker->left = $request->post('left');
+        $marker->map_id = $request->post('map_id');
+        $marker->save();
+        return $marker;
     }
 
     /**
@@ -75,6 +85,10 @@ class MarkersController extends Controller
                 return Marker::where('id', $marker->id)->update([
                     'top' => $request['top'],
                     'left' => $request['left']
+                ]);
+            case 'note_title':
+                return Marker::where('id', $marker->id)->update([
+                    'note_title' => $request['note_title']
                 ]);
             case 'note_body':
                 return Marker::where('id', $marker->id)->update([

@@ -21,7 +21,24 @@
     width: 100%;
 }
 
+.map-link, .map-link:hover {
+    color: black;
+    text-decoration: none;
+}
 
+.map-row {
+    transition: opacity 500ms ease-in;
+}
+
+.debug-log {
+    background-color: rebeccapurple;
+    color: white;
+    border-radius: 5px;
+    font-size: medium;
+    padding: 2em 4em;
+    margin: 2em 0;
+    width: 100%;
+}
 
 @media(min-width: 1024px) {
     .form-check {

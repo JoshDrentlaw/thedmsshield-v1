@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\User;
+use App\Debug;
 
 class DashboardController extends Controller
 {
@@ -26,6 +27,7 @@ class DashboardController extends Controller
     {
         $user_id = auth()->user()->id;
         $user = User::find($user_id);
-        return view('pages.dashboard')->with('maps', $user->map);
+        $maps = $user->map;
+        return view('pages.dashboard', compact('maps', 'user_id'));
     }
 }

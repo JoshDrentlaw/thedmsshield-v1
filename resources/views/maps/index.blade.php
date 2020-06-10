@@ -7,20 +7,14 @@
     @if(count($maps) > 1)
         <ul class="list-unstyled col-sm-8 offset-sm-2">
             @foreach($maps as $map)
-                <li class="media mb-4">
-                    <a class="mx-auto" href="maps/{{$map->id}}">
-                        <div class="row align-items-center">
-                            <div class="col-lg-7">
-                                <img src="{{$map->map_preview_url}}" alt="{{$map->map_name}}" class="">
-                            </div>
-                            <div class="col-lg-5">
-                                <div class="media-body">
-                                    <h2 class="h2 my-0">{{$map->map_name}}</h5>
-                                </div>
-                            </div>
+                <a class="mx-auto map-link" href="maps/{{$map->id}}">
+                    <li class="media mb-4">
+                        <img src="{{$map->map_preview_url}}" alt="{{$map->map_name}}" class="img-thumbnail">
+                        <div class="media-body ml-4 d-flex" style="height:205px;">
+                            <h2 class="h2 my-0 align-self-center">{{$map->map_name}}</h5>
                         </div>
-                    </a>
-                </li>
+                    </li>
+                </a>
             @endforeach
         </ul>
     @else

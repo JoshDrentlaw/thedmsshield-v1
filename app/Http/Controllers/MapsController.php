@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Map;
 use App\Marker;
+use Cloudinary\Uploader;
+use JD\Cloudder\Facades\Cloudder;
+use App\Debug;
 
 class MapsController extends Controller
 {
@@ -16,8 +19,7 @@ class MapsController extends Controller
     public function index()
     {
         $maps = Map::all();
-        $markers = Marker::all();
-        return view('maps.index')->with('maps', $maps);
+        return view('maps.index', compact('maps'));
     }
 
     public function get_all_markers()
@@ -43,7 +45,23 @@ class MapsController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $this->validate($request,[
+            'map-image'=>'required|mimes:jpeg,bmp,jpg,png|between:1, 6000',
+        ]);
+        $map = new Map;
+        $map->user_id = $request->post('map-id');
+        $map->map_name = $request->post('map-name');
+        $map->map_url = implode('_', explode(' ', strtolower($map->map_name)));
+        $image = $request->file('map-image');
+        Cloudder::upload($image, 'thedmsshield.com/'.$map->map_url);
+        $map->map_public_id = Cloudder::getPublicId();
+        list($width, $height) = getimagesize($image);
+        $map->map_width = $width;
+        $map->map_height = $height;
+        $map->map_image_url = Cloudder::secureShow($map->map_public_id);
+        $map->map_preview_url = Cloudder::secureShow($map->map_public_id, ['width' => 300, 'height' => 195, 'crop' => 'scale']);
+        $map->save();
+        return  ['status' => 200, 'message' => 'Map added', 'map' => $map];
     }
 
     /**
@@ -55,7 +73,11 @@ class MapsController extends Controller
     public function show($id)
     {
         $map = Map::find($id);
-        return view('maps.show')->with('map', $map);
+        $markers = $map->markers;
+        return view('maps.show', [
+            'map' => $map,
+            'markers' => $markers
+        ]);
     }
 
     /**
@@ -89,6 +111,9 @@ class MapsController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $map = Map::find($id);
+        Cloudder::destroyImages([$map->map_public_id]);
+        $map->delete();
+        return ['status' => 200, 'message' => 'Map deleted'];
     }
 }

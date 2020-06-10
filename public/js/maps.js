@@ -9,58 +9,113 @@ $(document).ready(function() {
     const image = L.imageOverlay(mapUrl, bounds).addTo(map)
     map.fitBounds(bounds)
 
-    let quill
+    let popup,
+        editor = tinymce.init({
+            selector: '#note-editor',
+            height: 500
+        }),
+        sidebar = L.control.sidebar({
+            autopan: true,
+            closeButton: true,
+            container: 'map-sidebar',
+            position: 'left'
+        }).addTo(map)
+    setMarkerSidebar(1)
 
-    $.get('/markers', function(res) {
-        res.map(marker => {
-            let popup = L.popup({ className: 'marker-popup' })
-                .setContent(`
-                    <input id="marker-id" type="hidden" value="${marker.id}">
-                    <h5>${marker.note_title}</h5>
-                    <div id="note-editor">
-                        ${marker.note_body}
-                    </div>
-                    <button class="mt-3 btn btn-primary note-submit" disabled>Submit</button>
-                `)
-            let mapMarker = L
-                .marker([marker.top, marker.left], {draggable: true})
-                .addTo(map)
-                .bindPopup(popup)
-                .on('dragend', function(e) {
-                    axios.put(`/markers/${marker.id}`, {type: 'movement', top: e.target._latlng.lat, left: e.target._latlng.lng})
-                        .then(res => {
-                            if (res.status === 200) {
-                                //$('.container').append(`<div class="alert alert-success">Map marker position updated!</div>`)
-                            }
-                        })
-                })
-        })
+    markers.map(marker => {
+        let mapMarker = L
+            .marker([marker.top, marker.left], {draggable: true})
+            .addTo(map)
+            .on('dragend', function(e) {
+                axios.put(`/markers/${marker.id}`, {type: 'movement', top: e.target._latlng.lat, left: e.target._latlng.lng})
+                    .then(res => {
+                        if (res.status === 200) {
+                            //$('.container').append(`<div class="alert alert-success">Map marker position updated!</div>`)
+                        }
+                    })
+            })
+            .on('click', function() {
+                console.log(this)
+                sidebar.open('marker')
+                setMarkerSidebar(marker.id)
+            })
     })
 
-    $(document).on('click', '#note-editor', function(e) {
-        console.log(quill)
-        if (!quill) {
-            $(this).siblings('.note-submit').prop('disabled', false)
-            quill = new Quill(e.currentTarget, {
-                theme: 'snow'
-            })
+    $('.marker-button').on('click', function() {
+        sidebar.open('marker')
+        let markerId = $(this).data('marker-id')
+        setMarkerSidebar(markerId)
+    })
+
+    $('#note-title').on('keypress', function(e) {
+        if (e.key === 'Enter') {
+            e.preventDefault()
+            let id = $('#marker-id').val()
+            let note_title = $(this).text()
+
+            axios.put(`/markers/${id}`, {type: 'note_title', note_title})
+                .then(res => {
+                    if (res.status === 200) {
+                        $('.alert').addClass('show').removeClass('invisible')
+                        setTimeout(function () {
+                            $('.alert').removeClass('show').addClass('fade')
+                        }, 3000)
+                    }
+                })
         }
     })
 
-    $(document).on('click', '.note-submit', function() {
+    function setMarkerSidebar(markerId) {
+        let thisMarker = markers.filter(marker => marker.id == markerId)[0]
+        $('#marker-id').val(markerId)
+        $('#note-title').text(thisMarker.note_title)
+        $('#note-editor').html(thisMarker.note_body)
+        tinymce.activeEditor.setContent(thisMarker.note_body)
+    }
+
+    $('#note-submit').on('click', function() {
         const $this = $(this)
-        const content = quill.getContents()
+        const content = tinymce.activeEditor.getContent()
         const id = $('#marker-id').val()
-        $('#note-editor').children().remove().append(content)
-        quill.enable(false)
+        markers = markers.map(marker => {
+            if (marker.id == id) {
+                marker.note_body = content
+            }
+            return marker
+        })
 
         axios.put(`/markers/${id}`, {type: 'note_body', note_body: content})
             .then(res => {
                 console.log(res)
                 if (res.status === 200) {
-                    $this.prop('disabled', true)
-                    quill = {}
+                    $('.alert').addClass('show').removeClass('invisible')
+                    setTimeout(function () {
+                        $('.alert').removeClass('show').addClass('fade')
+                    }, 3000)
                 }
+            })
+    })
+
+    $('#new-marker').on('click', function() {
+        axios.post('/markers', {map_id, top: mapHeight/2, left: mapWidth/2})
+            .then(res => {
+                console.log(res)
+                L
+                    .marker([mapHeight/2, mapWidth/2], {draggable: true})
+                    .addTo(map)
+                    .on('dragend', function(e) {
+                        axios.put(`/markers/${data.id}`, {type: 'movement', top: e.target._latlng.lat, left: e.target._latlng.lng})
+                            .then(res => {
+                                if (res.status === 200) {
+                                    //$('.container').append(`<div class="alert alert-success">Map marker position updated!</div>`)
+                                }
+                            })
+                    })
+                    .on('click', function() {
+                        console.log(this)
+                        sidebar.open('marker')
+                        setMarkerSidebar(marker.id)
+                    })
             })
     })
 })
