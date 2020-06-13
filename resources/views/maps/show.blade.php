@@ -27,8 +27,8 @@
                         <div class="leaflet-sidebar-close"><i class="fa fa-caret-left"></i></div>
                     </h1>
                     <div class="list-group list-group-flush">
-                        @foreach($markers as $marker)
-                            <button type="button" class="list-group-item list-group-item-action marker-button" data-marker-id="{{$marker->id}}">{{$marker->note_title}}</button>
+                        @foreach($markers as $i => $marker)
+                            <button type="button" class="list-group-item list-group-item-action marker-button" data-marker-index="{{$i}}" data-marker-id="{{$marker->id}}">{{$marker->note_title}}</button>
                         @endforeach
                     </div>
                 </div>

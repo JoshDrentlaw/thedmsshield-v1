@@ -8,6 +8,24 @@ $(document).ready(function() {
     })
     const image = L.imageOverlay(mapUrl, bounds).addTo(map)
     map.fitBounds(bounds)
+    let blue = 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png'
+    let blueIcon = new L.Icon({
+        iconUrl: blue,
+        shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+        iconSize: [25, 41],
+        iconAnchor: [12, 41],
+        popupAnchor: [1, -34],
+        shadowSize: [41, 41]
+    })
+    let green = 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png'
+    let greenIcon = new L.Icon({
+        iconUrl: green,
+        shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+        iconSize: [25, 41],
+        iconAnchor: [12, 41],
+        popupAnchor: [1, -34],
+        shadowSize: [41, 41]
+    })
 
     let popup,
         editor = tinymce.init({
@@ -20,9 +38,12 @@ $(document).ready(function() {
             container: 'map-sidebar',
             position: 'left'
         }).addTo(map)
-    setMarkerSidebar(1)
+    sidebar.on('closing', function() {
+        $(`[src="${green}"]`).attr('src', blue)
+    })
 
-    markers.map(marker => {
+    // ADD MARKERS
+    let mapMarkers = markers.map((marker, i) => {
         let mapMarker = L
             .marker([marker.top, marker.left], {draggable: true})
             .addTo(map)
@@ -35,16 +56,25 @@ $(document).ready(function() {
                     })
             })
             .on('click', function() {
-                console.log(this)
+                $(`[src="${green}"]`).attr('src', blue)
+                this.setIcon(greenIcon)
                 sidebar.open('marker')
-                setMarkerSidebar(marker.id)
+                setMarkerSidebar(marker)
             })
+        return {
+            marker: mapMarker,
+            index: i
+        }
     })
 
     $('.marker-button').on('click', function() {
         sidebar.open('marker')
         let markerId = $(this).data('marker-id')
-        setMarkerSidebar(markerId)
+        let thisMarker = markers.filter(marker => marker.id == markerId)[0]
+        let markerIndex = $(this).data('marker-index')
+        let thisMapMarker = mapMarkers.filter(marker => marker.index == markerIndex)[0]
+        thisMapMarker.marker.setIcon(greenIcon)
+        setMarkerSidebar(thisMarker, thisMapMarker.marker)
     })
 
     $('#note-title').on('keypress', function(e) {
@@ -65,12 +95,19 @@ $(document).ready(function() {
         }
     })
 
-    function setMarkerSidebar(markerId) {
-        let thisMarker = markers.filter(marker => marker.id == markerId)[0]
-        $('#marker-id').val(markerId)
-        $('#note-title').text(thisMarker.note_title)
-        $('#note-editor').html(thisMarker.note_body)
-        tinymce.activeEditor.setContent(thisMarker.note_body)
+    function setMarkerSidebar(marker, mapMarker=false) {
+        if (mapMarker) {
+            let markerLatLng = mapMarker.getLatLng()
+            markerLatLng = {
+                lat: markerLatLng.lat,
+                lng: markerLatLng.lng - 100
+            }
+            map.flyTo(markerLatLng, 0.5, {paddingTopLeft: [10000, 0], duration: 1, easeLinearity: 1})
+        }
+        $('#marker-id').val(marker.id)
+        $('#note-title').text(marker.note_title)
+        $('#note-editor').html(marker.note_body)
+        tinymce.activeEditor.setContent(marker.note_body)
     }
 
     $('#note-submit').on('click', function() {
@@ -114,8 +151,9 @@ $(document).ready(function() {
                     .on('click', function() {
                         console.log(this)
                         sidebar.open('marker')
-                        setMarkerSidebar(marker.id)
+                        setMarkerSidebar(marker)
                     })
+                setMarkerSidebar(marker)
             })
     })
 })
