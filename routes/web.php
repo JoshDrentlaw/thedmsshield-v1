@@ -20,6 +20,7 @@ Route::get('/cypher_calculator', 'PagesController@cypher_calculator');
 
 Route::resource('markers', 'MarkersController');
 Route::resource('maps', 'MapsController');
+Route::put('maps/{id}/{type}', 'MapsController@update');
 
 /* Route::get('/cypher-roller/{id}', function ($id) {
     return view('pages.cypher-roller.'.$id);

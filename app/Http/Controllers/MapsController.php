@@ -52,14 +52,14 @@ class MapsController extends Controller
         $map->user_id = $request->post('map-id');
         $map->map_name = $request->post('map-name');
         $map->map_url = implode('_', explode(' ', strtolower($map->map_name)));
-        $image = $request->file('map-image');
+        $image = $request->file('map-image')->path();
         Cloudder::upload($image, 'thedmsshield.com/'.$map->map_url);
         $map->map_public_id = Cloudder::getPublicId();
         list($width, $height) = getimagesize($image);
         $map->map_width = $width;
         $map->map_height = $height;
-        $map->map_image_url = Cloudder::secureShow($map->map_public_id);
-        $map->map_preview_url = Cloudder::secureShow($map->map_public_id, ['width' => 300, 'height' => 195, 'crop' => 'scale']);
+        $map->map_image_url = Cloudder::secureShow($map->map_public_id, ['width' => $width, 'height' => $height, 'format' => 'jpg']);
+        $map->map_preview_url = Cloudder::secureShow($map->map_public_id, ['width' => 300, 'height' => 195, 'crop' => 'scale', 'format' => 'jpg']);
         $map->save();
         return  ['status' => 200, 'message' => 'Map added', 'map' => $map];
     }
@@ -98,9 +98,31 @@ class MapsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $id, $type)
     {
-        //
+        switch ($type) {
+            case 'image':
+                if ($request->hasFile('new-map-image')) {
+                    $this->validate($request,[
+                        'new-map-image' => 'required|mimes:jpeg,jpg,png|between:1, 6000'
+                    ]);
+                    $map = Map::find($id);
+                    Cloudder::destroyImages([$map->map_public_id]);
+                    $filename = $request->file('new-map-image')->path();
+                    Cloudder::upload($filename, $map->map_public_id);
+                    list($map_width, $map_height) = getimagesize($filename);
+                    $map_image_url = Cloudder::secureShow($map->map_public_id, ['width' => $map_width, 'height' => $map_height, 'format' => 'jpg']);
+                    $map_preview_url = Cloudder::secureShow($map->map_public_id, ['width' => 300, 'height' => 195, 'crop' => 'scale', 'format' => 'jpg']);
+                    Map::where('id', $id)->update(compact('map_image_url', 'map_preview_url', 'map_width', 'map_height'));
+                    return ['status' => 200, 'map' => $map, 'message' => 'Map image updated'];
+                } else {
+                    return ['status' => 500, 'request' => $request];
+                }
+            case 'name':
+                Map::where('id', $id)->update(['map_name' => $request->map_name]);
+                return ['status' => 200, 'message' => 'Map name updated'];
+        }
+        
     }
 
     /**

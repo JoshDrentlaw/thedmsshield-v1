@@ -100,8 +100,10 @@ class MarkersController extends Controller
      * @param  \App\Marker  $marker
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Marker $marker)
+    public function destroy($id)
     {
-        //
+        $marker = Marker::find($id);
+        $marker->delete();
+        return ['status' => 200, 'message' => 'Marker deleted', 'class' => 'alert-success'];
     }
 }

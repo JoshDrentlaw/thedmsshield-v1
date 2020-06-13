@@ -1,4 +1,9 @@
 $(document).ready(function() {
+    $.on('modal.bs.hide', function() {
+        $('[name]').each(function(i, el) {
+            $(el).val('')
+        })
+    })
     $('#map-upload').on('submit', function(e) {
         e.preventDefault()
         let imgUpload = new FormData($(this)[0])
@@ -50,5 +55,51 @@ $(document).ready(function() {
 
     $('.delete-map').on('click', function() {
         $('#map-id').val($(this).data('map-id'))
+    })
+
+    $('.config-map').on('click', function() {
+        $('#config-map-name').text($(this).data('map-name'))
+        $('#config-map-id').val($(this).data('map-id'))
+    })
+
+    $('#new-map-form').on('submit', function(e) {
+        e.preventDefault()
+        const id = $('#config-map-id').val()
+        let newImageUpload = new FormData($(this)[0])
+        newImageUpload.append('_method', 'PUT')
+        axios.post(`/maps/${id}/image`, newImageUpload, {
+            headers: {'Content-Type': 'multipart/form-data'}
+        })
+        .then(res => {
+            if (res.status === 200) {
+                $('#new-map-image').val('')
+                $('#success-message').text(res.data.message)
+                $('#success-message-alert').removeClass('invisible')
+                setTimeout(function() {
+                    $('#success-message-alert').addClass('fade')
+                }, 3000)
+                let d = new Date()
+                $(`#${res.data.map.map_url}`).attr('src', res.data.map.map_preview_url + '?' + d.getTime())
+            }
+        })
+    })
+
+    $('#map-name-form').on('submit', function(e) {
+        e.preventDefault()
+        const map_name = $('#new-map-name').val()
+        const id = $('#config-map-id').val()
+        axios.put(`/maps/${id}/name`, {map_name})
+            .then(res => {
+                if (res.status === 200) {
+                    $('#new-map-name').val('')
+                    $('#config-map-name').text(map_name)
+                    $(`#map-name-header-${id}`).text(map_name)
+                    $('#success-message').text(res.data.message)
+                    $('#success-message-alert').removeClass('invisible')
+                    setTimeout(function() {
+                        $('#success-message-alert').addClass('fade')
+                    }, 3000)
+                }
+            })
     })
 })

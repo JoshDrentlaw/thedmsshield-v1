@@ -44,6 +44,7 @@ $(document).ready(function() {
 
     // ADD MARKERS
     let mapMarkers = markers.map((marker, i) => {
+        marker['index'] = i
         let mapMarker = L
             .marker([marker.top, marker.left], {draggable: true})
             .addTo(map)
@@ -73,7 +74,9 @@ $(document).ready(function() {
         let thisMarker = markers.filter(marker => marker.id == markerId)[0]
         let markerIndex = $(this).data('marker-index')
         let thisMapMarker = mapMarkers.filter(marker => marker.index == markerIndex)[0]
+        let otherMapMarkers = mapMarkers.filter(marker => marker.index != markerIndex)
         thisMapMarker.marker.setIcon(greenIcon)
+        otherMapMarkers.map(marker => marker.marker.setIcon(blueIcon))
         setMarkerSidebar(thisMarker, thisMapMarker.marker)
     })
 
@@ -87,6 +90,7 @@ $(document).ready(function() {
             map.flyTo(markerLatLng, 0.5, {paddingTopLeft: [10000, 0], duration: 1, easeLinearity: 1})
         }
         $('#marker-id').val(marker.id)
+        $('#marker-index').val(marker.index)
         $('#note-title').text(marker.note_title)
         $('#note-editor').html(marker.note_body)
         tinymce.activeEditor.setContent(marker.note_body)
@@ -104,6 +108,7 @@ $(document).ready(function() {
             }
             return marker
         })
+        $('#marker-list').find(`[data-marker-id="${id}"]`).text(title)
 
         axios.put(`/markers/${id}`, {type: 'note', note_title: title, note_body: content})
             .then(res => {
@@ -124,6 +129,7 @@ $(document).ready(function() {
                 L
                     .marker([mapHeight/2, mapWidth/2], {draggable: true})
                     .addTo(map)
+                    .setIcon(greenIcon)
                     .on('dragend', function(e) {
                         axios.put(`/markers/${marker.id}`, {type: 'movement', top: e.target._latlng.lat, left: e.target._latlng.lng})
                             .then(res => {
@@ -136,9 +142,29 @@ $(document).ready(function() {
                         sidebar.open('marker')
                         setMarkerSidebar(marker)
                     })
+                $('#marker-list').append(`<button type="button" class="list-group-item list-group-item-action marker-button" data-marker-index="${mapMarkers.length}" data-marker-id="${marker.id}">${marker.note_title}</button>`)
+                mapMarkers.push(marker)
                 sidebar.open('marker')
                 $('#note-title').focus()
                 setMarkerSidebar(marker)
+            })
+    })
+
+    $('#delete-marker').on('click', function() {
+        const id = $('#marker-id').val()
+        const index = $('#marker-index').val()
+        let thisMapMarker = mapMarkers.filter(marker => marker.index == index)[0]
+        axios.delete(`/markers/${id}`)
+            .then(res => {
+                if (res.status === 200) {
+                    sidebar.close()
+                    thisMapMarker.marker.removeFrom(map)
+                    $('#alert-message').text(res.data.message)
+                    $('#ajax-message').addClass(`show ${res.data.class}`).removeClass('invisible')
+                    setTimeout(function () {
+                        $('#ajax-message').removeClass('show').addClass('fade')
+                    }, 3000)
+                }
             })
     })
 })
