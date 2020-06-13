@@ -77,24 +77,6 @@ $(document).ready(function() {
         setMarkerSidebar(thisMarker, thisMapMarker.marker)
     })
 
-    $('#note-title').on('keypress', function(e) {
-        if (e.key === 'Enter') {
-            e.preventDefault()
-            let id = $('#marker-id').val()
-            let note_title = $(this).text()
-
-            axios.put(`/markers/${id}`, {type: 'note_title', note_title})
-                .then(res => {
-                    if (res.status === 200) {
-                        $('.alert').addClass('show').removeClass('invisible')
-                        setTimeout(function () {
-                            $('.alert').removeClass('show').addClass('fade')
-                        }, 3000)
-                    }
-                })
-        }
-    })
-
     function setMarkerSidebar(marker, mapMarker=false) {
         if (mapMarker) {
             let markerLatLng = mapMarker.getLatLng()
@@ -112,16 +94,18 @@ $(document).ready(function() {
 
     $('#note-submit').on('click', function() {
         const $this = $(this)
+        const title = $this.parent().find('#note-title').text()
         const content = tinymce.activeEditor.getContent()
         const id = $('#marker-id').val()
         markers = markers.map(marker => {
             if (marker.id == id) {
+                marker.note_title = title
                 marker.note_body = content
             }
             return marker
         })
 
-        axios.put(`/markers/${id}`, {type: 'note_body', note_body: content})
+        axios.put(`/markers/${id}`, {type: 'note', note_title: title, note_body: content})
             .then(res => {
                 console.log(res)
                 if (res.status === 200) {
@@ -136,12 +120,12 @@ $(document).ready(function() {
     $('#new-marker').on('click', function() {
         axios.post('/markers', {map_id, top: mapHeight/2, left: mapWidth/2})
             .then(res => {
-                console.log(res)
+                let marker = res.data
                 L
                     .marker([mapHeight/2, mapWidth/2], {draggable: true})
                     .addTo(map)
                     .on('dragend', function(e) {
-                        axios.put(`/markers/${data.id}`, {type: 'movement', top: e.target._latlng.lat, left: e.target._latlng.lng})
+                        axios.put(`/markers/${marker.id}`, {type: 'movement', top: e.target._latlng.lat, left: e.target._latlng.lng})
                             .then(res => {
                                 if (res.status === 200) {
                                     //$('.container').append(`<div class="alert alert-success">Map marker position updated!</div>`)
@@ -149,10 +133,11 @@ $(document).ready(function() {
                             })
                     })
                     .on('click', function() {
-                        console.log(this)
                         sidebar.open('marker')
                         setMarkerSidebar(marker)
                     })
+                sidebar.open('marker')
+                $('#note-title').focus()
                 setMarkerSidebar(marker)
             })
     })

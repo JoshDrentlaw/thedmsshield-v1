@@ -86,13 +86,10 @@ class MarkersController extends Controller
                     'top' => $request['top'],
                     'left' => $request['left']
                 ]);
-            case 'note_title':
+            case 'note':
                 return Marker::where('id', $marker->id)->update([
+                    'note_body' => $request['note_body'],
                     'note_title' => $request['note_title']
-                ]);
-            case 'note_body':
-                return Marker::where('id', $marker->id)->update([
-                    'note_body' => $request['note_body']
                 ]);
         }
     }

@@ -26,6 +26,7 @@
                         All Markers
                         <div class="leaflet-sidebar-close"><i class="fa fa-caret-left"></i></div>
                     </h1>
+                    <button id="new-marker" class="mt-3 btn btn-success btn-block">New Marker</button>
                     <div class="list-group list-group-flush">
                         @foreach($markers as $i => $marker)
                             <button type="button" class="list-group-item list-group-item-action marker-button" data-marker-index="{{$i}}" data-marker-id="{{$marker->id}}">{{$marker->note_title}}</button>
@@ -33,11 +34,11 @@
                     </div>
                 </div>
                 <div class="leaflet-sidebar-pane" id="marker">
-                    <h1 class="leaflet-sidebar-header mb-4"><span id="note-title" contenteditable="true"></span><div class="leaflet-sidebar-close"><i class="fa fa-caret-left"></i></div></h1>
+                    <h1 class="leaflet-sidebar-header mb-4"><span id="note-title" contenteditable="true"></span><div class="leaflet-sidebar-close d-block"><i class="fa fa-caret-left"></i></div></h1>
                     <input id="marker-id" type="hidden" value="${marker.id}">
                     <div id="note-editor"></div>
-                    <button id="note-submit" class="mt-3 btn btn-primary btn-block">Submit</button>
-                    <button id="new-marker" class="mt-3 btn btn-success btn-block">New Marker</button>
+                    <button id="note-submit" class="mt-3 btn btn-primary btn-block">Save</button>
+                    <button id="delete-marker" class="mt-3 btn btn-danger btn-block">Delete Marker</button>
                 </div>
                 <div class="leaflet-sidebar-pane" id="gm">
                     <h1 class="leaflet-sidebar-header">GM<div class="leaflet-sidebar-close"><i class="fa fa-caret-left"></i></div></h1>
