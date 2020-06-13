@@ -1,9 +1,4 @@
 $(document).ready(function() {
-    $.on('modal.bs.hide', function() {
-        $('[name]').each(function(i, el) {
-            $(el).val('')
-        })
-    })
     $('#map-upload').on('submit', function(e) {
         e.preventDefault()
         let imgUpload = new FormData($(this)[0])
