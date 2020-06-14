@@ -1,4 +1,5 @@
 $(document).ready(function() {
+    // ADD NEW MAP
     $('#map-upload').on('submit', function(e) {
         e.preventDefault()
         let imgUpload = new FormData($(this)[0])
@@ -29,6 +30,7 @@ $(document).ready(function() {
         })
     })
 
+    // CONFIRM DELETION OF MAP
     $('#confirm-delete-map').on('click', function() {
         const id = $('#map-id').val()
         axios.delete(`/maps/${id}`)
@@ -48,15 +50,18 @@ $(document).ready(function() {
             })
     })
 
+    // SET DELETE MAP MODDAL
     $('.delete-map').on('click', function() {
         $('#map-id').val($(this).data('map-id'))
     })
 
+    // SET CONFIG MAP MODAL
     $('.config-map').on('click', function() {
         $('#config-map-name').text($(this).data('map-name'))
         $('#config-map-id').val($(this).data('map-id'))
     })
 
+    // REPLACE MAP WITH NEW IMAGE
     $('#new-map-form').on('submit', function(e) {
         e.preventDefault()
         const id = $('#config-map-id').val()
@@ -79,6 +84,7 @@ $(document).ready(function() {
         })
     })
 
+    // REPLACE MAP NAME
     $('#map-name-form').on('submit', function(e) {
         e.preventDefault()
         const map_name = $('#new-map-name').val()

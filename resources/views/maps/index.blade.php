@@ -7,7 +7,7 @@
     @if(count($maps) > 1)
         <ul class="list-unstyled col-sm-8 offset-sm-2">
             @foreach($maps as $map)
-                <a class="mx-auto map-link" href="maps/{{$map->id}}">
+                <a class="mx-auto map-link" href="maps/{{$map->map_url}}">
                     <li class="media mb-4">
                         <img src="{{$map->map_preview_url}}" alt="{{$map->map_name}}" class="img-thumbnail">
                         <div class="media-body ml-4 d-flex" style="height:205px;">

@@ -72,7 +72,7 @@ class MapsController extends Controller
      */
     public function show($id)
     {
-        $map = Map::find($id);
+        $map = Map::firstWhere('map_url', $id);
         $markers = $map->markers;
         return view('maps.show', [
             'map' => $map,

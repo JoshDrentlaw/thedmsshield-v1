@@ -33,7 +33,7 @@
                             @foreach($maps as $map)
                                 <tr id="map-{{$map->id}}" class="map-row">
                                     <td>
-                                        <a class="map-link" href="/maps/{{$map->id}}">
+                                        <a class="map-link" href="/maps/{{$map->map_url}}">
                                             <h4 id="map-name-header-{{$map->id}}">{{$map->map_name}}</h4>
                                             <img id="{{$map->map_url}}" src="{{$map->map_preview_url}}" alt="{{$map->map_name}}" class="img-thumbnail">
                                         </a>
