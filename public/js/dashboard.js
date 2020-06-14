@@ -93,6 +93,7 @@ $(document).ready(function() {
             .then(res => {
                 if (res.status === 200) {
                     $('#new-map-name').val('')
+                    $(`#map-${id}`).find('.map-link').attr('href', `/maps/${res.data.map_url}`)
                     $('#config-map-name').text(map_name)
                     $(`#map-name-header-${id}`).text(map_name)
                     $('#success-message').text(res.data.message)

@@ -119,8 +119,9 @@ class MapsController extends Controller
                     return ['status' => 500, 'request' => $request];
                 }
             case 'name':
-                Map::where('id', $id)->update(['map_name' => $request->map_name]);
-                return ['status' => 200, 'message' => 'Map name updated'];
+                $map_url = implode('_', explode(' ', strtolower($request->map_name)));
+                Map::where('id', $id)->update(['map_name' => $request->map_name, 'map_url' => $map_url]);
+                return ['status' => 200, 'message' => 'Map name updated', 'map_url' => $map_url];
         }
         
     }
