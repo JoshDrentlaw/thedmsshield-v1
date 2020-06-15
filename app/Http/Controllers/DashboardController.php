@@ -28,6 +28,6 @@ class DashboardController extends Controller
         $user_id = auth()->user()->id;
         $user = User::find($user_id);
         $maps = $user->map;
-        return view('pages.dashboard', compact('maps', 'user_id'));
+        return view('pages.dashboard', compact('maps', 'user'));
     }
 }
