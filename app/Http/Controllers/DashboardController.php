@@ -29,7 +29,7 @@ class DashboardController extends Controller
         $user_id = auth()->user()->id;
         $user = User::find($user_id);
         $dm = $user->dm;
-        $maps = $dm->map;
+        $maps = $dm->maps;
         return view('pages.dashboard', compact('maps', 'user', 'dm'));
     }
 }

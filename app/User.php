@@ -41,7 +41,7 @@ class User extends Authenticatable
         return $this->hasOne('App\DM');
     }
 
-    public function map() {
-        return $this->hasMany('App\Map');
+    public function player() {
+        return $this->hasOne('App\Player');
     }
 }

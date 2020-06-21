@@ -21,6 +21,10 @@ class Map extends Model
         return $this->belongsTo('App\DM');
     }
 
+    public function players() {
+        return $this->belongsToMany('App\Player');
+    }
+
     public function markers() {
         return $this->hasMany('App\Marker');
     }

@@ -49,11 +49,11 @@ class MapsController extends Controller
             'map-image'=>'required|mimes:jpeg,bmp,jpg,png|between:1, 6000',
         ]);
         $map = new Map;
-        $map->dm_id = $request->post('map-id');
+        $map->d_m_id = $request->post('map-id');
         $map->map_name = $request->post('map-name');
         $map->map_url = implode('_', explode(' ', strtolower($map->map_name)));
         $image = $request->file('map-image')->path();
-        Cloudder::upload($image, 'thedmsshield.com/'.$map->map_url);
+        Cloudder::upload($image, 'thedmsshield.com/maps/'.$map->map_url);
         $map->map_public_id = Cloudder::getPublicId();
         list($width, $height) = getimagesize($image);
         $map->map_width = $width;
