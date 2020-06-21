@@ -87,7 +87,7 @@ $(document).ready(function() {
                 lat: markerLatLng.lat,
                 lng: markerLatLng.lng - 100
             }
-            map.flyTo(markerLatLng, 0.5, {paddingTopLeft: [10000, 0], duration: 1, easeLinearity: 1})
+            map.flyTo(markerLatLng, 0.5, {duration: 1, easeLinearity: 1})
         }
         $('#marker-id').val(marker.id)
         $('#marker-index').val(marker.index)

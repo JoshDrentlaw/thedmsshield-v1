@@ -1,3 +1,10 @@
+#reset-btn {
+    display: block;
+    float: none;
+    width: 100%;
+    font-size: 20px;
+}
+
 .form-check {
     height: auto;
     font-size: x-large;
@@ -38,6 +45,13 @@
     padding: 2em 4em;
     margin: 2em 0;
     width: 100%;
+}
+
+@media(min-width: 768px) {
+    #reset-btn {
+        float: right;
+        width: auto;
+    }
 }
 
 @media(min-width: 1024px) {

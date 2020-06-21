@@ -26,6 +26,12 @@ $(document).ready(function() {
         $('#effort-cost').text(effortCost)
     }
 
+    $('#calc-form').on('reset', function() {
+        console.log('reset')
+        $('#final-difficulty').text('0/0')
+        $('#effort-cost').text('0')
+    })
+
     $('#difficulty-input').on('change', function() {
         difficulty = parseInt($(this).val())
         calcFinalDifficulty()

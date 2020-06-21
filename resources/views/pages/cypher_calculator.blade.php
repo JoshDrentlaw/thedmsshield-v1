@@ -5,7 +5,12 @@
         <h1 class="display-4">Cypher System Calculator</h1>
     </div>
     <div id="form-container" class="border border-dark bg-danger mx-auto p-4 rounded">
-        <form class="">
+        <form id="calc-form">
+            <div class="row">
+                <div class="col-12">
+                    <input id="reset-btn" class="btn btn-warning mb-4" type="reset" value="Reset">
+                </div>
+            </div>
             <div class="row">
                 <div class="col-md-6 order-0-md order-1">
                     <div class="row">
