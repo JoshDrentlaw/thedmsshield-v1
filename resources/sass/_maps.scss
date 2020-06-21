@@ -1,0 +1,10 @@
+#map-container {
+    height: calc(100vh - 55px);
+    width: 100vw;
+    position: absolute !important;
+    left: 0;
+}
+
+#note-editor {
+    overflow-wrap: break-word;
+}
