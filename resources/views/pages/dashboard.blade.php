@@ -15,7 +15,14 @@
                     <h3>Hello {{$user->name}}!</h3>
                 </div>
                 <div class="card-body">
-                    This is some text within a card body.
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label for="description">Description</label>
+                                <p contenteditable="true" id="description" class="form-control-static interactive">{{$user->description}}</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
