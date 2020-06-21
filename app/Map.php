@@ -17,8 +17,12 @@ class Map extends Model
     // Disable timestamps
     // public $timestamps = false;
 
-    public function user() {
-        return $this->belongsTo('App\User');
+    public function dm() {
+        return $this->belongsTo('App\DM');
+    }
+
+    public function players() {
+        return $this->belongsToMany('App\Player');
     }
 
     public function markers() {

@@ -37,7 +37,11 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    public function map() {
-        return $this->hasMany('App\Map');
+    public function dm() {
+        return $this->hasOne('App\DM');
+    }
+
+    public function player() {
+        return $this->hasOne('App\Player');
     }
 }
