@@ -14,6 +14,9 @@ $(document).ready(function() {
                 $('#add-map-modal').modal('hide')
                 $('#success-message').text(res.data.message)
                 $('#success-message-alert').removeClass('invisible')
+                setTimeout(function() {
+                    $('#success-message-alert').addClass('fade')
+                }, 3000)
                 $('#map-rows').append(`
                     <tr id="map-${res.data.map.id}" class="map-row">
                         <td>
@@ -22,7 +25,7 @@ $(document).ready(function() {
                                 <img src="${res.data.map.map_preview_url}" alt="${res.data.map.map_name}" class="img-thumbnail">
                             </a>
                         </td>
-                        <td><a href="/maps/${res.data.map.id}/edit" class="btn btn-secondary">Configure</a></td>
+                        <td><button class="btn btn-secondary config-map" data-map-id="${res.data.map.id}" data-map-name="${res.data.map.name}" data-toggle="modal" data-target="#config-map-modal">Configure</button></td>
                         <td><button class="btn btn-danger delete-map" data-map-id="${res.data.map.id}" data-toggle="modal" data-target="#delete-map-modal">Delete</button></td>
                     </tr>
                 `).fadeIn()
@@ -41,7 +44,7 @@ $(document).ready(function() {
                     $('#success-message-alert').removeClass('invisible')
                     $(`#map-${id}`).addClass('fade')
                     setTimeout(function() {
-                        $(`#map-${id}`).addClass(' d-none')
+                        $(`#map-${id}`).remove()
                     }, 500)
                     setTimeout(function() {
                         $('#success-message-alert').addClass('fade')
@@ -51,12 +54,12 @@ $(document).ready(function() {
     })
 
     // SET DELETE MAP MODDAL
-    $('.delete-map').on('click', function() {
+    $(document).on('click', '.delete-map', function() {
         $('#map-id').val($(this).data('map-id'))
     })
 
     // SET CONFIG MAP MODAL
-    $('.config-map').on('click', function() {
+    $(document).on('click', '.config-map', function() {
         $('#config-map-name').text($(this).data('map-name'))
         $('#config-map-id').val($(this).data('map-id'))
     })
