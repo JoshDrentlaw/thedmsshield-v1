@@ -49,7 +49,7 @@ class MapsController extends Controller
             'map-image'=>'required|mimes:jpeg,bmp,jpg,png|between:1, 6000',
         ]);
         $map = new Map;
-        $map->user_id = $request->post('map-id');
+        $map->dm_id = $request->post('map-id');
         $map->map_name = $request->post('map-name');
         $map->map_url = implode('_', explode(' ', strtolower($map->map_name)));
         $image = $request->file('map-image')->path();
