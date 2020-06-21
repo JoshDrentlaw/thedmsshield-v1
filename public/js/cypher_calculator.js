@@ -27,7 +27,12 @@ $(document).ready(function() {
     }
 
     $('#calc-form').on('reset', function() {
-        console.log('reset')
+        difficulty = 0
+        assets = 0
+        skills = 0
+        effort = 0
+        edge = 0
+        mods = 0
         $('#final-difficulty').text('0/0')
         $('#effort-cost').text('0')
     })
