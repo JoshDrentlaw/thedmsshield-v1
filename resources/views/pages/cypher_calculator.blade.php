@@ -178,8 +178,8 @@
                                     <label for="prone-ranged-defend" class="form-check-label text-light">Prone (ranged attacker) <span class="mod-amt font-italic">-1</span></label>
                                 </div>
                                 <div class="form-check">
-                                    <input type="checkbox" class="form-check-input mod-checkbox" id="cover" value="1">
-                                    <label for="cover" class="form-check-label text-light">Partial cover <span class="mod-amt font-italic">-1</span></label>
+                                    <input type="checkbox" class="form-check-input mod-checkbox" id="cover-defend" value="1">
+                                    <label for="cover-defend" class="form-check-label text-light">Partial cover <span class="mod-amt font-italic">-1</span></label>
                                 </div>
                                 <div class="form-check">
                                     <input type="checkbox" class="form-check-input mod-checkbox" id="high-ground-defend" value="-1">
