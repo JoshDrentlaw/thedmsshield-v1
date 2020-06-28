@@ -12,14 +12,20 @@
         <div class="col-md-8">
             <div class="card">
                 <div class="card-header">
-                    <h3>Hello {{$user->name}}!</h3>
+                    <h3>
+                        Hello {{$user->name}}!
+                        <small class="text-muted float-right">Player #{{$user->id}}</small>
+                    </h3>
                 </div>
                 <div class="card-body">
+                    <input type="hidden" id="user-id" value="{{$user->id}}">
                     <div class="row">
                         <div class="col-12">
-                            <div class="form-group">
-                                <label for="description">Description</label>
-                                <p contenteditable="true" id="description" class="form-control-static interactive">{{$user->description}}</p>
+                            <div class="card">
+                                <div class="card-body">
+                                    <label for="description"><strong>Description</strong></label>
+                                    <p contenteditable="true" id="description" class="form-control-static interactive">{{$user->description}}</p>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -49,48 +55,39 @@
                             @foreach($maps as $map)
                                 <tr id="map-{{$map->id}}" class="map-row">
                                     {{-- NAME AND IMAGE --}}
-                                    <td>
+                                    <td class="w-50">
                                         <a class="map-link" href="/maps/{{$map->map_url}}">
                                             <h4 id="map-name-header-{{$map->id}}">{{$map->map_name}}</h4>
                                             <img id="{{$map->map_url}}" src="{{$map->map_preview_url}}" alt="{{$map->map_name}}" class="img-thumbnail">
                                         </a>
                                     </td>
-                                    {{-- CONFIG --}}
-                                    <td>
-                                        <button class="btn btn-secondary config-map" data-map-id="{{$map->id}}" data-map-name="{{$map->map_name}}" data-toggle="modal" data-target="#config-map-modal">Configure</button>
-                                    </td>
-                                    {{-- DELETE --}}
-                                    <td>
-                                        <button class="btn btn-danger delete-map" data-map-id="{{$map->id}}" data-toggle="modal" data-target="#delete-map-modal">Delete</button>
+                                    <td class="w-50">
+                                        <div class="row mb-2">
+                                            <div class="col-12">
+                                                {{-- CONFIG --}}
+                                                <button class="btn btn-secondary btn-block config-map" data-map-id="{{$map->id}}" data-map-name="{{$map->map_name}}" data-toggle="modal" data-target="#config-map-modal">Configure</button>
+                                            </div>
+                                            
+                                        </div>
+                                        <div class="row mb-2">
+                                            <div class="col-12">
+                                                {{-- PLAYERS --}}
+                                                <button class="btn btn-primary btn-block manage-players" data-map-id="{{$map->id}}" data-map-name="{{$map->map_name}}" data-toggle="modal" data-target="#manage-players-modal">Manage Players</button>
+                                            </div>
+                                            
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-12">
+                                                {{-- DELETE --}}
+                                                <button class="btn btn-danger btn-block delete-map" data-map-id="{{$map->id}}" data-toggle="modal" data-target="#delete-map-modal">Delete</button>
+                                            </div>
+                                        </div>
                                     </td>
                                 </tr>
                             @endforeach
                         </tbody>
                     </table>
                 </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-{{-- DELETE MAP MODAL --}}
-<div class="modal" id="delete-map-modal" tabindex="-1" role="dialog">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Delete map?</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <input type="hidden" id="map-id">
-                <p>This will permanently delete the selected map and all markers associated with it.</p>
-                <p>Are you sure you want to delete?</p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-danger" id="confirm-delete-map">Delete map</button>
             </div>
         </div>
     </div>
@@ -165,6 +162,54 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                 <button type="button" class="btn btn-primary" id="confirm-change-map">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{{-- MANAGE PLAYERS MODAL --}}
+<div class="modal" id="manage-players-modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Manage Players</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="map-id">
+                <div class="form-group">
+                    <label for="player-search"><strong>Search for players in our database</strong></label>
+                    <small class="form-text text-muted">Search by name or player #</small>
+                    <select class="form-control" id="player-search"></select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{{-- DELETE MAP MODAL --}}
+<div class="modal" id="delete-map-modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Delete map?</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="map-id">
+                <p>This will permanently delete the selected map and all markers associated with it.</p>
+                <p>Are you sure you want to delete?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-danger" id="confirm-delete-map">Delete map</button>
             </div>
         </div>
     </div>

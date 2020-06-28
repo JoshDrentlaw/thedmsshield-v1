@@ -5,6 +5,14 @@
     font-size: 20px;
 }
 
+.interactive {
+    cursor: pointer;
+}
+
+.interactive:focus {
+    cursor: text;
+}
+
 .form-check {
     height: auto;
     font-size: x-large;

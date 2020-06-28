@@ -29,3 +29,5 @@ Route::put('maps/{id}/{type}', 'MapsController@update');
 Auth::routes();
 
 Route::get('/dashboard', 'DashboardController@index')->name('dashboard');
+Route::post('/dashboard/{id}/{type}', 'DashboardController@update');
+Route::post('/dashboard/player_search', 'DashboardController@player_search');

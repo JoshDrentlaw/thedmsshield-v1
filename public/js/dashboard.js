@@ -1,4 +1,23 @@
 $(document).ready(function() {
+    //DESCRIPTION
+    $('#description').on('focus', function() {
+        $(this).addClass('editing')
+    }).on('blur', function() {
+        $(this).removeClass('editing')
+        let description = $(this).text()
+        let id = $('#user-id').val()
+        axios.post(`/dashboard/${id}/description`, { description })
+            .then(res => {
+                if (res.data.status === 200) {
+                    $('#success-message').text(res.data.message)
+                    $('#success-message-alert').removeClass('invisible')
+                    setTimeout(function() {
+                        $('#success-message-alert').addClass('fade')
+                    }, 3000)
+                }
+            })
+    })
+
     // ADD NEW MAP
     $('#map-upload').on('submit', function(e) {
         e.preventDefault()
@@ -107,4 +126,58 @@ $(document).ready(function() {
                 }
             })
     })
+
+    /*===========================*
+    *
+    *
+    *      MANAGE  PLAYERS
+    * 
+    * 
+    *============================*/
+
+    const CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
+    $('#player-search').select2({
+        ajax: {
+            url: '/dashboard/player_search',
+            type: 'post',
+            dataType: 'json',
+            delay: 250,
+            data: function (params) {
+                return {
+                _token: CSRF_TOKEN,
+                search: params.term // search term
+                };
+            },
+        },
+        dropdownParent: $('#manage-players-modal'),
+        placeholder: 'Search players',
+        width: '100%',
+        minimumInputLength: 1,
+        templateResult: customPlayerSearchResults,
+        templateSelection: customPlayerSearchSelection
+    })
+
+    function customPlayerSearchSelection(state) {
+        if (!state.id) {
+            return state.text
+        }
+        return `${state.text} (Player #${state.id})`
+    }
+
+    function customPlayerSearchResults(state) {
+        console.log(state)
+        if (!state.id) {
+            return state.text
+        }
+
+        return $(`
+            <div class="media">
+                <img src="${state.avatar_url ? state.avatar_url : ''}" class="mr-3" alt="player avater">
+                <div class="media-body">
+                    <h5 class="mt-0">${state.text}</h5>
+                    ${state.description ? state.description : null}
+                </div>
+            </div>
+        `)
+    }
 })

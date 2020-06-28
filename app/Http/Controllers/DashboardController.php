@@ -32,4 +32,21 @@ class DashboardController extends Controller
         $maps = $dm->maps;
         return view('pages.dashboard', compact('maps', 'user', 'dm'));
     }
+
+    public function update(Request $request, $id, $type) {
+        switch ($type) {
+            case 'description':
+                $status = User::where('id', $id)->update(['description' => $request->post('description')]) ? 200 : 500;
+                return ['status' => $status, 'message' => 'Description saved.'];
+            default:
+                return false;
+        }
+    }
+
+    public function player_search(Request $request) {
+        $search = $request->post('search');
+        $users = User::select('id', 'name as text', 'description')->where('id', 'like', "%$search%")->orWhere('name', 'like', "%$search%")->get();
+        echo json_encode(['results' => $users]);
+        exit;
+    }
 }
