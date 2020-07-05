@@ -13,7 +13,7 @@
             <div class="card">
                 <div class="card-header">
                     <h3>
-                        Hello {{$user->name}}!
+                        Hello <span class="interactive" data-user-id="{{$user->id}}" contenteditable="true">{{$user->name}}</span>!
                         <small class="text-muted float-right">Player #{{$user->id}}</small>
                     </h3>
                 </div>
@@ -21,13 +21,42 @@
                     <input type="hidden" id="user-id" value="{{$user->id}}">
                     <div class="row">
                         <div class="col-12">
-                            <div class="card">
-                                <div class="card-body">
-                                    <label for="description"><strong>Description</strong></label>
-                                    <p contenteditable="true" id="description" class="form-control-static interactive">{{$user->description}}</p>
+                            <div class="media">
+                                @if ($user->avatar_url)
+                                    <img src="{{$user->avatar_url}}" class="img-thumbnail mr-3 interactive" id="edit-avatar" alt="Player profile picture" data-toggle="modal" data-target="#edit-avatar-modal">
+                                @else
+                                    <div style="width:180px;height:180px;padding:1em;" class="img-thumbnail mr-3 interactive" id="edit-avatar" data-toggle="modal" data-target="#edit-avatar-modal"><i class="fa fa-user w-100 h-100"></i></div>
+                                @endif
+                                <div class="media-body">
+                                    <h5 class="mt-0"><strong>Bio</strong></h5>
+                                    <p contenteditable="true" id="bio" class="form-control-static interactive">{{$user->bio}}</p>
                                 </div>
                             </div>
                         </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row justify-content-center mb-4">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header"><h3>Messages</h3></div>
+                <div class="card-body">
+                    <div class="list-group">
+                        @forelse($user->received_messages as $message)
+                            <div class="input-group mb-2">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text"><input type="checkbox" name="message-select" id="message-select-{{$message->id}}"></div>
+                                </div>
+                                <div id="message-{{$message->id}}" class="row">
+                                    <div class="col-4"><strong>{{$message->message_title}}</strong></div>
+                                    <div class="col-8">{{$message->message_body}}</div>
+                                </div>
+                            </div>
+                        @empty
+                            <p><i>No messages...</i></p>
+                        @endforelse
                     </div>
                 </div>
             </div>
@@ -49,45 +78,43 @@
                             {{ session('status') }}
                         </div>
                     @endif
-                    {{-- MAP TABLE --}}
-                    <table id="map-table" class="table table-stripped">
-                        <tbody id="map-rows">
-                            @foreach($maps as $map)
-                                <tr id="map-{{$map->id}}" class="map-row">
-                                    {{-- NAME AND IMAGE --}}
-                                    <td class="w-50">
-                                        <a class="map-link" href="/maps/{{$map->map_url}}">
-                                            <h4 id="map-name-header-{{$map->id}}">{{$map->map_name}}</h4>
-                                            <img id="{{$map->map_url}}" src="{{$map->map_preview_url}}" alt="{{$map->map_name}}" class="img-thumbnail">
-                                        </a>
-                                    </td>
-                                    <td class="w-50">
-                                        <div class="row mb-2">
-                                            <div class="col-12">
-                                                {{-- CONFIG --}}
-                                                <button class="btn btn-secondary btn-block config-map" data-map-id="{{$map->id}}" data-map-name="{{$map->map_name}}" data-toggle="modal" data-target="#config-map-modal">Configure</button>
-                                            </div>
-                                            
-                                        </div>
-                                        <div class="row mb-2">
-                                            <div class="col-12">
-                                                {{-- PLAYERS --}}
-                                                <button class="btn btn-primary btn-block manage-players" data-map-id="{{$map->id}}" data-map-name="{{$map->map_name}}" data-toggle="modal" data-target="#manage-players-modal">Manage Players</button>
-                                            </div>
-                                            
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-12">
-                                                {{-- DELETE --}}
-                                                <button class="btn btn-danger btn-block delete-map" data-map-id="{{$map->id}}" data-toggle="modal" data-target="#delete-map-modal">Delete</button>
-                                            </div>
-                                        </div>
-                                    </td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
+                    {{-- MAP LIST GROUP --}}
+                    <div id="map-rows" class="list-group">
+                        @forelse($maps as $map)
+                            <x-map-list :map="$map" />
+                        @empty
+                            <p><i>No maps...</i></p>
+                        @endforelse
+                    </div>
                 </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{{-- EDIT AVATAR MODAL --}}
+<div class="modal" id="edit-avatar-modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit avatar</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="avatar-upload">
+                    <input type="hidden" id="user-id" name="user-id" value="{{$user->id}}">
+                    <div class="form-group">
+                        <label for="avatar">Select an image to upload.</label>
+                        <input type="file" accept=".jpg, .jpeg" class="form-control" name="avatar" id="avatar" required>
+                        <small id="emailHelp" class="form-text text-muted">1mb maximum upload size.</small>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="submit" form="avatar-upload" class="btn btn-primary" id="confirm-add-map">Submit</button>
             </div>
         </div>
     </div>
@@ -167,22 +194,29 @@
     </div>
 </div>
 
-{{-- MANAGE PLAYERS MODAL --}}
-<div class="modal" id="manage-players-modal" tabindex="-1" role="dialog">
+{{-- ADD PLAYERS MODAL --}}
+<div class="modal" id="add-players-modal" tabindex="-1" role="dialog">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Manage Players</h5>
+                <h5 class="modal-title">Add Players</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
-                <input type="hidden" id="map-id">
+                <input type="hidden" id="add-player-map-id">
                 <div class="form-group">
                     <label for="player-search"><strong>Search for players in our database</strong></label>
                     <small class="form-text text-muted">Search by name or player #</small>
-                    <select class="form-control" id="player-search"></select>
+                    <div class="input-group">
+                        <select class="custom-select" id="player-search"></select>
+                        <div class="input-group-append"><button class="btn btn-primary" id="confirm-add-player">Add Player</button></div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="pending-request-list"><strong>Pending Requests</strong></label>
+                    <div class="list-group" id="pending-request-list"></div>
                 </div>
             </div>
             <div class="modal-footer">

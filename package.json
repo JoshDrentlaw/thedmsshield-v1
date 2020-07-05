@@ -24,6 +24,7 @@
     },
     "dependencies": {
         "@fortawesome/fontawesome-free": "^5.13.0",
+        "@ttskch/select2-bootstrap4-theme": "^1.4.0",
         "leaflet-sidebar-v2": "^3.2.3",
         "pnotify": "^5.1.2"
     }

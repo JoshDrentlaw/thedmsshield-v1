@@ -1,12 +1,12 @@
 $(document).ready(function() {
-    //DESCRIPTION
-    $('#description').on('focus', function() {
+    //BIO
+    $('#bio').on('focus', function() {
         $(this).addClass('editing')
     }).on('blur', function() {
         $(this).removeClass('editing')
-        let description = $(this).text()
+        let bio = $(this).text()
         let id = $('#user-id').val()
-        axios.post(`/dashboard/${id}/description`, { description })
+        axios.post(`/dashboard/${id}/bio`, { bio })
             .then(res => {
                 if (res.data.status === 200) {
                     $('#success-message').text(res.data.message)
@@ -16,6 +16,31 @@ $(document).ready(function() {
                     }, 3000)
                 }
             })
+    })
+
+    // EDIT AVATAR
+    $('#avatar-upload').on('submit', function(e) {
+        e.preventDefault()
+        let $this = $(this)
+        let id = $('#user-id').val()
+        let imgUpload = new FormData($(this)[0])
+        axios({
+            method: 'post',
+            url: `/dashboard/${id}/avatar`,
+            data: imgUpload,
+            headers: {'Content-Type': 'multipart/form-data'}
+        })
+        .then(res => {
+            if (res.data.status === 200) {
+                $('#add-map-modal').modal('hide')
+                $('#success-message').text(res.data.message)
+                $('#success-message-alert').removeClass('invisible')
+                setTimeout(function() {
+                    $('#success-message-alert').addClass('fade')
+                }, 3000)
+                $this.replaceWith(`<img src="${res.data.avatar_url}" class="img-thumbnail mr-3 interactive" id="edit-avatar" alt="Player profile picture" data-toggle="modal" data-target="#edit-avatar-modal">`).fadeIn()
+            }
+        })
     })
 
     // ADD NEW MAP
@@ -36,45 +61,9 @@ $(document).ready(function() {
                 setTimeout(function() {
                     $('#success-message-alert').addClass('fade')
                 }, 3000)
-                $('#map-rows').append(`
-                    <tr id="map-${res.data.map.id}" class="map-row">
-                        <td>
-                            <a class="map-link" href="/maps/${res.data.map.id}">
-                                <h4>${res.data.map.map_name}</h4>
-                                <img src="${res.data.map.map_preview_url}" alt="${res.data.map.map_name}" class="img-thumbnail">
-                            </a>
-                        </td>
-                        <td><button class="btn btn-secondary config-map" data-map-id="${res.data.map.id}" data-map-name="${res.data.map.name}" data-toggle="modal" data-target="#config-map-modal">Configure</button></td>
-                        <td><button class="btn btn-danger delete-map" data-map-id="${res.data.map.id}" data-toggle="modal" data-target="#delete-map-modal">Delete</button></td>
-                    </tr>
-                `).fadeIn()
+                $('#map-rows').append(res.data.html).fadeIn()
             }
         })
-    })
-
-    // CONFIRM DELETION OF MAP
-    $('#confirm-delete-map').on('click', function() {
-        const id = $('#map-id').val()
-        axios.delete(`/maps/${id}`)
-            .then(res => {
-                if (res.data.status === 200) {
-                    $('#delete-map-modal').modal('hide')
-                    $('#success-message').text(res.data.message)
-                    $('#success-message-alert').removeClass('invisible')
-                    $(`#map-${id}`).addClass('fade')
-                    setTimeout(function() {
-                        $(`#map-${id}`).remove()
-                    }, 500)
-                    setTimeout(function() {
-                        $('#success-message-alert').addClass('fade')
-                    }, 3000)
-                }
-            })
-    })
-
-    // SET DELETE MAP MODDAL
-    $(document).on('click', '.delete-map', function() {
-        $('#map-id').val($(this).data('map-id'))
     })
 
     // SET CONFIG MAP MODAL
@@ -127,6 +116,61 @@ $(document).ready(function() {
             })
     })
 
+    // SET ADD PLAYERS MODAL
+    $(document).on('click', '.add-players', function() {
+        $('#player-search').val(null).trigger('change')
+        let id = $(this).data('map-id')
+        $('#add-player-map-id').val(id)
+        axios.post('/dashboard/get_pending_players', { id })
+            .then(res => {
+                if (res.status === 200) {
+                    $('#pending-request-list').html(res.data.html)
+                }
+            })
+    })
+
+    // SEND PLAYER REQUEST
+    $('#confirm-add-player').on('click', function() {
+        let id = $('#add-player-map-id').val()
+        let playerId = $('#player-search').val()
+        axios.post('/dashboard/send_player_request', {id, playerId})
+            .then(res => {
+                if (res.status === 200) {
+                    $('#success-message').text(res.data.message)
+                    $('#success-message-alert').removeClass('invisible')
+                    setTimeout(function() {
+                        $('#success-message-alert').addClass('fade')
+                    }, 3000)
+                    $('#pending-request-list').append(res.data.html).fadeIn()
+                }
+            })
+    })
+
+    // CONFIRM DELETION OF MAP
+    $('#confirm-delete-map').on('click', function() {
+        const id = $('#map-id').val()
+        axios.delete(`/maps/${id}`)
+            .then(res => {
+                if (res.data.status === 200) {
+                    $('#delete-map-modal').modal('hide')
+                    $('#success-message').text(res.data.message)
+                    $('#success-message-alert').removeClass('invisible')
+                    $(`#map-${id}`).addClass('fade')
+                    setTimeout(function() {
+                        $(`#map-${id}`).remove()
+                    }, 500)
+                    setTimeout(function() {
+                        $('#success-message-alert').addClass('fade')
+                    }, 3000)
+                }
+            })
+    })
+
+    // SET DELETE MAP MODDAL
+    $(document).on('click', '.delete-map', function() {
+        $('#map-id').val($(this).data('map-id'))
+    })
+
     /*===========================*
     *
     *
@@ -145,16 +189,17 @@ $(document).ready(function() {
             data: function (params) {
                 return {
                 _token: CSRF_TOKEN,
-                search: params.term // search term
+                search: params.term, // search term
+                id: $('#user-id').val()
                 };
             },
         },
-        dropdownParent: $('#manage-players-modal'),
+        dropdownParent: $('#add-players-modal'),
         placeholder: 'Search players',
-        width: '100%',
+        theme: 'bootstrap4',
         minimumInputLength: 1,
         templateResult: customPlayerSearchResults,
-        templateSelection: customPlayerSearchSelection
+        // templateSelection: customPlayerSearchSelection
     })
 
     function customPlayerSearchSelection(state) {
@@ -165,19 +210,27 @@ $(document).ready(function() {
     }
 
     function customPlayerSearchResults(state) {
-        console.log(state)
         if (!state.id) {
             return state.text
         }
 
         return $(`
             <div class="media">
-                <img src="${state.avatar_url ? state.avatar_url : ''}" class="mr-3" alt="player avater">
+                ${
+                    state.avatar_url_small ?
+                    `<img src="${state.avatar_url_small}" class="mr-3" alt="player avater">` :
+                    `<div style="width:64px;height:64px;padding:0.5em;"><i class="w-100 h-100 fa fa-user"></i></div>`
+                }
                 <div class="media-body">
                     <h5 class="mt-0">${state.text}</h5>
-                    ${state.description ? state.description : null}
+                    ${state.bio ? state.bio : '<i>No bio...</i>'}
                 </div>
             </div>
         `)
     }
+
+    $('#confirm-add-player').on('click', function() {
+        let id = $('#player-search').val()
+        $.post()
+    })
 })

@@ -14,20 +14,22 @@ use Illuminate\Support\Facades\Auth;
 |
 */
 
+Route::resources([
+    'markers' => 'MarkersController',
+    'maps' => 'MapsController',
+    'profile' => 'ProfileController'
+]);
+
 Route::get('/', 'PagesController@index');
 
 Route::get('/cypher_calculator', 'PagesController@cypher_calculator');
 
-Route::resource('markers', 'MarkersController');
-Route::resource('maps', 'MapsController');
 Route::put('maps/{id}/{type}', 'MapsController@update');
-
-/* Route::get('/cypher-roller/{id}', function ($id) {
-    return view('pages.cypher-roller.'.$id);
-}); */
-
-Auth::routes();
 
 Route::get('/dashboard', 'DashboardController@index')->name('dashboard');
 Route::post('/dashboard/{id}/{type}', 'DashboardController@update');
 Route::post('/dashboard/player_search', 'DashboardController@player_search');
+Route::post('/dashboard/get_pending_players', 'DashboardController@get_pending_players');
+Route::post('/dashboard/send_player_request', 'DashboardController@send_player_request');
+
+Auth::routes();

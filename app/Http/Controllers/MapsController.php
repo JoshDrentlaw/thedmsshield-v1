@@ -61,7 +61,8 @@ class MapsController extends Controller
         $map->map_image_url = Cloudder::secureShow($map->map_public_id, ['width' => $width, 'height' => $height, 'format' => 'jpg']);
         $map->map_preview_url = Cloudder::secureShow($map->map_public_id, ['width' => 300, 'height' => 195, 'crop' => 'scale', 'format' => 'jpg']);
         $map->save();
-        return  ['status' => 200, 'message' => 'Map added', 'map' => $map];
+        $html = view('components.map-list', compact('map'))->render();
+        return  ['status' => 200, 'message' => 'Map added', 'map' => $map, 'html' => $html];
     }
 
     /**
@@ -74,9 +75,14 @@ class MapsController extends Controller
     {
         $map = Map::firstWhere('map_url', $id);
         $markers = $map->markers;
+        $players = $map->players->reject(function ($player) {
+            return $player->pivot->accepted == 0;
+        });
+
         return view('maps.show', [
             'map' => $map,
-            'markers' => $markers
+            'markers' => $markers,
+            'players' => $players
         ]);
     }
 
@@ -123,7 +129,6 @@ class MapsController extends Controller
                 Map::where('id', $id)->update(['map_name' => $request->map_name, 'map_url' => $map_url]);
                 return ['status' => 200, 'message' => 'Map name updated', 'map_url' => $map_url];
         }
-        
     }
 
     /**
@@ -138,5 +143,13 @@ class MapsController extends Controller
         Cloudder::destroyImages([$map->map_public_id]);
         $map->delete();
         return ['status' => 200, 'message' => 'Map deleted'];
+    }
+
+    public function get_active_players($id)
+    {
+        $map = Map::find($id);
+        return $map->players->reject(function($player) {
+            return $player->pivot->accept == 1;
+        });
     }
 }
