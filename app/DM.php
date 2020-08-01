@@ -17,7 +17,7 @@ class DM extends Model
     }
 
     public function maps() {
-        return $this->hasMany('App\Map');
+        return $this->hasMany('App\Map', 'dm_id');
     }
 
     public function markers() {
