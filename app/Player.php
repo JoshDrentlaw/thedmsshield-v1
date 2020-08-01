@@ -19,4 +19,8 @@ class Player extends Model
     public function maps() {
         return $this->belongsToMany('App\Map');
     }
+
+    public function received_invites() {
+        return $this->hasMany('App\Invites', 'to_id');
+    }
 }

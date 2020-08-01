@@ -9,11 +9,11 @@ $(document).ready(function() {
         axios.post(`/dashboard/${id}/bio`, { bio })
             .then(res => {
                 if (res.data.status === 200) {
-                    $('#success-message').text(res.data.message)
-                    $('#success-message-alert').removeClass('invisible')
-                    setTimeout(function() {
-                        $('#success-message-alert').addClass('fade')
-                    }, 3000)
+                    PNotify.success({
+                        title: 'Bio updated',
+                        text: res.data.msg,
+                        delay: 1000
+                    })
                 }
             })
     })
@@ -33,11 +33,11 @@ $(document).ready(function() {
         .then(res => {
             if (res.data.status === 200) {
                 $('#add-map-modal').modal('hide')
-                $('#success-message').text(res.data.message)
-                $('#success-message-alert').removeClass('invisible')
-                setTimeout(function() {
-                    $('#success-message-alert').addClass('fade')
-                }, 3000)
+                PNotify.success({
+                    title: 'Avatar updated',
+                    text: res.data.msg,
+                    delay: 1000
+                })
                 $this.replaceWith(`<img src="${res.data.avatar_url}" class="img-thumbnail mr-3 interactive" id="edit-avatar" alt="Player profile picture" data-toggle="modal" data-target="#edit-avatar-modal">`).fadeIn()
             }
         })
@@ -56,11 +56,11 @@ $(document).ready(function() {
         .then(res => {
             if (res.data.status === 200) {
                 $('#add-map-modal').modal('hide')
-                $('#success-message').text(res.data.message)
-                $('#success-message-alert').removeClass('invisible')
-                setTimeout(function() {
-                    $('#success-message-alert').addClass('fade')
-                }, 3000)
+                PNotify.success({
+                    title: 'Map added',
+                    text: res.data.msg,
+                    delay: 1000
+                })
                 $('#map-rows').append(res.data.html).fadeIn()
             }
         })
@@ -84,11 +84,11 @@ $(document).ready(function() {
         .then(res => {
             if (res.status === 200) {
                 $('#new-map-image').val('')
-                $('#success-message').text(res.data.message)
-                $('#success-message-alert').removeClass('invisible')
-                setTimeout(function() {
-                    $('#success-message-alert').addClass('fade')
-                }, 3000)
+                PNotify.success({
+                    title: 'Map updated',
+                    text: res.data.msg,
+                    delay: 1000
+                })
                 let d = new Date()
                 $(`#${res.data.map.map_url}`).attr('src', res.data.map.map_preview_url + '?' + d.getTime())
             }
@@ -107,41 +107,11 @@ $(document).ready(function() {
                     $(`#map-${id}`).find('.map-link').attr('href', `/maps/${res.data.map_url}`)
                     $('#config-map-name').text(map_name)
                     $(`#map-name-header-${id}`).text(map_name)
-                    $('#success-message').text(res.data.message)
-                    $('#success-message-alert').removeClass('invisible')
-                    setTimeout(function() {
-                        $('#success-message-alert').addClass('fade')
-                    }, 3000)
-                }
-            })
-    })
-
-    // SET ADD PLAYERS MODAL
-    $(document).on('click', '.add-players', function() {
-        $('#player-search').val(null).trigger('change')
-        let id = $(this).data('map-id')
-        $('#add-player-map-id').val(id)
-        axios.post('/dashboard/get_pending_players', { id })
-            .then(res => {
-                if (res.status === 200) {
-                    $('#pending-request-list').html(res.data.html)
-                }
-            })
-    })
-
-    // SEND PLAYER REQUEST
-    $('#confirm-add-player').on('click', function() {
-        let id = $('#add-player-map-id').val()
-        let playerId = $('#player-search').val()
-        axios.post('/dashboard/send_player_request', {id, playerId})
-            .then(res => {
-                if (res.status === 200) {
-                    $('#success-message').text(res.data.message)
-                    $('#success-message-alert').removeClass('invisible')
-                    setTimeout(function() {
-                        $('#success-message-alert').addClass('fade')
-                    }, 3000)
-                    $('#pending-request-list').append(res.data.html).fadeIn()
+                    PNotify.success({
+                        title: 'Map name updated',
+                        text: res.data.msg,
+                        delay: 1000
+                    })
                 }
             })
     })
@@ -153,15 +123,15 @@ $(document).ready(function() {
             .then(res => {
                 if (res.data.status === 200) {
                     $('#delete-map-modal').modal('hide')
-                    $('#success-message').text(res.data.message)
-                    $('#success-message-alert').removeClass('invisible')
                     $(`#map-${id}`).addClass('fade')
                     setTimeout(function() {
                         $(`#map-${id}`).remove()
                     }, 500)
-                    setTimeout(function() {
-                        $('#success-message-alert').addClass('fade')
-                    }, 3000)
+                    PNotify.success({
+                        title: 'Map deleted',
+                        text: res.data.msg,
+                        delay: 1000
+                    })
                 }
             })
     })
@@ -229,8 +199,34 @@ $(document).ready(function() {
         `)
     }
 
+    // SET ADD PLAYERS MODAL
+    $(document).on('click', '.add-players', function() {
+        $('#player-search').val(null).trigger('change')
+        let id = $(this).data('map-id')
+        $('#add-player-map-id').val(id)
+        axios.post('/dashboard/get_pending_players', { id })
+            .then(res => {
+                if (res.status === 200) {
+                    $('#pending-invite-list').html(res.data.html)
+                }
+            })
+    })
+
+    // SEND PLAYER REQUEST
     $('#confirm-add-player').on('click', function() {
-        let id = $('#player-search').val()
-        $.post()
+        let id = parseInt($('#add-player-map-id').val())
+        let playerId = parseInt($('#player-search').val())
+        axios.post(`/dashboard/send_player_request`, { id, playerId })
+            .then(res => {
+                if (res.status === 200) {
+                    PNotify.success({
+                        title: 'Invite sent',
+                        text: res.data.msg,
+                        delay: 1000
+                    })
+                    $('#pending-invite-list').children().remove()
+                    $('#pending-invite-list').html(res.data.html).fadeIn()
+                }
+            })
     })
 })

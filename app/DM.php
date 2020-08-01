@@ -16,8 +16,12 @@ class DM extends Model
         return $this->belongsTo('App\User');
     }
 
+    public function sent_invites() {
+        return $this->hasMany('App\Invites', 'from_id');
+    }
+
     public function maps() {
-        return $this->hasMany('App\Map');
+        return $this->hasMany('App\Map', 'dm_id');
     }
 
     public function markers() {

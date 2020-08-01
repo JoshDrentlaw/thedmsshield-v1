@@ -8,6 +8,7 @@
     <div class="jumbotron text-center">
         <h1 class="display-4">Dashboard</h1>
     </div>
+    {{-- USER SECTION --}}
     <div class="row justify-content-center mb-4">
         <div class="col-md-8">
             <div class="card">
@@ -38,30 +39,47 @@
             </div>
         </div>
     </div>
+    {{-- MESSAGES --}}
     <div class="row justify-content-center mb-4">
         <div class="col-md-8">
             <div class="card">
                 <div class="card-header"><h3>Messages</h3></div>
                 <div class="card-body">
-                    <div class="list-group">
-                        @forelse($user->received_messages as $message)
-                            <div class="input-group mb-2">
-                                <div class="input-group-prepend">
-                                    <div class="input-group-text"><input type="checkbox" name="message-select" id="message-select-{{$message->id}}"></div>
+                    <div class="row no-gutters">
+                        <div class="col-sm-12">
+                            <div class="btn-group">
+                                <button class="btn btn-outline-secondary">Select all</button>
+                                <button class="btn btn-outline-secondary">Mark read</button>
+                                <button class="btn btn-outline-secondary">Delete</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="list-group list-group-flush">
+                    @forelse($user->received_messages as $message)
+                        <a href="/message/{{$message->id}}" class="list-group-item list-group-item-action">
+                            <div class="row no-gutters">
+                                <div class="col-sm-1">
+                                    <input type="checkbox" name="message-select" data-id="{{$message->id}}">
                                 </div>
-                                <div id="message-{{$message->id}}" class="row">
-                                    <div class="col-4"><strong>{{$message->message_title}}</strong></div>
-                                    <div class="col-8">{{$message->message_body}}</div>
+                                <div class="col-sm-3"><strong>{{$message->message_title}}</strong></div>
+                                <div class="col-sm-8">{{$message->body}}</div>
+                            </div>
+                        </a>
+                    @empty
+                        <div class="list-group-item">
+                            <div class="row no-gutters">
+                                <div class="col-12">
+                                    <i>No messages...</i>
                                 </div>
                             </div>
-                        @empty
-                            <p><i>No messages...</i></p>
-                        @endforelse
-                    </div>
+                        </div>
+                    @endforelse
                 </div>
             </div>
         </div>
     </div>
+    {{-- MAPS --}}
     <div class="row justify-content-center mb-4">
         <div class="col-md-8">
             {{-- MAPS CARD --}}
@@ -215,8 +233,8 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="pending-request-list"><strong>Pending Requests</strong></label>
-                    <div class="list-group" id="pending-request-list"></div>
+                    <label for="pending-invite-list"><strong>Pending Invites</strong></label>
+                    <div class="list-group" id="pending-invite-list"></div>
                 </div>
             </div>
             <div class="modal-footer">
