@@ -24,8 +24,8 @@ class Invites extends Model
         return $this->hasOne('App\Message');
     }
 
-    public function map()
+    public function campaign()
     {
-        return $this->hasOne('App\Map');
+        return $this->hasOne('App\Campaign');
     }
 }

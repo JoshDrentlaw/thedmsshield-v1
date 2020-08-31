@@ -48,8 +48,8 @@ class ProfileController extends Controller
     public function show($id)
     {
         $user = User::find($id);
-        $maps = $user->dm->maps;
-        return view('profile.show', compact('user', 'maps'));
+        $campaigns = $user->dm->campaigns;
+        return view('profile.show', compact('user', 'campaigns'));
     }
 
     /**

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Campaign;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\User;
@@ -35,8 +36,8 @@ class DashboardController extends Controller
         $user_id = auth()->user()->id;
         $user = User::find($user_id);
         $dm = $user->dm;
-        $maps = $dm->maps;
-        return view('pages.dashboard', compact('maps', 'user', 'dm'));
+        $campaigns = $dm->campaigns;
+        return view('pages.dashboard', compact('campaigns', 'user', 'dm'));
     }
 
     public function message($id)
@@ -98,36 +99,36 @@ class DashboardController extends Controller
     }
 
     public function get_pending_players(Request $request) {
-        $map = Map::find($request->post('id'));
-        $players = $map->pending_players;
+        $campaign = Campaign::find($request->post('id'));
+        $players = $campaign->pending_players;
         $html = view('components.pending-invites', compact('players'))->render();
         return compact('html');
     }
 
     public function send_player_invite(Request $request) {
-        $map_id = $request->post('id');
-        $map = Map::find($map_id);
-        $dm = $map->dm;
+        $campaign_id = $request->post('id');
+        $campaign = Campaign::find($campaign_id);
+        $dm = $campaign->dm;
         $player_id = $request->post('playerId');
         // NEW MAP INVITE
         $invite = new Invites;
         $invite->from_id = $dm->id;
         $invite->to_id = $player_id;
-        $invite->map_id = $map_id;
+        $invite->campaign_id = $campaign_id;
         // NEW MESSAGE
         $message = new Message;
         $message->from_id = $dm->id;
         $message->to_id = $player_id;
-        $message->title = "New map invite";
-        $message->body = "{$dm->user->name} has invited you to join {$map->map_name}.";
+        $message->title = "New campaign invite";
+        $message->body = "{$dm->user->name} has invited you to join {$campaign->campaign_name}.";
         $message->message_type = 'invite';
         // ASSIGN ID'S
         $message->save();
         $invite->message_id = $message->id;
         $invite->save();
-        $message->update(['map_request_id' => $invite->id]);
+        $message->update(['invite_id' => $invite->id]);
         // GET PENDING PLAYERS COMPONENT
-        $players = $map->pending_players;
+        $players = $campaign->pending_players;
         $html = view('components.pending-invites', compact('players'))->render();
         $msg = "Player invite sent";
         return compact('html', 'msg');
@@ -136,7 +137,7 @@ class DashboardController extends Controller
     public function accept_map_invite(Request $request)
     {
         Invites::find($request->post('id'))->update(['accepted' => 1]);
-        $msg = 'Map invite accepts!';
+        $msg = 'Campaign invite accepted!';
         return compact('msg');
     }
 

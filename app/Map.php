@@ -3,7 +3,6 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-use App\Player;
 
 class Map extends Model
 {
@@ -18,42 +17,20 @@ class Map extends Model
     // Disable timestamps
     // public $timestamps = false;
 
+    public function campaign() {
+        return $this->belongsTo('App\Campaign');
+    }
+
     public function dm() {
-        return $this->belongsTo('App\DM', 'dm_id');
+        return $this->hasOneThrough('App\DM', 'App\Campaign');
     }
 
     public function players() {
-        return $this->belongsToMany('App\Player');
-    }
-
-    public function invites() {
-        return $this->hasMany('App\Invites');
+        return $this->hasManyThrough('App\Player', 'App\Campaign');
     }
 
     public function markers() {
         return $this->hasMany('App\Marker');
-    }
-
-    public function getActivePlayersAttribute()
-    {
-        $pending = collect([]);
-        foreach ($this->invites as $invite) {
-            if ($invite->accepted == 1) {
-                $pending->push($invite->player_sent_to);
-            }
-        }
-        return $pending;
-    }
-
-    public function getPendingPlayersAttribute()
-    {
-        $pending = collect([]);
-        foreach ($this->invites as $invite) {
-            if ($invite->accepted == 0) {
-                $pending->push($invite->player_sent_to);
-            }
-        }
-        return $pending;
     }
 
     protected static function booted()

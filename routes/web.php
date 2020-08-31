@@ -17,12 +17,15 @@ use Illuminate\Support\Facades\Auth;
 Route::resources([
     'markers' => 'MarkersController',
     'maps' => 'MapsController',
-    'profile' => 'ProfileController'
+    'profile' => 'ProfileController',
+    'campaigns' => 'CampaignsController'
 ]);
 
 Route::get('/', 'PagesController@index');
 
 Route::get('/cypher_calculator', 'PagesController@cypher_calculator');
+
+Route::put('campaigns/{id}/{type}', 'CampaignsController@update');
 
 Route::put('maps/{id}/{type}', 'MapsController@update');
 

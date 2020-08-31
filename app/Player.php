@@ -16,8 +16,8 @@ class Player extends Model
         return $this->belongsTo('App\User');
     }
 
-    public function maps() {
-        return $this->belongsToMany('App\Map');
+    public function campaigns() {
+        return $this->belongsToMany('App\Campaign');
     }
 
     public function received_invites() {

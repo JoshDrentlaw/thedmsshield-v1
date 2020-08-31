@@ -40,11 +40,11 @@
     </div>
     <div class="row justify-content-center mb-4">
         <div class="col-md-8">
-            {{-- MAPS CARD --}}
+            {{-- CAMPAIGNS CARD --}}
             <div class="card">
                 <div class="card-header">
                     <h3>
-                        Maps
+                        Campaigns
                     </h3>
                 </div>
                 <div class="card-body">
@@ -53,12 +53,12 @@
                             {{ session('status') }}
                         </div>
                     @endif
-                    {{-- MAP LIST GROUP --}}
-                    <div id="map-rows" class="list-group">
-                        @forelse($maps as $map)
-                            <x-map-list-profile :map="$map" />
+                    {{-- CAMPAIGN LIST GROUP --}}
+                    <div id="campaign-rows" class="list-group">
+                        @forelse($campaigns as $campaign)
+                            <x-campaign-list-profile :campaign="$campaign" />
                         @empty
-                            <p><i>No maps...</i></p>
+                            <p><i>No campaigns...</i></p>
                         @endforelse
                     </div>
                 </div>

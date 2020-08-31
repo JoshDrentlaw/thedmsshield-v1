@@ -79,15 +79,15 @@
             </div>
         </div>
     </div>
-    {{-- MAPS --}}
+    {{-- CAMPAIGNS --}}
     <div class="row justify-content-center mb-4">
         <div class="col-md-8">
-            {{-- MAPS CARD --}}
+            {{-- CAMPAIGNS CARD --}}
             <div class="card">
                 <div class="card-header">
                     <h3>
-                        Maps
-                        <button id="add-map" class="btn btn-success float-right" data-toggle="modal" data-target="#add-map-modal">Add map</button>
+                        Campaigns
+                        <button id="add-campaign" class="btn btn-success float-right" data-toggle="modal" data-target="#add-campaign-modal">Add campaign</button>
                     </h3>
                 </div>
                 <div class="card-body">
@@ -96,12 +96,12 @@
                             {{ session('status') }}
                         </div>
                     @endif
-                    {{-- MAP LIST GROUP --}}
-                    <div id="map-rows" class="list-group">
-                        @forelse($maps as $map)
-                            <x-map-list :map="$map" />
+                    {{-- CAMPAIGN LIST GROUP --}}
+                    <div id="campaign-rows" class="list-group">
+                        @forelse($campaigns as $campaign)
+                            <x-campaign-list :campaign="$campaign" />
                         @empty
-                            <p><i>No maps...</i></p>
+                            <p><i>No campaigns...</i></p>
                         @endforelse
                     </div>
                 </div>
@@ -132,81 +132,50 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="submit" form="avatar-upload" class="btn btn-primary" id="confirm-add-map">Submit</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-{{-- ADD MAP MODAL --}}
-<div class="modal" id="add-map-modal" tabindex="-1" role="dialog">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Add map</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <form id="map-upload">
-                    <input type="hidden" id="map-id" name="map-id" value="{{$user->id}}">
-                    <div class="form-group">
-                        <label for="map-image">Select an image to upload.</label>
-                        <input type="file" accept=".jpg, .jpeg, .png" class="form-control" name="map-image" id="map-image" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="map-name">Map name</label>
-                        <input type="text" class="form-control" id="map-name" name="map-name" required>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="submit" form="map-upload" class="btn btn-primary" id="confirm-add-map">Add map</button>
+                <button type="submit" form="avatar-upload" class="btn btn-primary" id="confirm-add-campaign">Submit</button>
             </div>
         </div>
     </div>
 </div>
 
 {{-- CONFIG MAP MODAL --}}
-<div class="modal" id="config-map-modal" tabindex="-1" role="dialog">
+<div class="modal" id="config-campaign-modal" tabindex="-1" role="dialog">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Config <span id="config-map-name"></span></h5>
+                <h5 class="modal-title">Config <span id="config-campaign-name"></span></h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
-                <input type="hidden" id="config-map-id" name="old-map-id">
+                <input type="hidden" id="config-campaign-id" name="old-campaign-id">
                 {{-- REPLACE MAP IMAGE --}}
-                <form id="new-map-form">
+                <form id="new-campaign-form">
                     <div class="form-group">
-                        <label for="new-map-image">Change map image</label>
+                        <label for="new-campaign-image">Change campaign image</label>
                         <div class="input-group">
-                            <input type="file" accept=".jpg, .jpeg, .png" name="new-map-image" class="form-control" id="new-map-image" required>
+                            <input type="file" accept=".jpg, .jpeg, .png" name="new-campaign-image" class="form-control" id="new-campaign-image" required>
                             <div class="input-group-append">
-                                <button type="submit" form="new-map-form" id="new-map-btn" class="btn btn-primary">Upload</button>
+                                <button type="submit" form="new-campaign-form" id="new-campaign-btn" class="btn btn-primary">Upload</button>
                             </div>
                         </div>
                     </div>
                 </form>
                 {{-- CHANGE MAP NAME --}}
-                <form id="map-name-form">
+                <form id="campaign-name-form">
                     <div class="form-group">
-                        <label for="map-name">Change map name</label>
+                        <label for="campaign-name">Change campaign name</label>
                         <div class="input-group">
-                            <input type="text" class="form-control" id="new-map-name" name="new-map-name">
-                            <div class="input-group-append"><button type="submit" id="map-name-btn" class="btn btn-primary">Save</button></div>
+                            <input type="text" class="form-control" id="new-campaign-name" name="new-campaign-name">
+                            <div class="input-group-append"><button type="submit" id="campaign-name-btn" class="btn btn-primary">Save</button></div>
                         </div>
                     </div>
                 </form>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" id="confirm-change-map">Save changes</button>
+                <button type="button" class="btn btn-primary" id="confirm-change-campaign">Save changes</button>
             </div>
         </div>
     </div>
@@ -223,7 +192,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                <input type="hidden" id="add-player-map-id">
+                <input type="hidden" id="add-player-campaign-id">
                 <div class="form-group">
                     <label for="player-search"><strong>Search for players in our database</strong></label>
                     <small class="form-text text-muted">Search by name or player #</small>
@@ -244,28 +213,6 @@
     </div>
 </div>
 
-{{-- DELETE MAP MODAL --}}
-<div class="modal" id="delete-map-modal" tabindex="-1" role="dialog">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Delete map?</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <input type="hidden" id="map-id">
-                <p>This will permanently delete the selected map and all markers associated with it.</p>
-                <p>Are you sure you want to delete?</p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-danger" id="confirm-delete-map">Delete map</button>
-            </div>
-        </div>
-    </div>
-</div>
 @endsection
 
 @section('scripts')

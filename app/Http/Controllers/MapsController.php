@@ -49,7 +49,7 @@ class MapsController extends Controller
             'map-image'=>'required|mimes:jpeg,bmp,jpg,png|between:1, 6000',
         ]);
         $map = new Map;
-        $map->dm_id = $request->post('map-id');
+        $map->campaign_id = $request->post('map-id');
         $map->map_name = $request->post('map-name');
         $map->map_url = implode('_', explode(' ', strtolower($map->map_name)));
         $image = $request->file('map-image')->path();
@@ -141,13 +141,5 @@ class MapsController extends Controller
         Cloudder::destroyImages([$map->map_public_id]);
         $map->delete();
         return ['status' => 200, 'message' => 'Map deleted'];
-    }
-
-    public function get_active_players($id)
-    {
-        $map = Map::find($id);
-        return $map->players->reject(function($player) {
-            return $player->pivot->accept == 1;
-        });
     }
 }
