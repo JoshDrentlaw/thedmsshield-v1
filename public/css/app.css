@@ -10942,6 +10942,14 @@ a.text-dark:focus {
   font-size: 20px;
 }
 
+.interactive {
+  cursor: pointer;
+}
+
+.interactive:focus {
+  cursor: text;
+}
+
 .form-check {
   height: auto;
   font-size: x-large;
@@ -10966,7 +10974,9 @@ a.text-dark:focus {
 }
 
 .map-link,
-.map-link:hover {
+.map-link:hover,
+.player-link,
+.player-link:hover {
   color: black;
   text-decoration: none;
 }

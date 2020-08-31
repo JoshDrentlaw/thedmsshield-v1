@@ -8,5 +8,6 @@
     "/css/pnotify.css": "/css/pnotify.css",
     "/css/pnotifyMobile.css": "/css/pnotifyMobile.css",
     "/css/leaflet-sidebar.min.css": "/css/leaflet-sidebar.min.css",
-    "/css/fa-all.css": "/css/fa-all.css"
+    "/css/fa-all.css": "/css/fa-all.css",
+    "/css/select2-bs4.css": "/css/select2-bs4.css"
 }

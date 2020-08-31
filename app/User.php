@@ -44,4 +44,12 @@ class User extends Authenticatable
     public function player() {
         return $this->hasOne('App\Player');
     }
+
+    public function sent_messages() {
+        return $this->hasMany('App\Message', 'from_id');
+    }
+
+    public function received_messages() {
+        return $this->hasMany('App\Message', 'to_id');
+    }
 }

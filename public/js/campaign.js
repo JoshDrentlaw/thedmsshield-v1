@@ -1,32 +1,11 @@
 $(document).ready(function() {
-    //BIO
-    $('#bio').on('focus', function() {
-        $(this).addClass('editing')
-    }).on('blur', function() {
-        $(this).removeClass('editing')
-        let bio = $(this).text()
-        let id = $('#user-id').val()
-        axios.post(`/dashboard/${id}/bio`, { bio })
-            .then(res => {
-                if (res.data.status === 200) {
-                    PNotify.success({
-                        title: 'Bio updated',
-                        text: res.data.msg,
-                        delay: 1000
-                    })
-                }
-            })
-    })
-
-    // EDIT AVATAR
-    $('#avatar-upload').on('submit', function(e) {
+    // ADD NEW MAP
+    $('#map-upload').on('submit', function(e) {
         e.preventDefault()
-        let $this = $(this)
-        let id = $('#user-id').val()
         let imgUpload = new FormData($(this)[0])
         axios({
             method: 'post',
-            url: `/dashboard/${id}/avatar`,
+            url: '/maps',
             data: imgUpload,
             headers: {'Content-Type': 'multipart/form-data'}
         })
@@ -34,83 +13,58 @@ $(document).ready(function() {
             if (res.data.status === 200) {
                 $('#add-map-modal').modal('hide')
                 PNotify.success({
-                    title: 'Avatar updated',
+                    title: 'Map added',
                     text: res.data.msg,
                     delay: 1000
                 })
-                $this.replaceWith(`<img src="${res.data.avatar_url}" class="img-thumbnail mr-3 interactive" id="edit-avatar" alt="Player profile picture" data-toggle="modal" data-target="#edit-avatar-modal">`).fadeIn()
+                $('#map-rows').append(res.data.html).fadeIn()
             }
         })
     })
 
-    // CHANGE TO CAMPAIGN
-    // ADD NEW CAMPAIGN
-    $('#campaign-upload').on('submit', function(e) {
-        e.preventDefault()
-        let imgUpload = new FormData($(this)[0])
-        axios({
-            method: 'post',
-            url: '/campaigns',
-            data: imgUpload,
-            headers: {'Content-Type': 'multipart/form-data'}
-        })
-        .then(res => {
-            if (res.data.status === 200) {
-                $('#add-campaign-modal').modal('hide')
-                PNotify.success({
-                    title: 'Campaign added',
-                    text: res.data.msg,
-                    delay: 1000
-                })
-                $('#campaign-rows').append(res.data.html).fadeIn()
-            }
-        })
+    // SET CONFIG MAP MODAL
+    $(document).on('click', '.config-map', function() {
+        $('#config-map-name').text($(this).data('map-name'))
+        $('#config-map-id').val($(this).data('map-id'))
     })
 
-    // CHANGE TO CAMPAIGN
-    // SET CONFIG CAMPAIGN MODAL
-    $(document).on('click', '.config-campaign', function() {
-        $('#config-campaign-name').text($(this).data('campaign-name'))
-        $('#config-campaign-id').val($(this).data('campaign-id'))
-    })
-
-    // REPLACE CAMPAIGN WITH NEW IMAGE
-    $('#new-campaign-form').on('submit', function(e) {
+    // REPLACE MAP WITH NEW IMAGE
+    $('#new-map-form').on('submit', function(e) {
         e.preventDefault()
-        const id = $('#config-campaign-id').val()
+        const id = $('#config-map-id').val()
         let newImageUpload = new FormData($(this)[0])
         newImageUpload.append('_method', 'PUT')
-        axios.post(`/campaigns/${id}/image`, newImageUpload, {
+        axios.post(`/maps/${id}/image`, newImageUpload, {
             headers: {'Content-Type': 'multipart/form-data'}
         })
         .then(res => {
             if (res.status === 200) {
-                $('#new-campaign-image').val('')
+                $('#new-map-image').val('')
                 PNotify.success({
-                    title: 'Campaign updated',
+                    title: 'Map updated',
                     text: res.data.msg,
                     delay: 1000
                 })
                 let d = new Date()
-                $(`#${res.data.campaign.campaign_url}`).attr('src', res.data.campaign.campaign_preview_url + '?' + d.getTime())
+                $(`#${res.data.map.map_url}`).attr('src', res.data.map.map_preview_url + '?' + d.getTime())
             }
         })
     })
 
-    // REPLACE CAMPAIGN NAME
-    $('#campaign-name-form').on('submit', function(e) {
+    // REPLACE MAP NAME
+    $('#map-name-form').on('submit', function(e) {
         e.preventDefault()
-        const campaign_name = $('#new-campaign-name').val()
-        const id = $('#config-campaign-id').val()
-        axios.put(`/campaigns/${id}/name`, {campaign_name})
+        const map_name = $('#new-map-name').val()
+        const id = $('#config-map-id').val()
+        axios.put(`/maps/${id}/name`, {map_name})
             .then(res => {
                 if (res.status === 200) {
-                    $('#new-campaign-name').val('')
-                    $(`#campaign-${id}`).find('.campaign-link').attr('href', `/campaigns/${res.data.campaign_url}`)
-                    $('#config-campaign-name').text(campaign_name)
-                    $(`#campaign-name-header-${id}`).text(campaign_name)
+                    $('#new-map-name').val('')
+                    $(`#map-${id}`).find('.map-link').attr('href', `/maps/${res.data.map_url}`)
+                    $('#config-map-name').text(map_name)
+                    $(`#map-name-header-${id}`).text(map_name)
                     PNotify.success({
-                        title: 'Campaign name updated',
+                        title: 'Map name updated',
                         text: res.data.msg,
                         delay: 1000
                     })
@@ -118,19 +72,19 @@ $(document).ready(function() {
             })
     })
 
-    // CONFIRM DELETION OF CAMPAIGN
-    $('#confirm-delete-campaign').on('click', function() {
-        const id = $('#campaign-id').val()
-        axios.delete(`/campaigns/${id}`)
+    // CONFIRM DELETION OF MAP
+    $('#confirm-delete-map').on('click', function() {
+        const id = $('#map-id').val()
+        axios.delete(`/maps/${id}`)
             .then(res => {
                 if (res.data.status === 200) {
-                    $('#delete-campaign-modal').modal('hide')
-                    $(`#campaign-${id}`).addClass('fade')
+                    $('#delete-map-modal').modal('hide')
+                    $(`#map-${id}`).addClass('fade')
                     setTimeout(function() {
-                        $(`#campaign-${id}`).remove()
+                        $(`#map-${id}`).remove()
                     }, 500)
                     PNotify.success({
-                        title: 'Campaign deleted',
+                        title: 'Map deleted',
                         text: res.data.msg,
                         delay: 1000
                     })
@@ -138,9 +92,9 @@ $(document).ready(function() {
             })
     })
 
-    // SET DELETE CAMPAIGN MODDAL
-    $(document).on('click', '.delete-campaign', function() {
-        $('#campaign-id').val($(this).data('campaign-id'))
+    // SET DELETE MAP MODDAL
+    $(document).on('click', '.delete-map', function() {
+        $('#map-id').val($(this).data('map-id'))
     })
 
     /*===========================*
@@ -204,8 +158,8 @@ $(document).ready(function() {
     // SET ADD PLAYERS MODAL
     $(document).on('click', '.add-players', function() {
         $('#player-search').val(null).trigger('change')
-        let id = $(this).data('map-id')
-        $('#add-player-map-id').val(id)
+        let id = $(this).data('campaign-id')
+        $('#add-player-campaign-id').val(id)
         axios.post('/dashboard/get_pending_players', { id })
             .then(res => {
                 if (res.status === 200) {
@@ -216,7 +170,7 @@ $(document).ready(function() {
 
     // SEND PLAYER REQUEST
     $('#confirm-add-player').on('click', function() {
-        let id = parseInt($('#add-player-map-id').val())
+        let id = parseInt($('#add-player-campaign-id').val())
         let playerId = parseInt($('#player-search').val())
         axios.post(`/dashboard/send_player_invite`, { id, playerId })
             .then(res => {
