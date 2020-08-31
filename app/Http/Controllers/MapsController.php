@@ -49,7 +49,7 @@ class MapsController extends Controller
             'map-image'=>'required|mimes:jpeg,bmp,jpg,png|between:1, 6000',
         ]);
         $map = new Map;
-        $map->dm_id = $request->post('map-id');
+        $map->campaign_id = $request->post('map-id');
         $map->map_name = $request->post('map-name');
         $map->map_url = implode('_', explode(' ', strtolower($map->map_name)));
         $image = $request->file('map-image')->path();
@@ -61,7 +61,8 @@ class MapsController extends Controller
         $map->map_image_url = Cloudder::secureShow($map->map_public_id, ['width' => $width, 'height' => $height, 'format' => 'jpg']);
         $map->map_preview_url = Cloudder::secureShow($map->map_public_id, ['width' => 300, 'height' => 195, 'crop' => 'scale', 'format' => 'jpg']);
         $map->save();
-        return  ['status' => 200, 'message' => 'Map added', 'map' => $map];
+        $html = view('components.map-list', compact('map'))->render();
+        return  ['status' => 200, 'message' => 'Map added', 'map' => $map, 'html' => $html];
     }
 
     /**
@@ -74,9 +75,12 @@ class MapsController extends Controller
     {
         $map = Map::firstWhere('map_url', $id);
         $markers = $map->markers;
+        $players = $map->active_players;
+
         return view('maps.show', [
             'map' => $map,
-            'markers' => $markers
+            'markers' => $markers,
+            'players' => $players
         ]);
     }
 
@@ -123,7 +127,6 @@ class MapsController extends Controller
                 Map::where('id', $id)->update(['map_name' => $request->map_name, 'map_url' => $map_url]);
                 return ['status' => 200, 'message' => 'Map name updated', 'map_url' => $map_url];
         }
-        
     }
 
     /**

@@ -17,12 +17,16 @@ class Map extends Model
     // Disable timestamps
     // public $timestamps = false;
 
+    public function campaign() {
+        return $this->belongsTo('App\Campaign');
+    }
+
     public function dm() {
-        return $this->belongsTo('App\DM');
+        return $this->hasOneThrough('App\DM', 'App\Campaign');
     }
 
     public function players() {
-        return $this->belongsToMany('App\Player');
+        return $this->hasManyThrough('App\Player', 'App\Campaign');
     }
 
     public function markers() {
