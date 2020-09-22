@@ -18,6 +18,10 @@ class Campaign extends Model
         return $this->hasMany('App\Map');
     }
 
+    public function places() {
+        return $this->hasMany('App\Place');
+    }
+
     public function invites() {
         return $this->hasMany('App\Invites');
     }
@@ -31,6 +35,15 @@ class Campaign extends Model
             }
         }
         return $pending;
+    }
+
+    public function getActivePlayerIdsAttribute()
+    {
+        $ids = [];
+        foreach ($this->active_players as $player) {
+            $ids[] = $player->id;
+        }
+        return $ids;
     }
 
     public function getPendingPlayersAttribute()

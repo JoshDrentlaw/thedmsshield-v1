@@ -6,15 +6,18 @@
         <h4 id="success-message"></h4>
     </div>
     <div class="jumbotron text-center">
-        <h1 class="display-4">{{$campaign->campaign_name}}</h1>
+        <h1 class="display-4">{{$campaign->name}}</h1>
     </div>
     <div class="row players-row justify-content-center mb-4">
         <div class="col-md-8">
             <div class="card">
                 <div class="card-header">
                     <h3>
+                        <i class="fa fa-user"></i>
                         Players
-                        <button class="btn btn-primary float-right add-players" data-campaign-id="{{$campaign->id}}" data-campaign-name="{{$campaign->campaign_name}}" data-toggle="modal" data-target="#add-players-modal">Add Players</button>
+                        @if ($isDm)
+                            <button class="btn btn-primary float-right add-players" data-campaign-id="{{$campaign->id}}" data-campaign-name="{{$campaign->name}}" data-toggle="modal" data-target="#add-players-modal">Add Players</button>
+                        @endif
                     </h3>
                 </div>
                 <div class="card-body">
@@ -49,8 +52,11 @@
             <div class="card">
                 <div class="card-header">
                     <h3>
+                        <i class="fa fa-map"></i>
                         Maps
-                        <button id="add-map" class="btn btn-primary float-right" data-toggle="modal" data-target="#add-map-modal">Add map</button>
+                        @if ($isDm)
+                            <button id="add-map" class="btn btn-primary float-right" data-toggle="modal" data-target="#add-map-modal">Add map</button>
+                        @endif
                     </h3>
                 </div>
                 <div class="card-body">
@@ -62,12 +68,117 @@
                     {{-- MAP LIST GROUP --}}
                     <div id="map-rows" class="list-group">
                         @forelse($maps as $map)
-                            <x-map-list :map="$map" />
+                            <x-map-list :map="$map" :is-dm="$isDm" />
                         @empty
                             <p><i>No maps...</i></p>
                         @endforelse
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+    {{-- CAMPAIGN COMPENDIUM --}}
+    <div class="row justify-content-center mb-4">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h3>
+                        <i class="fa fa-book"></i>
+                        Campaign Compendium
+                    </h3>
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                        <h4 class="mb-4 d-inline-block">
+                            <i class="fa fa-users"></i>
+                            People & Creatures
+                        </h4>
+                        <div class="btn-group btn-group-sm float-right">
+                            <button class="btn btn-secondary" data-target="#peopleDescription" data-toggle="collapse" aria-expanded="false" aria-controls="peopleDescription">Description</button>
+                            @if ($isDm)
+                                <button class="btn btn-primary btn-sm float-right">New person</button>
+                            @endif
+                        </div>
+                        <div class="collapse" id="peopleDescription">
+                            <div class="card card-body">
+                                <p>A person or creature is any location in this campaign that is important. It doesn't matter how big or small it is. It could be as small as a plaque or an entire universe.</p>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        <h4 class="mb-4 d-inline-block">
+                            <i class="fa fa-landmark"></i>
+                            Places
+                        </h4>
+                        <div class="btn-group btn-group-sm float-right">
+                            <button class="btn btn-secondary" data-target="#placesDescription" data-toggle="collapse" aria-expanded="false" aria-controls="placesDescription">Description</button>
+                            @if ($isDm)
+                                <button class="btn btn-primary">New place</button>
+                            @endif
+                        </div>
+                        <div class="collapse" id="placesDescription">
+                            <div class="card card-body">
+                                <p>A place is any location in this campaign that is important. It doesn't matter how big or small it is. It could be as small as a plaque or an entire universe.</p>
+                                @if ($isDm)
+                                    <p>While in a map, you can turn places into markers by clicking the "Turn place into marker" button.</p>
+                                @endif
+                            </div>
+                        </div>
+                        <div class="list-group list-group-flush">
+                            {{-- @foreach ($maps as $map)
+                                @foreach ($map->markers as $marker)
+                                    <a class="list-group-item list-group-item-action" href="#">
+                                        <h5>{{$marker->note_title}} <small>{{$map->map_name}}</small></h5>
+                                    </a>
+                                @endforeach
+                            @endforeach --}}
+                            @foreach ($campaign->places as $place)
+                                <a class="list-group-item list-group-item-action" href="/places/{{$place->url}}">
+                                    <h5>
+                                        {{$place->name}}
+                                        @if($place->marker)
+                                            <small class="text-muted">{{$place->marker->map->map_name}}</small>
+                                        @endif
+                                    </h5>
+                                </a>
+                            @endforeach
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        <h4 class="mb-4 d-inline-block">
+                            <i class="fa fa-magic"></i>
+                            Things
+                        </h4>
+                        <div class="btn-group btn-group-sm float-right">
+                            <button class="btn btn-secondary" data-target="#thingsDescription" data-toggle="collapse" aria-expanded="false" aria-controls="thingsDescription">Description</button>
+                            @if ($isDm)
+                                <button class="btn btn-primary btn-sm float-right">New thing</button>
+                            @endif
+                        </div>
+                        <div class="collapse" id="thingsDescription">
+                            <div class="card card-body">
+                                <p>A place is any location in this campaign that is important. It doesn't matter how big or small it is. It could be as small as a plaque or an entire universe.</p>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        <h4 class="mb-4 d-inline-block">
+                            <i class="fa fa-lightbulb"></i>
+                            Ideas
+                        </h4>
+                        <div class="btn-group btn-group-sm float-right">
+                            <button class="btn btn-secondary" data-target="#ideasDescription" data-toggle="collapse" aria-expanded="false" aria-controls="ideasDescription">Description</button>
+                            @if ($isDm)
+                                <button class="btn btn-primary btn-sm float-right">New idea</button>
+                            @endif
+                        </div>
+                        <div class="collapse" id="ideasDescription">
+                            <div class="card card-body">
+                                <p>A place is any location in this campaign that is important. It doesn't matter how big or small it is. It could be as small as a plaque or an entire universe.</p>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
             </div>
         </div>
     </div>
@@ -85,7 +196,7 @@
             </div>
             <div class="modal-body">
                 <form id="map-upload">
-                    <input type="hidden" id="map-id" name="map-id" value="{{$user->id}}">
+                    <input type="hidden" id="map-id" name="map-id" value="{{$dm->id}}">
                     <div class="form-group">
                         <label for="map-image">Select an image to upload.</label>
                         <input type="file" accept=".jpg, .jpeg, .png" class="form-control" name="map-image" id="map-image" required>

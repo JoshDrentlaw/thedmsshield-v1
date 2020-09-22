@@ -18,7 +18,8 @@ Route::resources([
     'markers' => 'MarkersController',
     'maps' => 'MapsController',
     'profile' => 'ProfileController',
-    'campaigns' => 'CampaignsController'
+    'campaigns' => 'CampaignsController',
+    'places' => 'PlacesController'
 ]);
 
 Route::get('/', 'PagesController@index');

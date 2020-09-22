@@ -13,6 +13,11 @@ try {
     require('bootstrap');
 } catch (e) {}
 
+/** 
+ * Font Awesome 5
+ */
+require('@fortawesome/fontawesome-free/js/all.js')
+
 /**
  * We'll load the axios HTTP library which allows us to easily issue requests
  * to our Laravel back-end. This library automatically handles sending the
@@ -22,6 +27,41 @@ try {
 window.axios = require('axios');
 
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+
+/**
+ * PNotify
+ * Plugins - Bootstrap 4, Font Awesome 5 + fix
+ * */
+
+window.pnotify = require('@pnotify/core/dist/PNotify.js')
+window.pnotifyMobile = require('@pnotify/mobile/dist/PNotifyMobile.js')
+window.pnotifyBootstrap4 = require('@pnotify/bootstrap4/dist/PNotifyBootstrap4.js')
+window.pnotifyFontAwesome5Fix = require('@pnotify/font-awesome5-fix/dist/PNotifyFontAwesome5Fix.js')
+window.pnotifyFontAwesome5 = require('@pnotify/font-awesome5/dist/PNotifyFontAwesome5.js')
+
+window.pnotify.defaultModules.set(window.pnotifyMobile, {})
+window.pnotify.defaultModules.set(window.pnotifyBootstrap4, {})
+window.pnotify.defaultModules.set(window.pnotifyFontAwesome5Fix, {})
+window.pnotify.defaultModules.set(window.pnotifyFontAwesome5, {})
+
+/**
+ * Leaflet
+ * Leaflet Sidebar
+ */
+window.L = require('leaflet/dist/leaflet.js')
+require('leaflet-sidebar-v2/js/leaflet-sidebar.min.js')
+
+/**
+ * Select2
+ */
+window.select2 = require('select2/dist/js/select2.js')
+
+/** 
+ * tinymce
+ */
+window.tinymce = require('tinymce/tinymce.js')
+require('tinymce/themes/silver/theme.js')
+require('tinymce/icons/default/icons.min.js')
 
 /**
  * Echo exposes an expressive API for subscribing to channels and listening

@@ -44,6 +44,7 @@ $(document).ready(function() {
 
     // ADD MARKERS
     let mapMarkers = markers.map((marker, i) => {
+        console.log(marker)
         marker['index'] = i
         let mapMarker = L
             .marker([marker.top, marker.left], {draggable: true})
@@ -67,6 +68,7 @@ $(document).ready(function() {
             index: i
         }
     })
+    console.log(mapMarkers)
 
     $('.marker-button').on('click', function() {
         sidebar.open('marker')

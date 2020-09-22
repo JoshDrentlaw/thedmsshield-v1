@@ -8,6 +8,8 @@ use App\Marker;
 use Cloudinary\Uploader;
 use JD\Cloudder\Facades\Cloudder;
 use App\Debug;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Auth;
 
 class MapsController extends Controller
 {
@@ -73,14 +75,25 @@ class MapsController extends Controller
      */
     public function show($id)
     {
+        if (!Auth::check()) {
+            return redirect('/');
+        }
         $map = Map::firstWhere('map_url', $id);
-        $markers = $map->markers;
-        $players = $map->active_players;
+        if (Gate::denies('campaign-member', $map->campaign)) {
+            return redirect('/');
+        }
+
+        $markers = [];
+        foreach ($map->markers as $marker) {
+            $markers[] = $marker;
+        }
 
         return view('maps.show', [
             'map' => $map,
+            'campaign' => $map->campaign,
+            'dm' => $map->campaign->dm,
             'markers' => $markers,
-            'players' => $players
+            'players' => $map->active_players
         ]);
     }
 

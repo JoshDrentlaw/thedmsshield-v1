@@ -11,4 +11,8 @@ class Marker extends Model
     public function map() {
         return $this->belongsTo('App\Map');
     }
+
+    public function place() {
+        return $this->belongsTo('App\Place');
+    }
 }
