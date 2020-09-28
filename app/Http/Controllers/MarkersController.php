@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Debug;
 use App\Map;
 use App\Marker;
+use App\Place;
 use Illuminate\Http\Request;
 use Notify;
 
@@ -87,9 +88,9 @@ class MarkersController extends Controller
                     'left' => $request['left']
                 ]);
             case 'note':
-                return Marker::where('id', $marker->id)->update([
-                    'note_body' => $request['note_body'],
-                    'note_title' => $request['note_title']
+                return Place::where('id', $marker->id)->update([
+                    'body' => $request['body'],
+                    'name' => $request['name']
                 ]);
         }
     }

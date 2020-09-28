@@ -38,13 +38,14 @@
                 </div>
                 <div class="leaflet-sidebar-pane" id="marker">
                     <h1 class="leaflet-sidebar-header mb-4 d-flex align-items-center justify-content-between">
-                        <span id="note-title" contenteditable="true"></span>
+                        <span id="place-name" contenteditable="true"></span>
                         <div class="leaflet-sidebar-close d-block">
                             <i class="fa fa-caret-left"></i>
                         </div>
                     </h1>
                     <input id="marker-index" type="hidden">
                     <input id="marker-id" type="hidden">
+                    <input id="place-id" type="hidden">
                     <div id="note-editor"></div>
                     <button id="note-submit" class="mt-3 btn btn-primary btn-block">Save</button>
                     <button id="delete-marker" class="mt-3 btn btn-danger btn-block">Delete Marker</button>
@@ -87,6 +88,7 @@
 
 @section('scripts')
     <script>
+        const mapModel = {!!$map!!}
         let mapUrl = '{!!$map->map_image_url!!}'
         let map_id = {!!$map->id!!}
         let mapWidth = {!!$map->map_width!!}

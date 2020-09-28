@@ -27,6 +27,8 @@ Route::get('/', 'PagesController@index');
 Route::get('/cypher_calculator', 'PagesController@cypher_calculator');
 
 Route::put('campaigns/{id}/{type}', 'CampaignsController@update');
+Route::get('campaigns/{campaign_id}/compendium/places', 'PlacesController@index');
+Route::get('campaigns/{campaign_id}/compendium/places/{place_id}', 'PlacesController@show');
 
 Route::put('maps/{id}/{type}', 'MapsController@update');
 

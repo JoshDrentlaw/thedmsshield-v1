@@ -8,6 +8,8 @@ class Marker extends Model
 {
     protected $table = 'markers';
 
+    protected $with = ['place'];
+
     public function map() {
         return $this->belongsTo('App\Map');
     }

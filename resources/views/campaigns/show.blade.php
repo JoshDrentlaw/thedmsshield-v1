@@ -133,7 +133,7 @@
                                 @endforeach
                             @endforeach --}}
                             @foreach ($campaign->places as $place)
-                                <a class="list-group-item list-group-item-action" href="/places/{{$place->url}}">
+                                <a class="list-group-item list-group-item-action" href="/campaigns/{{$campaign->url}}/compendium/places/{{$place->url}}">
                                     <h5>
                                         {{$place->name}}
                                         @if($place->marker)

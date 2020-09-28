@@ -17,6 +17,7 @@ $(document).ready(function() {
         popupAnchor: [1, -34],
         shadowSize: [41, 41]
     })
+    console.log(blueIcon)
     let green = 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png'
     let greenIcon = new L.Icon({
         iconUrl: green,
@@ -30,7 +31,7 @@ $(document).ready(function() {
     let popup,
         editor = tinymce.init({
             selector: '#note-editor',
-            height: 500
+            height: 500,
         }),
         sidebar = L.control.sidebar({
             autopan: true,
@@ -44,10 +45,9 @@ $(document).ready(function() {
 
     // ADD MARKERS
     let mapMarkers = markers.map((marker, i) => {
-        console.log(marker)
         marker['index'] = i
         let mapMarker = L
-            .marker([marker.top, marker.left], {draggable: true})
+            .marker([marker.top, marker.left], {draggable: true, icon: blueIcon})
             .addTo(map)
             .on('dragend', function(e) {
                 axios.put(`/markers/${marker.id}`, {type: 'movement', top: e.target._latlng.lat, left: e.target._latlng.lng})
@@ -68,7 +68,6 @@ $(document).ready(function() {
             index: i
         }
     })
-    console.log(mapMarkers)
 
     $('.marker-button').on('click', function() {
         sidebar.open('marker')
@@ -93,26 +92,26 @@ $(document).ready(function() {
         }
         $('#marker-id').val(marker.id)
         $('#marker-index').val(marker.index)
-        $('#note-title').text(marker.note_title)
-        $('#note-editor').html(marker.note_body)
-        tinymce.activeEditor.setContent(marker.note_body)
+        $('#place-name').text(marker.place.name)
+        $('#note-editor').html(marker.place.body)
+        tinymce.activeEditor.setContent(marker.place.body)
     }
 
     $('#note-submit').on('click', function() {
         const $this = $(this)
-        const title = $this.parent().find('#note-title').text()
-        const content = tinymce.activeEditor.getContent()
-        const id = $('#marker-id').val()
+        const name = $this.parent().find('#place-name').text()
+        const body = tinymce.activeEditor.getContent()
+        const markerId = $('#marker-id').val()
         markers = markers.map(marker => {
-            if (marker.id == id) {
-                marker.note_title = title
-                marker.note_body = content
+            if (marker.id == markerId) {
+                marker.place.name = name
+                marker.place.body = body
             }
             return marker
         })
-        $('#marker-list').find(`[data-marker-id="${id}"]`).text(title)
+        $('#marker-list').find(`[data-marker-id="${id}"]`).text(name)
 
-        axios.put(`/markers/${id}`, {type: 'note', note_title: title, note_body: content})
+        axios.put(`/places/${id}`, {name: name, body: body})
             .then(res => {
                 console.log(res)
                 if (res.status === 200) {
@@ -144,10 +143,10 @@ $(document).ready(function() {
                         sidebar.open('marker')
                         setMarkerSidebar(marker)
                     })
-                $('#marker-list').append(`<button type="button" class="list-group-item list-group-item-action marker-button" data-marker-index="${mapMarkers.length}" data-marker-id="${marker.id}">${marker.note_title}</button>`)
+                $('#marker-list').append(`<button type="button" class="list-group-item list-group-item-action marker-button" data-marker-index="${mapMarkers.length}" data-marker-id="${marker.id}">${marker.place.name}</button>`)
                 mapMarkers.push(marker)
                 sidebar.open('marker')
-                $('#note-title').focus()
+                $('#place-name').focus()
                 setMarkerSidebar(marker)
             })
     })

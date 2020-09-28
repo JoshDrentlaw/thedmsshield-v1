@@ -56,12 +56,17 @@ require('leaflet-sidebar-v2/js/leaflet-sidebar.min.js')
  */
 window.select2 = require('select2/dist/js/select2.js')
 
-/** 
- * tinymce
+/**
+ * luxon
  */
-window.tinymce = require('tinymce/tinymce.js')
-require('tinymce/themes/silver/theme.js')
-require('tinymce/icons/default/icons.min.js')
+import { DateTime } from 'luxon'
+window.DateTime = DateTime
+
+import tinymce from 'tinymce'
+import 'tinymce/themes/silver/theme'
+import 'tinymce/plugins/autosave/plugin'
+import 'tinymce/icons/default/icons'
+window.tinymce = tinymce
 
 /**
  * Echo exposes an expressive API for subscribing to channels and listening

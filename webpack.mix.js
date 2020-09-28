@@ -13,3 +13,6 @@ const mix = require('laravel-mix');
 
 mix.js('resources/js/app.js', 'public/js')
     .sass('resources/sass/app.scss', 'public/css')
+    .copy('node_modules/tinymce/skins/ui/oxide/skin.min.css', 'public/css/skin.min.css')
+    .copy('node_modules/tinymce/skins/ui/oxide/content.min.css', 'public/css/content.min.css')
+    .copy('node_modules/tinymce/skins/content/default/content.css', 'public/css/content.css')
