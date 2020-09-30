@@ -16,6 +16,8 @@ $(document).ready(function () {
         $(this).addClass('d-none')
         $('#editor-container').removeClass('d-none')
         tinymceInit()
+        let iana = luxon.local().toFormat('z')
+        $('#save-time').text(luxon.fromISO($('#save-time').text()).setZone(iana).toFormat('FF'))
     })
 
     function tinymceInit() {
@@ -27,6 +29,7 @@ $(document).ready(function () {
             plugins: 'autosave',
             autosave_interval: '3s',
             autosave_prefix: '{path}-autosave-{query}',
+            autosave_ask_before_unload: false,
             indent: false,
             init_instance_callback: function (editor) {
                 editor.on('input', function () {
@@ -38,7 +41,13 @@ $(document).ready(function () {
                         axios.put(`/places/${id}`, {body})
                             .then(function ({ data }) {
                                 if (data.status === 200) {
-                                    $('#save-time').text(data.updated_at)
+                                    $('#save-time').addClass('shadow-pulse');
+                                    $('#save-time').on('animationend', function(){    
+                                        $('#save-time').removeClass('shadow-pulse');
+                                        // do something else...
+                                    });
+                                    let iana = luxon.local().toFormat('z')
+                                    $('#save-time').text(luxon.fromISO(data.updated_at).setZone(iana).toFormat('FF'))
                                 }
                             }) 
                     }, 1000)

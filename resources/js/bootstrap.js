@@ -60,7 +60,7 @@ window.select2 = require('select2/dist/js/select2.js')
  * luxon
  */
 import { DateTime } from 'luxon'
-window.DateTime = DateTime
+window.luxon = DateTime
 
 import tinymce from 'tinymce'
 import 'tinymce/themes/silver/theme'

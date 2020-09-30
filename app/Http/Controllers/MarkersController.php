@@ -41,13 +41,32 @@ class MarkersController extends Controller
     public function store(Request $request)
     {
         $marker = new Marker;
-        $marker->note_title = 'New marker';
-        $marker->note_body = '<p>New note</p>';
+        $place = new Place;
+        list($name, $url) = self::getRandomWords();
+        $place->campaign_id = $request->post('campaign_id');
+        $place->url = $url;
+        $place->name = $name;
+        $place->body = '<p>New note</p>';
+        $place->save();
         $marker->top = $request->post('top');
         $marker->left = $request->post('left');
         $marker->map_id = $request->post('map_id');
+        $marker->place_id = $place->id;
         $marker->save();
-        return $marker;
+        return compact('marker', 'place');
+    }
+
+    public static function getRandomWords()
+    {
+        $curl = curl_init();
+        $url = sprintf("%s?%s", "https://random-word-api.herokuapp.com/word", http_build_query(['number' => 2, 'swear' => 0]));
+        curl_setopt($curl, CURLOPT_URL, $url);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+        $result = json_decode(curl_exec($curl));
+        $name = ucwords(join(' ', $result));
+        $url = join('_', $result);
+        curl_close($curl);
+        return [$name, $url];
     }
 
     /**
@@ -104,7 +123,10 @@ class MarkersController extends Controller
     public function destroy($id)
     {
         $marker = Marker::find($id);
+        $place_id = $marker->place_id;
+        $place = Place::find($place_id);
         $marker->delete();
+        $place->delete();
         return ['status' => 200, 'message' => 'Marker deleted', 'class' => 'alert-success'];
     }
 }

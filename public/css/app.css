@@ -16221,6 +16221,39 @@ a.text-dark:focus {
   #form-container {
     width: 75%;
   }
+
+  /* ANIMATIONS */
+
+@-webkit-keyframes shadowPulse {
+    0% {
+      box-shadow: 0 0 7px 2px #498adc;
+    }
+
+    100% {
+      box-shadow: 0 0 1px 1px white;
+    }
+}
+
+@keyframes shadowPulse {
+    0% {
+      box-shadow: 0 0 7px 2px #498adc;
+    }
+
+    100% {
+      box-shadow: 0 0 1px 1px white;
+    }
+}
+
+  .shadow-pulse {
+    -webkit-animation-name: shadowPulse;
+            animation-name: shadowPulse;
+    -webkit-animation-duration: 1.5s;
+            animation-duration: 1.5s;
+    -webkit-animation-iteration-count: 1;
+            animation-iteration-count: 1;
+    -webkit-animation-timing-function: linear;
+            animation-timing-function: linear;
+  }
 }
 
 #map-container {

@@ -19,7 +19,10 @@ Route::resources([
     'maps' => 'MapsController',
     'profile' => 'ProfileController',
     'campaigns' => 'CampaignsController',
-    'places' => 'PlacesController'
+    'creatures' => 'CreaturesController',
+    'places' => 'PlacesController',
+    'things' => 'ThingsController',
+    'ideas' => 'IdeasController'
 ]);
 
 Route::get('/', 'PagesController@index');
@@ -27,10 +30,19 @@ Route::get('/', 'PagesController@index');
 Route::get('/cypher_calculator', 'PagesController@cypher_calculator');
 
 Route::put('campaigns/{id}/{type}', 'CampaignsController@update');
+
+Route::get('campaigns/{campaign_id}/compendium', 'CampaignsController@compendium');
+Route::get('campaigns/{campaign_id}/compendium/creatures', 'CreaturesController@index');
+Route::get('campaigns/{campaign_id}/compendium/creatures/{creature_id}', 'CreaturesController@show');
 Route::get('campaigns/{campaign_id}/compendium/places', 'PlacesController@index');
 Route::get('campaigns/{campaign_id}/compendium/places/{place_id}', 'PlacesController@show');
+Route::get('campaigns/{campaign_id}/compendium/things', 'ThingsController@index');
+Route::get('campaigns/{campaign_id}/compendium/things/{thing_id}', 'ThingsController@show');
+Route::get('campaigns/{campaign_id}/compendium/ideas', 'IdeasController@index');
+Route::get('campaigns/{campaign_id}/compendium/ideas/{idea_id}', 'IdeasController@show');
 
 Route::put('maps/{id}/{type}', 'MapsController@update');
+Route::get('campaigns/{campaign_id}/maps/{map_id}', 'MapsController@show');
 
 Route::get('/dashboard', 'DashboardController@index')->name('dashboard');
 Route::get('/message/{id}', 'DashboardController@message')->name('message');

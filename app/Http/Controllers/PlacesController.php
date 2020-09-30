@@ -113,7 +113,7 @@ class PlacesController extends Controller
                     'body' => 'max:2000'
                 ]);
                 $updated = Place::where('id', $id)->first()->updated_at;
-                $res['updated_at'] = $updated->format('m-d-Y h:i:s a');
+                $res['updated_at'] = $updated;
                 Place::where('id', $id)->update(['body' => $valid['body']]);
             }
             if (isset($post['name'])) {

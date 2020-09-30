@@ -19,7 +19,7 @@ use App\Debug;
     </div>
     <div class="card-body <?= $isDm ? 'interactive' : '' ?>" id="place-body">
         <div id="editor-container" class="d-none">
-            <span>Last updated: <em id="save-time">{{$last_updated->format('m-d-Y h:i:s a')}}</em></span>
+            <span>Last updated: <em id="save-time">{{$last_updated->format('c')}}</em></span>
             <div id="body-editor" class="">
                 {!!$place->body!!}
             </div>

@@ -2,7 +2,7 @@
     <div class="row map-row mb-2">
         {{-- NAME AND IMAGE --}}
         <div class="col-sm-6">
-            <a class="map-link" href="/maps/{{$map->map_url}}">
+            <a class="map-link" href="{{$map->campaign->url}}/maps/{{$map->map_url}}">
                 <h4 id="map-name-header-{{$map->id}}">{{$map->map_name}}</h4>
                 <img id="{{$map->map_url}}" src="{{$map->map_preview_url}}" alt="{{$map->map_name}}" class="img-thumbnail">
             </a>
