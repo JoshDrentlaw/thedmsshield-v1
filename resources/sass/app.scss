@@ -7,6 +7,22 @@
 // Bootstrap
 @import '~bootstrap/scss/bootstrap';
 
+// Font Awesome 5
+@import '~@fortawesome/fontawesome-free/css/all.css';
+
 // Custom
 @import 'custom';
 @import 'maps';
+
+// PNotify
+@import '~@pnotify/core/dist/PNotify.css';
+@import '~@pnotify/mobile/dist/PNotifyMobile.css';
+@import '~@pnotify/bootstrap4/dist/PNotifyBootstrap4.css';
+
+// Leaflet
+@import '~leaflet/dist/leaflet.css';
+@import '~leaflet-sidebar-v2/css/leaflet-sidebar.min.css';
+
+// Select2
+@import '~select2/dist/css/select2.min.css';
+@import '~@ttskch/select2-bootstrap4-theme/dist/select2-bootstrap4.min.css';

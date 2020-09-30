@@ -6,15 +6,18 @@
         <h4 id="success-message"></h4>
     </div>
     <div class="jumbotron text-center">
-        <h1 class="display-4">{{$campaign->campaign_name}}</h1>
+        <h1 class="display-4">{{$campaign->name}}</h1>
     </div>
     <div class="row players-row justify-content-center mb-4">
         <div class="col-md-8">
             <div class="card">
                 <div class="card-header">
                     <h3>
+                        <i class="fa fa-user"></i>
                         Players
-                        <button class="btn btn-primary float-right add-players" data-campaign-id="{{$campaign->id}}" data-campaign-name="{{$campaign->campaign_name}}" data-toggle="modal" data-target="#add-players-modal">Add Players</button>
+                        @if ($isDm)
+                            <button class="btn btn-primary float-right add-players" data-campaign-id="{{$campaign->id}}" data-campaign-name="{{$campaign->name}}" data-toggle="modal" data-target="#add-players-modal">Add Players</button>
+                        @endif
                     </h3>
                 </div>
                 <div class="card-body">
@@ -49,8 +52,11 @@
             <div class="card">
                 <div class="card-header">
                     <h3>
+                        <i class="fa fa-map"></i>
                         Maps
-                        <button id="add-map" class="btn btn-primary float-right" data-toggle="modal" data-target="#add-map-modal">Add map</button>
+                        @if ($isDm)
+                            <button id="add-map" class="btn btn-primary float-right" data-toggle="modal" data-target="#add-map-modal">Add map</button>
+                        @endif
                     </h3>
                 </div>
                 <div class="card-body">
@@ -62,7 +68,7 @@
                     {{-- MAP LIST GROUP --}}
                     <div id="map-rows" class="list-group">
                         @forelse($maps as $map)
-                            <x-map-list :map="$map" />
+                            <x-map-list :map="$map" :is-dm="$isDm" />
                         @empty
                             <p><i>No maps...</i></p>
                         @endforelse
@@ -71,6 +77,8 @@
             </div>
         </div>
     </div>
+    {{-- CAMPAIGN COMPENDIUM --}}
+    <x-compendium :campaign="$campaign" :is-dm="$isDm" path="campaign" />
 </div>
 
 {{-- ADD MAP MODAL --}}
@@ -85,7 +93,7 @@
             </div>
             <div class="modal-body">
                 <form id="map-upload">
-                    <input type="hidden" id="map-id" name="map-id" value="{{$user->id}}">
+                    <input type="hidden" id="map-id" name="map-id" value="{{$dm->id}}">
                     <div class="form-group">
                         <label for="map-image">Select an image to upload.</label>
                         <input type="file" accept=".jpg, .jpeg, .png" class="form-control" name="map-image" id="map-image" required>

@@ -2,6 +2,9 @@
 
 namespace App\Providers;
 
+use App\Policies\CampaignPolicy;
+use App\Campaign;
+use App\Debug;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
 
@@ -14,6 +17,8 @@ class AuthServiceProvider extends ServiceProvider
      */
     protected $policies = [
         // 'App\Model' => 'App\Policies\ModelPolicy',
+        // 'App\Campaign' => 'App\Policies\CampaignPolicy'
+        Campaign::class => CampaignPolicy::class
     ];
 
     /**
@@ -25,6 +30,8 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
-        //
+        Gate::define('campaign-member', function ($user, $campaign) {
+            return $user->id === $campaign->dm->id || in_array($user->id, $campaign->active_player_ids);
+        });
     }
 }

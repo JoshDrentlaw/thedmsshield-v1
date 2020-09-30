@@ -2,13 +2,25 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Auth;
 use App\Campaign;
 use Illuminate\Http\Request;
 use JD\Cloudder\Facades\Cloudder;
 use App\Debug;
+use Illuminate\Support\Facades\Gate;
 
 class CampaignsController extends Controller
 {
+    /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -42,15 +54,15 @@ class CampaignsController extends Controller
         ]);
         $campaign = new Campaign;
         $campaign->campaign_id = $request->post('campaign-id');
-        $campaign->campaign_name = $request->post('campaign-name');
-        $campaign->campaign_url = implode('_', explode(' ', strtolower($campaign->campaign_name)));
+        $campaign->name = $request->post('campaign-name');
+        $campaign->url = implode('_', explode(' ', strtolower($campaign->name)));
         $image = $request->file('campaign-image')->path();
-        Cloudder::upload($image, 'thedmsshield.com/campaigns/'.$campaign->campaign_url);
+        Cloudder::upload($image, 'thedmsshield.com/campaigns/'.$campaign->url);
         $campaign->campaign_public_id = Cloudder::getPublicId();
         list($width, $height) = getimagesize($image);
         $campaign->campaign_width = $width;
         $campaign->campaign_height = $height;
-        $campaign->campaign_image_url = Cloudder::secureShow($campaign->campaign_public_id, ['width' => $width, 'height' => $height, 'format' => 'jpg']);
+        $campaign->image_url = Cloudder::secureShow($campaign->campaign_public_id, ['width' => $width, 'height' => $height, 'format' => 'jpg']);
         $campaign->campaign_preview_url = Cloudder::secureShow($campaign->campaign_public_id, ['width' => 300, 'height' => 195, 'crop' => 'scale', 'format' => 'jpg']);
         $campaign->save();
         $html = view('components.campaign-list', compact('campaign'))->render();
@@ -65,16 +77,24 @@ class CampaignsController extends Controller
      */
     public function show($id)
     {
-        $campaign = Campaign::firstWhere('campaign_url', $id);
-        $user = $campaign->dm->user;
+        if (!Auth::check()) {
+            return redirect('/');
+        }
+        $campaign = Campaign::firstWhere('url', $id);
+        $dm = $campaign->dm;
         $maps = $campaign->maps;
         $players = $campaign->active_players;
+        $user = Auth::user();
+        if (Gate::denies('campaign-member', $campaign)) {
+            return redirect('/');
+        }
 
         return view('campaigns.show', [
-            'user' => $user,
+            'dm' => $dm,
             'campaign' => $campaign,
             'maps' => $maps,
-            'players' => $players
+            'players' => $players,
+            'isDm' => $user->id === $dm->id
         ]);
     }
 
@@ -109,17 +129,17 @@ class CampaignsController extends Controller
                     $filename = $request->file('new-campaign-image')->path();
                     Cloudder::upload($filename, $campaign->campaign_public_id);
                     list($campaign_width, $campaign_height) = getimagesize($filename);
-                    $campaign_image_url = Cloudder::secureShow($campaign->campaign_public_id, ['width' => $campaign_width, 'height' => $campaign_height, 'format' => 'jpg']);
+                    $image_url = Cloudder::secureShow($campaign->campaign_public_id, ['width' => $campaign_width, 'height' => $campaign_height, 'format' => 'jpg']);
                     $campaign_preview_url = Cloudder::secureShow($campaign->campaign_public_id, ['width' => 300, 'height' => 195, 'crop' => 'scale', 'format' => 'jpg']);
-                    Campaign::where('id', $id)->update(compact('campaign_image_url', 'campaign_preview_url', 'campaign_width', 'campaign_height'));
+                    Campaign::where('id', $id)->update(compact('image_url', 'campaign_preview_url', 'campaign_width', 'campaign_height'));
                     return ['status' => 200, 'campaign' => $campaign, 'message' => 'Campaign image updated'];
                 } else {
                     return ['status' => 500, 'request' => $request];
                 }
             case 'name':
-                $campaign_url = implode('_', explode(' ', strtolower($request->campaign_name)));
-                Campaign::where('id', $id)->update(['campaign_name' => $request->campaign_name, 'campaign_url' => $campaign_url]);
-                return ['status' => 200, 'message' => 'Campaign name updated', 'campaign_url' => $campaign_url];
+                $url = implode('_', explode(' ', strtolower($request->name)));
+                Campaign::where('id', $id)->update(['name' => $request->name, 'url' => $url]);
+                return ['status' => 200, 'message' => 'Campaign name updated', 'url' => $url];
         }
     }
 

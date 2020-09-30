@@ -7,15 +7,17 @@ use Illuminate\View\Component;
 class MapList extends Component
 {
     public $map;
+    public $isDm;
 
     /**
      * Create a new component instance.
      *
      * @return void
      */
-    public function __construct($map)
+    public function __construct($map, $isDm)
     {
         $this->map = $map;
+        $this->isDm = $isDm;
     }
 
     /**

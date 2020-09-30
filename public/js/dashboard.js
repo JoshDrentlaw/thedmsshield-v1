@@ -92,7 +92,7 @@ $(document).ready(function() {
                     delay: 1000
                 })
                 let d = new Date()
-                $(`#${res.data.campaign.campaign_url}`).attr('src', res.data.campaign.campaign_preview_url + '?' + d.getTime())
+                $(`#${res.data.campaign.url}`).attr('src', res.data.campaign.campaign_preview_url + '?' + d.getTime())
             }
         })
     })
@@ -100,15 +100,15 @@ $(document).ready(function() {
     // REPLACE CAMPAIGN NAME
     $('#campaign-name-form').on('submit', function(e) {
         e.preventDefault()
-        const campaign_name = $('#new-campaign-name').val()
+        const name = $('#new-campaign-name').val()
         const id = $('#config-campaign-id').val()
-        axios.put(`/campaigns/${id}/name`, {campaign_name})
+        axios.put(`/campaigns/${id}/name`, {name})
             .then(res => {
                 if (res.status === 200) {
                     $('#new-campaign-name').val('')
-                    $(`#campaign-${id}`).find('.campaign-link').attr('href', `/campaigns/${res.data.campaign_url}`)
-                    $('#config-campaign-name').text(campaign_name)
-                    $(`#campaign-name-header-${id}`).text(campaign_name)
+                    $(`#campaign-${id}`).find('.campaign-link').attr('href', `/campaigns/${res.data.url}`)
+                    $('#config-campaign-name').text(name)
+                    $(`#campaign-name-header-${id}`).text(name)
                     PNotify.success({
                         title: 'Campaign name updated',
                         text: res.data.msg,
