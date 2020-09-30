@@ -2,9 +2,9 @@
     <div class="row campaign-row mb-2">
         {{-- NAME AND IMAGE --}}
         <div class="col-sm-12">
-            <a class="campaign-link" href="/campaigns/{{$campaign->campaign_url}}">
-                <h4 id="campaign-name-header-{{$campaign->id}}">{{$campaign->campaign_name}}</h4>
-                <img id="{{$campaign->campaign_url}}" src="{{$campaign->campaign_image_url}}" alt="{{$campaign->campaign_name}}" class="img-fluid image-thumbnail">
+            <a class="campaign-link" href="/campaigns/{{$campaign->url}}">
+                <h4 id="campaign-name-header-{{$campaign->id}}">{{$campaign->name}}</h4>
+                <img id="{{$campaign->url}}" src="{{$campaign->image_url}}" alt="{{$campaign->name}}" class="img-fluid image-thumbnail">
             </a>
         </div>
     </div>

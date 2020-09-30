@@ -46,6 +46,31 @@
     transition: opacity 500ms ease-in;
 }
 
+.leaflet-sidebar-header,
+.leaflet-sidebar-tabs>ul>li {
+    height: 50px !important;
+}
+
+.sidebar-tab-link {
+    display: flex !important;
+    justify-content: center;
+    align-items: center;
+}
+
+.leaflet-sidebar-close {
+    position: relative !important;
+    right: initial !important;
+    top: initial !important;
+}
+
+#note-title:focus {
+    padding: 0 0.5em;
+}
+
+#note-title::selection {
+    background-color: black;
+}
+
 .debug-log {
     background-color: rebeccapurple;
     color: white;
@@ -85,5 +110,24 @@
 
     #form-container {
         width: 75%;
+    }
+
+    /* ANIMATIONS */
+
+    @keyframes shadowPulse {
+        0% {
+            box-shadow: 0 0 7px 2px #498adc;
+        }
+
+        100% {
+            box-shadow: 0 0 1px 1px white;
+        }
+    }
+
+    .shadow-pulse {
+        animation-name: shadowPulse;
+        animation-duration: 1.5s;
+        animation-iteration-count: 1;
+        animation-timing-function: linear;
     }
 }

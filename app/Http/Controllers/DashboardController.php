@@ -120,7 +120,7 @@ class DashboardController extends Controller
         $message->from_id = $dm->id;
         $message->to_id = $player_id;
         $message->title = "New campaign invite";
-        $message->body = "{$dm->user->name} has invited you to join {$campaign->campaign_name}.";
+        $message->body = "{$dm->user->name} has invited you to join {$campaign->name}.";
         $message->message_type = 'invite';
         // ASSIGN ID'S
         $message->save();

@@ -2,10 +2,10 @@
     <div class="row campaign-row mb-2">
         {{-- NAME AND IMAGE --}}
         <div class="col-sm-6">
-            <a class="campaign-link" href="/campaigns/{{$campaign->campaign_url}}">
-                <h4 id="campaign-name-header-{{$campaign->id}}">{{$campaign->campaign_name}}</h4>
+            <a class="campaign-link" href="/campaigns/{{$campaign->url}}">
+                <h4 id="campaign-name-header-{{$campaign->id}}">{{$campaign->name}}</h4>
                 @if ($campaign->campaign_preview_url)
-                    <img id="{{$campaign->campaign_url}}" src="{{$campaign->campaign_preview_url}}" alt="{{$campaign->campaign_name}}" class="img-thumbnail">
+                    <img id="{{$campaign->url}}" src="{{$campaign->campaign_preview_url}}" alt="{{$campaign->name}}" class="img-thumbnail">
                 @else
                     <div class="bg-dark text-light d-flex justify-content-center align-items-center" style="width:300px;height:195px;font-size:25px;"><span>No image</span></div>
                 @endif
@@ -15,14 +15,14 @@
             <div class="row mb-2">
                 <div class="col-12">
                     {{-- CONFIG --}}
-                    <button class="btn btn-secondary btn-block config-campaign" data-campaign-id="{{$campaign->id}}" data-campaign-name="{{$campaign->campaign_name}}" data-toggle="modal" data-target="#config-campaign-modal">Configure</button>
+                    <button class="btn btn-secondary btn-block config-campaign" data-campaign-id="{{$campaign->id}}" data-campaign-name="{{$campaign->name}}" data-toggle="modal" data-target="#config-campaign-modal">Configure</button>
                 </div>
                 
             </div>
             <div class="row mb-2">
                 <div class="col-12">
                     {{-- PLAYERS --}}
-                    <button class="btn btn-primary btn-block add-players" data-campaign-id="{{$campaign->id}}" data-campaign-name="{{$campaign->campaign_name}}" data-toggle="modal" data-target="#add-players-modal">Add Players</button>
+                    <button class="btn btn-primary btn-block add-players" data-campaign-id="{{$campaign->id}}" data-campaign-name="{{$campaign->name}}" data-toggle="modal" data-target="#add-players-modal">Add Players</button>
                 </div>
                 
             </div>
