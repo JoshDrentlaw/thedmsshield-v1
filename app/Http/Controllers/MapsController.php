@@ -75,19 +75,13 @@ class MapsController extends Controller
      */
     public function show($campaign_id, $map_id)
     {
-        Debug::log('Hit controller');
         if (!Auth::check())  return redirect('/');
-        Debug::log('Authorized');
 
         $map = Map::firstWhere('map_url', $map_id);
-        Debug::log('got map');
         $campaign = $map->campaign;
-        Debug::log('got campaign');
 
         if ($campaign_id !== $campaign->url) return redirect('/');
-        Debug::log('correct url');
         if (Gate::denies('campaign-member', $campaign)) return redirect('/');
-        Debug::log('Part of campaign');
 
         $markers = [];
         foreach ($map->markers as $marker) {
@@ -95,7 +89,6 @@ class MapsController extends Controller
         }
         $user = Auth::user();
 
-        Debug::log('lets do this thing');
         return view('maps.show', [
             'map' => $map,
             'campaign' => $map->campaign,
