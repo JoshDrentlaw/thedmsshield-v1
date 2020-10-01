@@ -1,6 +1,9 @@
+{{'on page'}}
 @extends('layouts.app')
+{{'got layout'}}
 
 @section('content')
+    {{'loaded content'}}
     <div id="map-container">
         <div class="alert alert-success fixed-top invisible" style="z-index: 10000;" role="alert">
             <h4>Note saved!</h4>
