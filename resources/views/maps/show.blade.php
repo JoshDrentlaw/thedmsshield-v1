@@ -33,7 +33,7 @@
                     <div id="marker-list" class="list-group list-group-flush">
                         @foreach($markers as $i => $marker)
                             <?php
-                                App\Debug::log($marker)
+                                App\Debug::log($marker);
                             ?>
                             <button type="button" class="list-group-item list-group-item-action marker-button" data-marker-index="{{$i}}" data-marker-id="{{$marker->id}}">{{$marker->place->name}}</button>
                         @endforeach
