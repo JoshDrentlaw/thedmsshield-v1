@@ -83,10 +83,10 @@ class MapsController extends Controller
         if ($campaign_id !== $campaign->url) return redirect('/');
         if (Gate::denies('campaign-member', $campaign)) return redirect('/');
 
-        $markers = [];
+        /* $markers = [];
         foreach ($map->markers as $marker) {
             $markers[] = $marker;
-        }
+        } */
         $user = Auth::user();
 
         return view('maps.show', [
@@ -94,7 +94,7 @@ class MapsController extends Controller
             'campaign' => $map->campaign,
             'dm' => $map->campaign->dm,
             'isDm' => $user->id === $map->campaign->dm->id,
-            'markers' => $markers,
+            'markers' => $map->markers,
             'players' => $map->active_players
         ]);
     }
