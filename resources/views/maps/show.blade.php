@@ -31,7 +31,7 @@
                     </h1>
                     <button id="new-marker" class="mt-3 btn btn-success btn-block">New Marker</button>
                     <div id="marker-list" class="list-group list-group-flush">
-                        <?= Debug::log($markers); ?>
+                        <?= App\Debug::log($markers); ?>
                         {{-- @foreach($markers as $i => $marker)
                             <button type="button" class="list-group-item list-group-item-action marker-button" data-marker-index="{{$i}}" data-marker-id="{{$marker->id}}">{{$marker->place->name}}</button>
                         @endforeach --}}
