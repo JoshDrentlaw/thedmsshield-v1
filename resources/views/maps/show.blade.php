@@ -1,7 +1,6 @@
 @extends('layouts.app')
 
 @section('content')
-    <?= Debug::log($markers); ?>
     <div id="map-container">
         <div class="alert alert-success fixed-top invisible" style="z-index: 10000;" role="alert">
             <h4>Note saved!</h4>
@@ -32,12 +31,10 @@
                     </h1>
                     <button id="new-marker" class="mt-3 btn btn-success btn-block">New Marker</button>
                     <div id="marker-list" class="list-group list-group-flush">
-                        @foreach($markers as $i => $marker)
-                            <?php
-                                var_dump($marker);
-                            ?>
+                        <?= Debug::log($markers); ?>
+                        {{-- @foreach($markers as $i => $marker)
                             <button type="button" class="list-group-item list-group-item-action marker-button" data-marker-index="{{$i}}" data-marker-id="{{$marker->id}}">{{$marker->place->name}}</button>
-                        @endforeach
+                        @endforeach --}}
                     </div>
                 </div>
                 <div class="leaflet-sidebar-pane" id="marker">
