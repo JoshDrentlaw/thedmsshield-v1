@@ -14,8 +14,10 @@
         <div id="navbar" class="collapse navbar-collapse">
             <ul class="nav navbar-nav">
                 <li class="nav-item {{$uri === '/' ? 'active' : ''}}"><a class="nav-link" href="/">Home</a></li>
-                <li class="nav-item {{$uri === '/cypher_calculator' ? 'active' : ''}}"><a class="nav-link" href="/cypher_calculator">Cypher Calculator</a></li>
-                <li class="nav-item {{$uri === '/maps' ? 'active' : ''}}"><a class="nav-link" href="/maps">Maps</a></li>
+                @auth
+                    <li class="nav-item {{$uri === '/dashboard' ? 'active' : ''}}"><a class="nav-link" href="/dashboard">Dashboard</a></li>
+                    {{-- <li class="nav-item {{$uri === '/maps' ? 'active' : ''}}"><a class="nav-link" href="/maps">Maps</a></li> --}}
+                @endauth
             </ul>
         </div>
         <!-- Right Side Of Navbar -->
@@ -37,9 +39,9 @@
                     </a>
 
                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" href="{{ route('dashboard') }}">
-                            {{ __('Dashboard') }}
-                        </a>
+                        {{-- <a class="dropdown-item" href="{{ route('account') }}">
+                            {{ __('Account') }}
+                        </a> --}}
                         <a class="dropdown-item" href="{{ route('logout') }}"
                             onclick="event.preventDefault();
                             document.getElementById('logout-form').submit();">
