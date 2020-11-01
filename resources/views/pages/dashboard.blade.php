@@ -14,7 +14,7 @@
             <div class="card">
                 <div class="card-header">
                     <h3>
-                        Hello <span class="interactive" data-user-id="{{$user->id}}" contenteditable="true">{{$user->name}}</span>!
+                        Hello <span class="interactive" data-user-id="{{$user->id}}" contenteditable="true">{{$user->username}}</span>!
                         <small class="text-muted float-right">Player #{{$user->id}}</small>
                     </h3>
                 </div>
