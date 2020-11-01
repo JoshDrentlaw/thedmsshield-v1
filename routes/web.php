@@ -36,6 +36,7 @@ Route::get('campaigns/{campaign_id}/compendium/creatures', 'CreaturesController@
 Route::get('campaigns/{campaign_id}/compendium/creatures/{creature_id}', 'CreaturesController@show');
 Route::get('campaigns/{campaign_id}/compendium/places', 'PlacesController@index');
 Route::get('campaigns/{campaign_id}/compendium/places/{place_id}', 'PlacesController@show');
+Route::post('places/show_component', 'PlacesController@show_component');
 Route::get('campaigns/{campaign_id}/compendium/things', 'ThingsController@index');
 Route::get('campaigns/{campaign_id}/compendium/things/{thing_id}', 'ThingsController@show');
 Route::get('campaigns/{campaign_id}/compendium/ideas', 'IdeasController@index');

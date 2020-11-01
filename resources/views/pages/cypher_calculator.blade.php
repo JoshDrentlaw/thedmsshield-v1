@@ -243,5 +243,5 @@
 @endsection
 
 @section('scripts')
-    <script src="{{ asset('js/cypher_calculator.js') }}"></script>
+    <script src="{{ asset('js/cypher_calculator.js') . '?' . time() }}"></script>
 @endsection

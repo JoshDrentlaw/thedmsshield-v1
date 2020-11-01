@@ -17,7 +17,6 @@ $(document).ready(function() {
         popupAnchor: [1, -34],
         shadowSize: [41, 41]
     })
-    console.log(blueIcon)
     let green = 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png'
     let greenIcon = new L.Icon({
         iconUrl: green,
@@ -49,7 +48,7 @@ $(document).ready(function() {
                 axios.put(`/markers/${marker.id}`, {type: 'movement', top: e.target._latlng.lat, left: e.target._latlng.lng})
                     .then(res => {
                         if (res.status === 200) {
-                            //$('.container').append(`<div class="alert alert-success">Map marker position updated!</div>`)
+                            pnotify.success({title: 'Map marker position updated!'})
                         }
                     })
             })
@@ -102,9 +101,9 @@ $(document).ready(function() {
         $('#save-time').text(luxon.fromISO(marker.place.updated_at).setZone(iana).toFormat('FF'))
     })
 
-    function tinymceInit(id) {
-        editor = tinymce.init({
-            selector: '#body-editor',
+    function tinymceInit(id, opts = false) {
+        let options = {
+            selector: '.place-body-editor',
             height: 500,
             skin_url: '/css/',
             content_css: '/css/content.css',
@@ -114,27 +113,33 @@ $(document).ready(function() {
             autosave_ask_before_unload: false,
             indent: false,
             init_instance_callback: function (editor) {
-                editor.on('input', function () {
-                    if (saveTimeout) {
-                        clearTimeout(saveTimeout)
-                    }
-                    saveTimeout = setTimeout(function () {
-                        let body = tinymce.activeEditor.getContent()
-                        axios.put(`/places/${id}`, {body})
-                            .then(function ({ data }) {
-                                if (data.status === 200) {
-                                    $('#save-time').addClass('shadow-pulse');
-                                    $('#save-time').on('animationend', function(){    
-                                        $('#save-time').removeClass('shadow-pulse');
-                                    });
-                                    let iana = luxon.local().toFormat('z')
-                                    $('#save-time').text(luxon.fromISO(data.updated_at).setZone(iana).toFormat('FF'))
-                                }
-                            }) 
-                    }, 1000)
-                })
+                if (id !== 'new') {
+                    editor.on('input', function () {
+                        if (saveTimeout) {
+                            clearTimeout(saveTimeout)
+                        }
+                        saveTimeout = setTimeout(function () {
+                            let body = tinymce.activeEditor.getContent()
+                            axios.put(`/places/${id}`, {body})
+                                .then(function ({ data }) {
+                                    if (data.status === 200) {
+                                        $('#save-time').addClass('shadow-pulse');
+                                        $('#save-time').on('animationend', function(){    
+                                            $('#save-time').removeClass('shadow-pulse');
+                                        });
+                                        let iana = luxon.local().toFormat('z')
+                                        $('#save-time').text(luxon.fromISO(data.updated_at).setZone(iana).toFormat('FF'))
+                                    }
+                                }) 
+                        }, 1000)
+                    })
+                }
             }
-        })
+        }
+        if (opts) {
+            options = $.extend(true, options, opts)
+        }
+        editor = tinymce.init(options)
     }
 
     $('#change-view-btn').on('click', function () {
@@ -217,4 +222,59 @@ $(document).ready(function() {
                 }
             })
     })
+
+    $('.compendium-place').on('click', function () {
+        place_id = $(this).data('place-id')
+        axios.post('/places/show_component', {id: place_id, isDm})
+            .then(({ data }) => {
+                if (data.status === 200) {
+                    $('#show-place-modal').modal('show')
+                    $('#show-place-modal').find('.modal-body').html(data.showComponent)
+                }
+            })
+        sidebar.close()
+    })
+
+    // NEW PLACE
+    $(document).on('click', '#new-place-btn', function () {
+        sidebar.close()
+        $('#new-place-modal').delay('500').modal('show')
+        tinymceInit('new', {height: 300})
+    })
+
+    // NEW PLACE SUBMIT
+    $(document).on('click', '#new-place-submit', function () {
+        let name = $('#new-place-name').val(),
+            body = tinymce.activeEditor.getContent()
+        axios.post('/places', {name, body, campaign_id})
+            .then(({ data }) => {
+                if (data.status === 200) {
+                    pnotify.success({title: 'New place saved'})
+                    addNewPlaceToSidebar(data.place)
+                } else if (data.status === 500) {
+                    pnotify.error({title: 'Error', text: 'Unable to save place. Try again later.'})
+                }
+            })
+            .catch((error) => {
+                showValidationErrors(error.response.data.errors, 'place')
+            })
+    })
+
+    function addNewPlaceToSidebar(place, marker = false) {
+        campaign.places.push(place)
+        $('#compendium-places-list').append(`
+            <a class="list-group-item list-group-item-action interactive compendium-place" data-place-id="${place.id}">
+                <h5>
+                    ${place.name}
+                    ${marker ?
+                        `<i class="fa fa-map-marker-alt"></i>
+                        <small class="text-muted">{{$place->marker->map->map_name}}</small>`
+                        : ''
+                    }
+                </h5>
+            </a>
+        `)
+        $('#new-place-modal').modal('hide')
+        sidebar.open('compendium')
+    }
 })

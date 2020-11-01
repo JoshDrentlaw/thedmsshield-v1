@@ -3,12 +3,18 @@
         switch ($path) {
             case 'map':
                 $col = 'col-md-12';
+                $btnGrpFloat = '';
+                $titleInline = '';
                 break;
             case 'campaign':
                 $col = 'col-md-12';
+                $btnGrpFloat = 'float-right';
+                $titleInline = 'd-inline-block';
                 break;
             default:
                 $col = 'col-md-8';
+                $btnGrpFloat = 'float-right';
+                $titleInline = 'd-inline-block';
                 break;
         }
     ?>
@@ -22,34 +28,34 @@
             </div>
             <ul class="list-group list-group-flush">
                 <li class="list-group-item">
-                    <h4 class="mb-4 d-inline-block">
+                    <h4 class="mb-4 {{$titleInline}}">
                         <i class="fa fa-users"></i>
                         People & Creatures
                     </h4>
-                    <div class="btn-group btn-group-sm float-right">
+                    <div class="btn-group btn-group-sm {{$btnGrpFloat}}">
                         <button class="btn btn-secondary" data-target="#peopleDescription" data-toggle="collapse" aria-expanded="false" aria-controls="peopleDescription">Description</button>
                         @if ($isDm)
                             <button class="btn btn-primary btn-sm float-right">New person</button>
                         @endif
                     </div>
-                    <div class="collapse" id="peopleDescription">
+                    <div class="collapse mt-3" id="peopleDescription">
                         <div class="card card-body">
                             <p>A person or creature is any location in this campaign that is important. It doesn't matter how big or small it is. It could be as small as a plaque or an entire universe.</p>
                         </div>
                     </div>
                 </li>
                 <li class="list-group-item">
-                    <h4 class="mb-4 d-inline-block">
+                    <h4 class="mb-4 {{$titleInline}}">
                         <i class="fa fa-landmark"></i>
                         Places
                     </h4>
-                    <div class="btn-group btn-group-sm float-right">
+                    <div class="btn-group btn-group-sm {{$btnGrpFloat}}">
                         <button class="btn btn-secondary" data-target="#placesDescription" data-toggle="collapse" aria-expanded="false" aria-controls="placesDescription">Description</button>
                         @if ($isDm)
-                            <button class="btn btn-primary">New place</button>
+                            <button class="btn btn-primary" id="new-place-btn">New place</button>
                         @endif
                     </div>
-                    <div class="collapse" id="placesDescription">
+                    <div class="collapse mt-3" id="placesDescription">
                         <div class="card card-body">
                             <p>A place is any location in this campaign that is important. It doesn't matter how big or small it is. It could be as small as a plaque or an entire universe.</p>
                             @if ($isDm)
@@ -57,7 +63,7 @@
                             @endif
                         </div>
                     </div>
-                    <div class="list-group list-group-flush">
+                    <div class="list-group list-group-flush" id="compendium-places-list">
                         {{-- @foreach ($maps as $map)
                             @foreach ($map->markers as $marker)
                                 <a class="list-group-item list-group-item-action" href="#">
@@ -66,10 +72,11 @@
                             @endforeach
                         @endforeach --}}
                         @foreach ($campaign->places as $place)
-                            <a class="list-group-item list-group-item-action" href="/campaigns/{{$campaign->url}}/compendium/places/{{$place->url}}">
+                            <a class="list-group-item list-group-item-action interactive compendium-place" data-place-id="{{$place->id}}" {{$path === 'map' ? '' : 'href=/campaigns/' . $campaign->url . '/compendium/places/' . $place->url}}>
                                 <h5>
                                     {{$place->name}}
                                     @if($place->marker)
+                                        <i class="fa fa-map-marker-alt"></i>
                                         <small class="text-muted">{{$place->marker->map->map_name}}</small>
                                     @endif
                                 </h5>
@@ -78,34 +85,34 @@
                     </div>
                 </li>
                 <li class="list-group-item">
-                    <h4 class="mb-4 d-inline-block">
+                    <h4 class="mb-4 {{$titleInline}}">
                         <i class="fa fa-magic"></i>
                         Things
                     </h4>
-                    <div class="btn-group btn-group-sm float-right">
+                    <div class="btn-group btn-group-sm {{$btnGrpFloat}}">
                         <button class="btn btn-secondary" data-target="#thingsDescription" data-toggle="collapse" aria-expanded="false" aria-controls="thingsDescription">Description</button>
                         @if ($isDm)
                             <button class="btn btn-primary btn-sm float-right">New thing</button>
                         @endif
                     </div>
-                    <div class="collapse" id="thingsDescription">
+                    <div class="collapse mt-3" id="thingsDescription">
                         <div class="card card-body">
                             <p>A place is any location in this campaign that is important. It doesn't matter how big or small it is. It could be as small as a plaque or an entire universe.</p>
                         </div>
                     </div>
                 </li>
                 <li class="list-group-item">
-                    <h4 class="mb-4 d-inline-block">
+                    <h4 class="mb-4 {{$titleInline}}">
                         <i class="fa fa-lightbulb"></i>
                         Ideas
                     </h4>
-                    <div class="btn-group btn-group-sm float-right">
+                    <div class="btn-group btn-group-sm {{$btnGrpFloat}}">
                         <button class="btn btn-secondary" data-target="#ideasDescription" data-toggle="collapse" aria-expanded="false" aria-controls="ideasDescription">Description</button>
                         @if ($isDm)
                             <button class="btn btn-primary btn-sm float-right">New idea</button>
                         @endif
                     </div>
-                    <div class="collapse" id="ideasDescription">
+                    <div class="collapse mt-3" id="ideasDescription">
                         <div class="card card-body">
                             <p>A place is any location in this campaign that is important. It doesn't matter how big or small it is. It could be as small as a plaque or an entire universe.</p>
                         </div>
