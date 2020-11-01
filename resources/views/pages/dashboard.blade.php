@@ -10,7 +10,7 @@
     </div>
     {{-- USER SECTION --}}
     <div class="row justify-content-center mb-4">
-        <div class="col-md-8">
+        <div class="col-md">
             <div class="card">
                 <div class="card-header">
                     <h3>
@@ -41,7 +41,7 @@
     </div>
     {{-- MESSAGES --}}
     <div class="row justify-content-center mb-4">
-        <div class="col-md-8">
+        <div class="col-md">
             <div class="card">
                 <div class="card-header"><h3>Messages</h3></div>
                 <div class="card-body">
@@ -81,7 +81,7 @@
     </div>
     {{-- CAMPAIGNS --}}
     <div class="row justify-content-center mb-4">
-        <div class="col-md-8">
+        <div class="col-md">
             {{-- CAMPAIGNS CARD --}}
             <div class="card">
                 <div class="card-header">
@@ -97,7 +97,7 @@
                         </div>
                     @endif
                     {{-- CAMPAIGN LIST GROUP --}}
-                    <div id="campaign-rows" class="list-group">
+                    <div id="campaign-rows" class="row row-cols-1 row-cols-md-2 row-cols-lg-3">
                         @forelse($campaigns as $campaign)
                             <x-campaign-list :campaign="$campaign" />
                         @empty

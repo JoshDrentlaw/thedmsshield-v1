@@ -16149,10 +16149,10 @@ a.text-dark:focus {
   width: 100%;
 }
 
-.map-link,
-.map-link:hover,
-.player-link,
-.player-link:hover {
+.dmshield-link,
+.dmshield-link:hover,
+.dmshield-link,
+.dmshield-link:hover {
   color: black;
   text-decoration: none;
 }

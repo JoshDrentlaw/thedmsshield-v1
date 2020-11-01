@@ -106,7 +106,7 @@ $(document).ready(function() {
             .then(res => {
                 if (res.status === 200) {
                     $('#new-campaign-name').val('')
-                    $(`#campaign-${id}`).find('.campaign-link').attr('href', `/campaigns/${res.data.url}`)
+                    $(`#campaign-${id}`).find('.dmshield-link').attr('href', `/campaigns/${res.data.url}`)
                     $('#config-campaign-name').text(name)
                     $(`#campaign-name-header-${id}`).text(name)
                     PNotify.success({
