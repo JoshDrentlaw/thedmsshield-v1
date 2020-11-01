@@ -1,10 +1,10 @@
 <div class="col mb-4" id="campaign-{{$campaign->id}}">
     <div class="card campaign-row">
         <a class="dmshield-link" href="/campaigns/{{$campaign->url}}">
-            @if ($campaign->campaign_preview_url)
-                <img id="{{$campaign->url}}" src="{{$campaign->campaign_preview_url}}" alt="{{$campaign->name}}" class="card-img-top">
+            @if ($campaign->image_public_id)
+                <img id="{{$campaign->url}}" src="{{env('CLOUDINARY_IMG_PATH') . 'c_thumb,h_150/v' . time() . '/' . $campaign->image_public_id . '.jpg'}}" alt="{{$campaign->name}}" class="card-img-top">
             @else
-                <div class="card-img-top bg-dark text-light d-flex justify-content-center align-items-center" style="height:195px;font-size:25px;"><span>No image</span></div>
+                <div class="card-img-top bg-dark text-light d-flex justify-content-center align-items-center" style="height:150px;font-size:25px;"><span>No image</span></div>
             @endif
         </a>
         <div class="card-body">
