@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 use App\Campaign;
 use App\Place;
 use Illuminate\Http\Request;
@@ -40,7 +41,11 @@ class PlacesController extends Controller
      */
     public function create()
     {
-        //
+        $map = false;
+        if (isset($_GET['map'])) {
+            $map = true;
+        }
+        return view('places.create', compact('map'));
     }
 
     /**
@@ -51,7 +56,21 @@ class PlacesController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'name' => 'required|unique:places,name|max:50',
+            'body' => 'max:2000'
+        ]);
+        try {
+            $place = new Place;
+            $place->url = Str::slug($validated['name'], '_');
+            $place->name = $validated['name'];
+            $place->body = $validated['body'];
+            $place->campaign_id = $request->post('campaign_id');
+            $place->save();
+            return ['status' => 200, 'place' => $place];
+        } catch (Exception $e) {
+            return ['status' => 500, 'message' => $e->getMessage()];
+        }
     }
 
     /**
@@ -70,7 +89,7 @@ class PlacesController extends Controller
         if ($campaign_id !== $campaign->url) return redirect('/');
         if (Gate::denies('campaign-member', $campaign)) return redirect('/');
 
-        $last_updated = $place->updated_at;
+        $lastUpdated = $place->updated_at;
 
         $dm = $campaign->dm;
         $user = Auth::user();
@@ -81,8 +100,17 @@ class PlacesController extends Controller
             'campaign' => $campaign,
             'isDm' => $user->id === $dm->id,
             'uri' => $_SERVER['REQUEST_URI'],
-            'last_updated' => $last_updated
+            'lastUpdated' => $lastUpdated
         ]);
+    }
+
+    public function show_component(Request $request)
+    {
+        extract($request->post());
+        $place = Place::find($id);
+        $lastUpdated = $place->updated_at;
+        $showComponent = view('components.show-place', compact('place', 'isDm', 'lastUpdated'))->render();
+        return ['status' => 200, 'showComponent' => $showComponent];
     }
 
     /**

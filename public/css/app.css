@@ -16117,6 +16117,15 @@ a.text-dark:focus {
   cursor: text;
 }
 
+[contenteditable] {
+  padding: 0 0.1em;
+}
+
+[contenteditable]:hover {
+  border: 1px solid #a7a7a7;
+  border-radius: 6px;
+}
+
 .form-check {
   height: auto;
   font-size: x-large;
@@ -16150,6 +16159,10 @@ a.text-dark:focus {
 
 .map-row {
   transition: opacity 500ms ease-in;
+}
+
+.leaflet-sidebar {
+  z-index: 1040;
 }
 
 .leaflet-sidebar-header,

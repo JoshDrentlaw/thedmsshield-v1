@@ -24,6 +24,7 @@
             </div>
             <!-- Tab panes -->
             <div class="leaflet-sidebar-content">
+                {{-- ALL MARKERS --}}
                 <div class="leaflet-sidebar-pane" id="home">
                     <h1 class="leaflet-sidebar-header d-flex align-items-center justify-content-between">
                         All Markers
@@ -36,9 +37,10 @@
                         @endforeach
                     </div>
                 </div>
+                {{-- MARKER --}}
                 <div class="leaflet-sidebar-pane" id="marker">
                     <h1 class="leaflet-sidebar-header mb-4 d-flex align-items-center justify-content-between">
-                        <span id="place-name" contenteditable="true"></span>
+                        <span id="place-name" class="interactive" contenteditable="true"></span>
                         <div class="leaflet-sidebar-close d-block">
                             <i class="fa fa-caret-left"></i>
                         </div>
@@ -49,7 +51,7 @@
                     <div id="body-container">
                         <div id="editor-container" class="d-none">
                             <span>Last updated: <em id="save-time"></em></span>
-                            <div id="body-editor" class=""></div>
+                            <div id="" class="place-body-editor"></div>
                             <button type="button" id="change-view-btn" class="btn btn-secondary btn-block mt-4">Change view</button>
                         </div>
                 
@@ -57,6 +59,7 @@
                     </div>
                     <button id="delete-marker" class="mt-3 btn btn-danger btn-block">Delete Marker</button>
                 </div>
+                {{-- COMPENDIUM --}}
                 <div class="leaflet-sidebar-pane" id="compendium">
                     <h1 class="leaflet-sidebar-header d-flex align-items-center justify-content-between">
                         Compendium
@@ -87,6 +90,45 @@
         </div>
         @csrf
     </div>
+
+    {{-- SHOW PLACE MODAL --}}
+    <div class="modal" id="show-place-modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Place</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body"></div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{-- NEW PLACE MODAL --}}
+    <div class="modal" id="new-place-modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">New Place</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <x-create-place />
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="new-place-submit">Submit</button>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @section('scripts')
@@ -97,7 +139,12 @@
         let mapWidth = {!!$map->map_width!!}
         let mapHeight = {!!$map->map_height!!}
         let markers = {!!json_encode($markers)!!}
+        let campaign = {!!$campaign!!}
         let campaign_id = {!!$campaign->id!!}
+        let isDm = {!!$isDm!!}
+        let place_id = ''
     </script>
-    <script type="module" src="{{ asset('js/maps.js') }}"></script>
+
+    <script type="module" src="{{ asset('js/maps.js') . '?' . time() }}"></script>
+    <script type="module" src="{{ asset('js/show-place.js') . '?' . time() }}"></script>
 @endsection

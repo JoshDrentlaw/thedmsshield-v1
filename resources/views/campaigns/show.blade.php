@@ -212,5 +212,5 @@
 @endsection
 
 @section('scripts')
-    <script src="{{ asset('js/campaign.js') }}"></script>
+    <script src="{{ asset('js/campaign.js') . '?' . time() }}"></script>
 @endsection
