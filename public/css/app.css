@@ -16150,8 +16150,6 @@ a.text-dark:focus {
 }
 
 .dmshield-link,
-.dmshield-link:hover,
-.dmshield-link,
 .dmshield-link:hover {
   color: black;
   text-decoration: none;
@@ -16159,6 +16157,11 @@ a.text-dark:focus {
 
 .map-row {
   transition: opacity 500ms ease-in;
+}
+
+.map-image-thumbnail {
+  min-height: 150px;
+  max-height: 150px;
 }
 
 .leaflet-sidebar {
