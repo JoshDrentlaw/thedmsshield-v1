@@ -61,8 +61,8 @@ class MapsController extends Controller
         Cloudder::upload($image, "thedmsshield.com/{$env}/users/{$username}/campaigns/{$campaign}/maps/".$map->url);
         $map->map_public_id = Cloudder::getPublicId();
         list($width, $height) = getimagesize($image);
-        $map->map_width = $width;
-        $map->map_height = $height;
+        $map->width = $width;
+        $map->height = $height;
         $map->save();
         $html = view('components.map-list', compact('map'))->render();
         return  ['status' => 200, 'message' => 'Map added', 'map' => $map, 'html' => $html];
@@ -78,7 +78,7 @@ class MapsController extends Controller
     {
         if (!Auth::check())  return redirect('/');
 
-        $map = Map::firstWhere('map_url', $map_id);
+        $map = Map::firstWhere('url', $map_id);
         $campaign = $map->campaign;
 
         if ($campaign_id !== $campaign->url) return redirect('/');
@@ -92,6 +92,7 @@ class MapsController extends Controller
 
         return view('maps.show', [
             'map' => $map,
+            'map_url' => env('CLOUDINARY_IMG_PATH') . 'v' . time() . '/' . $map->public_id . '.jpg',
             'campaign' => $map->campaign,
             'dm' => $map->campaign->dm,
             'isDm' => $user->id === $map->campaign->dm->id,
