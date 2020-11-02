@@ -2,12 +2,6 @@
 
 @section('content')
     <div id="map-container">
-        <div class="alert alert-success fixed-top invisible" style="z-index: 10000;" role="alert">
-            <h4>Note saved!</h4>
-        </div>
-        <div id="ajax-message" class="alert fixed-top invisible" style="z-index: 10000;" role="alert">
-            <h4 id="alert-message"></h4>
-        </div>
         <div id="map-sidebar" class="leaflet-sidebar collapsed">
             <!-- Nav tabs -->
             <div class="leaflet-sidebar-tabs">
@@ -134,10 +128,10 @@
 @section('scripts')
     <script>
         const mapModel = {!!$map!!}
-        let mapUrl = '{!!$map->map_image_url!!}'
+        let mapUrl = '{!!$map_url!!}'
         let map_id = {!!$map->id!!}
-        let mapWidth = {!!$map->map_width!!}
-        let mapHeight = {!!$map->map_height!!}
+        let mapWidth = {!!$map->width!!}
+        let mapHeight = {!!$map->height!!}
         let markers = {!!json_encode($markers)!!}
         let campaign = {!!$campaign!!}
         let campaign_id = {!!$campaign->id!!}

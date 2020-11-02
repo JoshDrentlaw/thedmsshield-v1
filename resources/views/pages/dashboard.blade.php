@@ -23,8 +23,15 @@
                     <div class="row">
                         <div class="col-12">
                             <div class="media">
-                                @if ($user->avatar_url)
-                                    <img src="{{$user->avatar_url}}" class="img-thumbnail mr-3 interactive" id="edit-avatar" alt="Player profile picture" data-toggle="modal" data-target="#edit-avatar-modal">
+                                @if ($user->avatar_public_id)
+                                    <img
+                                        src="{{env('CLOUDINARY_IMG_PATH') . 'c_thumb,w_180,h_180/v' . time() . '/' . $user->avatar_public_id . '.jpg'}}"
+                                        class="img-thumbnail mr-3 interactive"
+                                        id="edit-avatar"
+                                        alt="Player profile picture"
+                                        data-toggle="modal"
+                                        data-target="#edit-avatar-modal"
+                                    >
                                 @else
                                     <div style="width:180px;height:180px;padding:1em;" class="img-thumbnail mr-3 interactive" id="edit-avatar" data-toggle="modal" data-target="#edit-avatar-modal"><i class="fa fa-user w-100 h-100"></i></div>
                                 @endif

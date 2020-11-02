@@ -54,6 +54,11 @@
     transition: opacity 500ms ease-in;
 }
 
+.map-image-thumbnail {
+    min-height: 150px;
+    max-height: 150px;
+}
+
 .leaflet-sidebar {
     z-index: 1040;
 }
