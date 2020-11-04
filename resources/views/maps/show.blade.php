@@ -2,6 +2,7 @@
 
 @section('content')
     <div id="map-container">
+        @csrf
         <div id="map-sidebar" class="leaflet-sidebar collapsed">
             <!-- Nav tabs -->
             <div class="leaflet-sidebar-tabs">
@@ -61,7 +62,7 @@
                             <i class="fa fa-caret-left"></i>
                         </div>
                     </h1>
-                    <div class="py-3">
+                    <div class="container-fluid py-3">
                         <x-compendium :campaign="$campaign" :is-dm="$isDm" path="map" />
                     </div>
                 </div>
@@ -82,8 +83,8 @@
                 </div> --}}
             </div>
         </div>
-        @csrf
     </div>
+    {{-- <div class="map-container-underlay"></div> --}}
 
     {{-- SHOW PLACE MODAL --}}
     <div class="modal" id="show-place-modal" tabindex="-1" role="dialog">
