@@ -20,8 +20,8 @@
     ?>
     <div class="{{$col}}">
         <div class="card">
-            <div class="card-header">
-                <h3>
+            <div class="card-body">
+                <h3 class="card-title">
                     <i class="fa fa-book"></i>
                     Campaign Compendium
                 </h3>
@@ -64,22 +64,15 @@
                         </div>
                     </div>
                     <div class="list-group list-group-flush" id="compendium-places-list">
-                        {{-- @foreach ($maps as $map)
-                            @foreach ($map->markers as $marker)
-                                <a class="list-group-item list-group-item-action" href="#">
-                                    <h5>{{$marker->note_title}} <small>{{$map->map_name}}</small></h5>
-                                </a>
-                            @endforeach
-                        @endforeach --}}
                         @foreach ($campaign->places as $place)
-                            <a class="list-group-item list-group-item-action interactive compendium-place" data-place-id="{{$place->id}}" {{$path === 'map' ? '' : 'href=/campaigns/' . $campaign->url . '/compendium/places/' . $place->url}}>
-                                <h5>
+                            <a class="list-group-item list-group-item-action interactive dmshield-link compendium-place" data-place-id="{{$place->id}}" {{$path === 'map' ? '' : 'href=/campaigns/' . $campaign->url . '/compendium/places/' . $place->url}}>
+                                <label>
                                     {{$place->name}}
                                     @if($place->marker)
                                         <i class="fa fa-map-marker-alt"></i>
-                                        <small class="text-muted">{{$place->marker->map->map_name}}</small>
+                                        <small class="text-muted">{{$place->marker->map->name}}</small>
                                     @endif
-                                </h5>
+                                </label>
                             </a>
                         @endforeach
                     </div>

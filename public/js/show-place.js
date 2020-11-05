@@ -7,8 +7,12 @@ $(document).ready(function () {
             .then(function ({ data }) {
                 if (data.status === 200) {
                     pnotify.success({title: 'Name updated!'})
-                    const state = {campaign_id, place_id}
-                    window.history.pushState(state, '', data.redirect)
+                    let pathname = document.location.pathname.split('/')
+                    pathname = pathname[pathname.length - 2]
+                    if (pathname === 'places') {
+                        const state = {campaign_id, place_id}
+                        window.history.pushState(state, '', data.redirect)
+                    }
                 }
             })
     })

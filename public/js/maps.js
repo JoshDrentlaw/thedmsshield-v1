@@ -34,9 +34,11 @@ $(document).ready(function() {
             container: 'map-sidebar',
             position: 'left'
         }).addTo(map)
-    sidebar.on('closing', function() {
+    sidebar.on('closing', function(e) {
+        this.disablePanel('marker')
         $(`[src="${green}"]`).attr('src', blue)
     })
+    sidebar.disablePanel('marker')
 
     // ADD MARKERS
     let mapMarkers = markers.map((marker, i) => {
@@ -55,6 +57,7 @@ $(document).ready(function() {
             .on('click', function() {
                 $(`[src="${green}"]`).attr('src', blue)
                 this.setIcon(greenIcon)
+                sidebar.enablePanel('marker')
                 sidebar.open('marker')
                 setMarkerSidebar(marker)
             })
@@ -65,6 +68,7 @@ $(document).ready(function() {
     })
 
     $('.marker-button').on('click', function() {
+        sidebar.enablePanel('marker')
         sidebar.open('marker')
         let markerId = $(this).data('marker-id')
         let thisMarker = markers.filter(marker => marker.id == markerId)[0]
