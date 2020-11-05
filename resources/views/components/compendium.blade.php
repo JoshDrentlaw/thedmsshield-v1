@@ -33,15 +33,24 @@
                         People & Creatures
                     </h4>
                     <div class="btn-group btn-group-sm {{$btnGrpFloat}}">
-                        <button class="btn btn-secondary" data-target="#peopleDescription" data-toggle="collapse" aria-expanded="false" aria-controls="peopleDescription">Description</button>
+                        <button class="btn btn-secondary" data-target="#creatureDescription" data-toggle="collapse" aria-expanded="false" aria-controls="creatureDescription">Description</button>
                         @if ($isDm)
                             <button class="btn btn-primary btn-sm float-right">New person</button>
                         @endif
                     </div>
-                    <div class="collapse mt-3" id="peopleDescription">
+                    <div class="collapse mt-3" id="creatureDescription">
                         <div class="card card-body">
                             <p>A person or creature is any location in this campaign that is important. It doesn't matter how big or small it is. It could be as small as a plaque or an entire universe.</p>
                         </div>
+                    </div>
+                    <div class="list-group list-group-flush" id="compendium-creatures-list">
+                        @foreach ($campaign->creatures as $creature)
+                            <a class="list-group-item list-group-item-action interactive dmshield-link compendium-creature" data-creature-id="{{$creature->id}}" {{$path === 'map' ? '' : 'href=/campaigns/' . $campaign->url . '/compendium/creatures/' . $creature->url}}>
+                                <label>
+                                    {{$creature->name}}
+                                </label>
+                            </a>
+                        @endforeach
                     </div>
                 </li>
                 <li class="list-group-item">
@@ -93,6 +102,15 @@
                             <p>A place is any location in this campaign that is important. It doesn't matter how big or small it is. It could be as small as a plaque or an entire universe.</p>
                         </div>
                     </div>
+                    <div class="list-group list-group-flush" id="compendium-things-list">
+                        @foreach ($campaign->things as $thing)
+                            <a class="list-group-item list-group-item-action interactive dmshield-link compendium-thing" data-thing-id="{{$thing->id}}" {{$path === 'map' ? '' : 'href=/campaigns/' . $campaign->url . '/compendium/things/' . $thing->url}}>
+                                <label>
+                                    {{$thing->name}}
+                                </label>
+                            </a>
+                        @endforeach
+                    </div>
                 </li>
                 <li class="list-group-item">
                     <h4 class="mb-4 {{$titleInline}}">
@@ -109,6 +127,15 @@
                         <div class="card card-body">
                             <p>A place is any location in this campaign that is important. It doesn't matter how big or small it is. It could be as small as a plaque or an entire universe.</p>
                         </div>
+                    </div>
+                    <div class="list-group list-group-flush" id="compendium-ideas-list">
+                        @foreach ($campaign->ideas as $idea)
+                            <a class="list-group-item list-group-item-action interactive dmshield-link compendium-idea" data-idea-id="{{$idea->id}}" {{$path === 'map' ? '' : 'href=/campaigns/' . $campaign->url . '/compendium/ideas/' . $idea->url}}>
+                                <label>
+                                    {{$idea->name}}
+                                </label>
+                            </a>
+                        @endforeach
                     </div>
                 </li>
             </ul>

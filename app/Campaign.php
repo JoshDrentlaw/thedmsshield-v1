@@ -22,6 +22,18 @@ class Campaign extends Model
         return $this->hasMany('App\Place');
     }
 
+    public function things() {
+        return $this->hasMany('App\Thing');
+    }
+
+    public function ideas() {
+        return $this->hasMany('App\Idea');
+    }
+
+    public function creatures() {
+        return $this->hasMany('App\Creature');
+    }
+
     public function invites() {
         return $this->hasMany('App\Invites');
     }
