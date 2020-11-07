@@ -73,7 +73,11 @@
         </div>
     </div>
     {{-- CAMPAIGN COMPENDIUM --}}
-    <x-compendium :campaign="$campaign" :is-dm="$isDm" path="campaign" />
+    <div class="card mb-4">
+        <div class="card-body">
+            <x-compendium :campaign="$campaign" :is-dm="$isDm" path="campaign" />
+        </div>
+    </div>
 </div>
 
 {{-- ADD MAP MODAL --}}
