@@ -30,12 +30,12 @@
                 <li class="list-group-item">
                     <h4 class="mb-4 {{$titleInline}}">
                         <i class="fa fa-users"></i>
-                        People & Creatures
+                        Creatures
                     </h4>
                     <div class="btn-group btn-group-sm {{$btnGrpFloat}}">
                         <button class="btn btn-secondary" data-target="#creatureDescription" data-toggle="collapse" aria-expanded="false" aria-controls="creatureDescription">Description</button>
                         @if ($isDm)
-                            <button class="btn btn-primary btn-sm float-right">New person</button>
+                            <button class="btn btn-primary btn-sm float-right" id="new-creature-btn">New creature</button>
                         @endif
                     </div>
                     <div class="collapse mt-3" id="creatureDescription">
@@ -94,7 +94,7 @@
                     <div class="btn-group btn-group-sm {{$btnGrpFloat}}">
                         <button class="btn btn-secondary" data-target="#thingsDescription" data-toggle="collapse" aria-expanded="false" aria-controls="thingsDescription">Description</button>
                         @if ($isDm)
-                            <button class="btn btn-primary btn-sm float-right">New thing</button>
+                            <button class="btn btn-primary btn-sm float-right" id="new-thing-btn">New thing</button>
                         @endif
                     </div>
                     <div class="collapse mt-3" id="thingsDescription">
@@ -120,7 +120,7 @@
                     <div class="btn-group btn-group-sm {{$btnGrpFloat}}">
                         <button class="btn btn-secondary" data-target="#ideasDescription" data-toggle="collapse" aria-expanded="false" aria-controls="ideasDescription">Description</button>
                         @if ($isDm)
-                            <button class="btn btn-primary btn-sm float-right">New idea</button>
+                            <button class="btn btn-primary btn-sm float-right" id="new-idea-btn">New idea</button>
                         @endif
                     </div>
                     <div class="collapse mt-3" id="ideasDescription">

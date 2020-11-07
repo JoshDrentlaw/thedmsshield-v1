@@ -86,6 +86,24 @@
     </div>
     {{-- <div class="map-container-underlay"></div> --}}
 
+    {{-- SHOW CREATURE MODAL --}}
+    <div class="modal" id="show-creature-modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Creature</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body"></div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     {{-- SHOW PLACE MODAL --}}
     <div class="modal" id="show-place-modal" tabindex="-1" role="dialog">
         <div class="modal-dialog">
@@ -99,6 +117,63 @@
                 <div class="modal-body"></div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{-- SHOW THING MODAL --}}
+    <div class="modal" id="show-thing-modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Thing</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body"></div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{-- SHOW IDEA MODAL --}}
+    <div class="modal" id="show-idea-modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Idea</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body"></div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{-- NEW CREATURE MODAL --}}
+    <div class="modal" id="new-creature-modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">New Creature</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <x-create-creature />
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="new-creature-submit">Submit</button>
                 </div>
             </div>
         </div>
@@ -124,6 +199,48 @@
             </div>
         </div>
     </div>
+
+    {{-- NEW THING MODAL --}}
+    <div class="modal" id="new-thing-modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">New Thing</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <x-create-thing />
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="new-thing-submit">Submit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{-- NEW IDEA MODAL --}}
+    <div class="modal" id="new-idea-modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">New Idea</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <x-create-idea />
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="new-idea-submit">Submit</button>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @section('scripts')
@@ -138,8 +255,16 @@
         let campaign_id = {!!$campaign->id!!}
         let isDm = {!!$isDm!!}
         let place_id = ''
+        let thing_id = ''
+        let idea_id = ''
+        let creature_id = ''
+        let sidebar
     </script>
 
+    <script type="module" src="{{ asset('js/compendium.js') . '?' . time() }}"></script>
     <script type="module" src="{{ asset('js/maps.js') . '?' . time() }}"></script>
     <script type="module" src="{{ asset('js/show-place.js') . '?' . time() }}"></script>
+    <script type="module" src="{{ asset('js/show-thing.js') . '?' . time() }}"></script>
+    <script type="module" src="{{ asset('js/show-idea.js') . '?' . time() }}"></script>
+    <script type="module" src="{{ asset('js/show-creature.js') . '?' . time() }}"></script>
 @endsection

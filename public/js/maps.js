@@ -27,8 +27,9 @@ $(document).ready(function() {
         shadowSize: [41, 41]
     })
 
-    let popup, saveTimeout, editor,
-        sidebar = L.control.sidebar({
+    let popup, saveTimeout, editor
+
+    sidebar = L.control.sidebar({
             autopan: true,
             closeButton: true,
             container: 'map-sidebar',
@@ -99,52 +100,11 @@ $(document).ready(function() {
         let marker = markers[$('#marker-index').val()]
         $(this).addClass('d-none')
         $('#editor-container').removeClass('d-none')
-        tinymceInit(marker.place.id)
+        editor = tinymceInit(marker.place.id, 'places', {selector: '.place-body-editor'})
         console.log(mapMarkers[$('#marker-index').val()])
         let iana = luxon.local().toFormat('z')
         $('#save-time').text(luxon.fromISO(marker.place.updated_at).setZone(iana).toFormat('FF'))
     })
-
-    function tinymceInit(id, opts = false) {
-        let options = {
-            selector: '.place-body-editor',
-            height: 500,
-            skin_url: '/css/',
-            content_css: '/css/content.css',
-            plugins: 'autosave',
-            autosave_interval: '3s',
-            autosave_prefix: '{path}-autosave-{query}',
-            autosave_ask_before_unload: false,
-            indent: false,
-            init_instance_callback: function (editor) {
-                if (id !== 'new') {
-                    editor.on('input', function () {
-                        if (saveTimeout) {
-                            clearTimeout(saveTimeout)
-                        }
-                        saveTimeout = setTimeout(function () {
-                            let body = tinymce.activeEditor.getContent()
-                            axios.put(`/places/${id}`, {body})
-                                .then(function ({ data }) {
-                                    if (data.status === 200) {
-                                        $('#save-time').addClass('shadow-pulse');
-                                        $('#save-time').on('animationend', function(){    
-                                            $('#save-time').removeClass('shadow-pulse');
-                                        });
-                                        let iana = luxon.local().toFormat('z')
-                                        $('#save-time').text(luxon.fromISO(data.updated_at).setZone(iana).toFormat('FF'))
-                                    }
-                                }) 
-                        }, 1000)
-                    })
-                }
-            }
-        }
-        if (opts) {
-            options = $.extend(true, options, opts)
-        }
-        editor = tinymce.init(options)
-    }
 
     $('#change-view-btn').on('click', function () {
         let body = tinymce.activeEditor.getContent()
@@ -226,59 +186,4 @@ $(document).ready(function() {
                 }
             })
     })
-
-    $('.compendium-place').on('click', function () {
-        place_id = $(this).data('place-id')
-        axios.post('/places/show_component', {id: place_id, isDm})
-            .then(({ data }) => {
-                if (data.status === 200) {
-                    $('#show-place-modal').modal('show')
-                    $('#show-place-modal').find('.modal-body').html(data.showComponent)
-                }
-            })
-        sidebar.close()
-    })
-
-    // NEW PLACE
-    $(document).on('click', '#new-place-btn', function () {
-        sidebar.close()
-        $('#new-place-modal').delay('500').modal('show')
-        tinymceInit('new', {height: 300})
-    })
-
-    // NEW PLACE SUBMIT
-    $(document).on('click', '#new-place-submit', function () {
-        let name = $('#new-place-name').val(),
-            body = tinymce.activeEditor.getContent()
-        axios.post('/places', {name, body, campaign_id})
-            .then(({ data }) => {
-                if (data.status === 200) {
-                    pnotify.success({title: 'New place saved'})
-                    addNewPlaceToSidebar(data.place)
-                } else if (data.status === 500) {
-                    pnotify.error({title: 'Error', text: 'Unable to save place. Try again later.'})
-                }
-            })
-            .catch((error) => {
-                showValidationErrors(error.response.data.errors, 'place')
-            })
-    })
-
-    function addNewPlaceToSidebar(place, marker = false) {
-        campaign.places.push(place)
-        $('#compendium-places-list').append(`
-            <a class="list-group-item list-group-item-action interactive compendium-place" data-place-id="${place.id}">
-                <h5>
-                    ${place.name}
-                    ${marker ?
-                        `<i class="fa fa-map-marker-alt"></i>
-                        <small class="text-muted">{{$place->marker->map->map_name}}</small>`
-                        : ''
-                    }
-                </h5>
-            </a>
-        `)
-        $('#new-place-modal').modal('hide')
-        sidebar.open('compendium')
-    }
 })
