@@ -43,7 +43,7 @@
                     <input id="marker-index" type="hidden">
                     <input id="marker-id" type="hidden">
                     <input id="place-id" type="hidden">
-                    <div id="body-container">
+                    {{-- <div id="body-container">
                         <div id="editor-container" class="d-none">
                             <span>Last updated: <em id="save-time"></em></span>
                             <div id="" class="place-body-editor"></div>
@@ -51,7 +51,14 @@
                         </div>
                 
                         <div id="body-display" class="interactive"></div>
+                    </div> --}}
+                    <div id="editor-container" class="d-none">
+                        <span>Last updated: <em id="save-time"></em></span>
+                        <div id="body-editor" class=""></div>
+                        <button type="button" id="change-view-btn" class="btn btn-secondary btn-block mt-4">Change view</button>
                     </div>
+                
+                    <div id="body-display" class="<?= $isDm ? 'interactive' : '' ?>" contenteditable="false"></div>
                     <button id="delete-marker" class="mt-3 btn btn-danger btn-block">Delete Marker</button>
                 </div>
                 {{-- COMPENDIUM --}}

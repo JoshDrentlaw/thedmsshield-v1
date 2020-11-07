@@ -100,8 +100,7 @@ $(document).ready(function() {
         let marker = markers[$('#marker-index').val()]
         $(this).addClass('d-none')
         $('#editor-container').removeClass('d-none')
-        editor = tinymceInit(marker.place.id, 'places', {selector: '.place-body-editor'})
-        console.log(mapMarkers[$('#marker-index').val()])
+        editor = tinymceInit(marker.place.id, 'places', {selector: '#body-editor'})
         let iana = luxon.local().toFormat('z')
         $('#save-time').text(luxon.fromISO(marker.place.updated_at).setZone(iana).toFormat('FF'))
     })
@@ -110,34 +109,9 @@ $(document).ready(function() {
         let body = tinymce.activeEditor.getContent()
         tinymce.activeEditor.destroy()
         $('#editor-container').addClass('d-none')
-        $('#body-display').removeClass('d-none').html(body)
+        $('#body-display').removeClass('d-none')
+        $('#body-display').html(body)
     })
-
-    /* $('#note-submit').on('click', function() {
-        const $this = $(this)
-        const name = $this.parent().find('#place-name').text()
-        const body = tinymce.activeEditor.getContent()
-        const markerId = $('#marker-id').val()
-        markers = markers.map(marker => {
-            if (marker.id == markerId) {
-                marker.place.name = name
-                marker.place.body = body
-            }
-            return marker
-        })
-        $('#marker-list').find(`[data-marker-id="${id}"]`).text(name)
-
-        axios.put(`/places/${id}`, {name: name, body: body})
-            .then(res => {
-                console.log(res)
-                if (res.status === 200) {
-                    $('.alert').addClass('show').removeClass('invisible')
-                    setTimeout(function () {
-                        $('.alert').removeClass('show').addClass('fade')
-                    }, 3000)
-                }
-            })
-    }) */
 
     $('#new-marker').on('click', function() {
         axios.post('/markers', {map_id, top: mapHeight/2, left: mapWidth/2, campaign_id})
