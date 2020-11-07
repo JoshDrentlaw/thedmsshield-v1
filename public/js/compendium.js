@@ -172,15 +172,13 @@ $(document).ready(function () {
     function addNewCompendiumItem(item, itemKey, marker = false) {
         campaign[`${itemKey}s`].push(item)
         $(`#compendium-${itemKey}s-list`).append(`
-            <a class="list-group-item list-group-item-action interactive compendium-${itemKey}" data-${itemKey}-id="${item.id}">
-                <h5>
-                    ${item.name}
-                    ${marker ?
-                        `<i class="fa fa-map-marker-alt"></i>
-                        <small class="text-muted">${mapModel.name}</small>`
-                        : ''
-                    }
-                </h5>
+            <a class="list-group-item list-group-item-action dmshield-link interactive compendium-${itemKey}" data-${itemKey}-id="${item.id}">
+                ${item.name}
+                ${marker ?
+                    `<i class="fa fa-map-marker-alt"></i>
+                    <small class="text-muted">${mapModel.name}</small>`
+                    : ''
+                }
             </a>
         `)
         $(`#new-${itemKey}-modal`).modal('hide')
