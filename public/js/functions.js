@@ -12,7 +12,8 @@ function showValidationErrors(errors, model) {
     pnotify.error({title: 'The following errors occured:', text, textTrusted: true})
 }
 
-tinymceInit = function (id, path, opts) {
+function tinymceInit(id, path, opts) {
+    let saveTimeout
     let options = {
         height: 500,
         skin_url: '/css/',
