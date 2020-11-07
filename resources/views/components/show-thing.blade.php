@@ -16,7 +16,7 @@
         <button type="button" id="show-thing-change-view-btn" class="btn btn-secondary mt-4">Change view</button>
     </div>
 
-    <div id="show-thing-body-display" class="<?= $isDm ? 'interactive' : '' ?>" contenteditable="true">
+    <div id="show-thing-body-display" class="<?= $isDm ? 'interactive' : '' ?>" contenteditable="false">
         {!!$thing->body!!}
     </div>
 </div>

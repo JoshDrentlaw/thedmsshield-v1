@@ -16,7 +16,7 @@
         <button type="button" id="show-creature-change-view-btn" class="btn btn-secondary mt-4">Change view</button>
     </div>
 
-    <div id="show-creature-body-display" class="<?= $isDm ? 'interactive' : '' ?>" contenteditable="true">
+    <div id="show-creature-body-display" class="<?= $isDm ? 'interactive' : '' ?>" contenteditable="false">
         {!!$creature->body!!}
     </div>
 </div>

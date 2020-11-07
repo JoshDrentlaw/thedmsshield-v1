@@ -16111,26 +16111,20 @@ a.text-dark:focus {
 
 .interactive {
   cursor: pointer;
-  padding: 0 0.1em;
-}
-
-.interactive:hover {
-  border: 1px solid #a7a7a7;
-  border-radius: 6px;
 }
 
 .interactive:focus {
   cursor: text;
 }
 
-/* [contenteditable] {
-    padding: 0 0.1em;
+[contenteditable] {
+  padding: 0 0.1em;
+}
 
-    &:hover {
-        border: 1px solid #a7a7a7;
-        border-radius: 6px;
-    }
-} */
+[contenteditable]:hover {
+  border: 1px solid #a7a7a7;
+  border-radius: 6px;
+}
 
 .form-check {
   height: auto;

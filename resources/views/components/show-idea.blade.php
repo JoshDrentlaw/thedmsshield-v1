@@ -16,7 +16,7 @@
         <button type="button" id="show-idea-change-view-btn" class="btn btn-secondary mt-4">Change view</button>
     </div>
 
-    <div id="show-idea-body-display" class="<?= $isDm ? 'interactive' : '' ?>" contenteditable="true">
+    <div id="show-idea-body-display" class="<?= $isDm ? 'interactive' : '' ?>" contenteditable="false">
         {!!$idea->body!!}
     </div>
 </div>
