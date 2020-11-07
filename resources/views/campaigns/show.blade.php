@@ -9,22 +9,22 @@
         <h1 class="display-4">{{$campaign->name}}</h1>
     </div>
     <div class="row players-row justify-content-center mb-4">
-        <div class="col-md-8">
+        <div class="col-md">
             <div class="card">
-                <div class="card-header">
-                    <h3>
+                <div class="card-header d-flex justify-content-between">
+                    <h3 class="d-inline-block">
                         <i class="fa fa-user"></i>
                         Players
-                        @if ($isDm)
-                            <button class="btn btn-primary float-right add-players" data-campaign-id="{{$campaign->id}}" data-campaign-name="{{$campaign->name}}" data-toggle="modal" data-target="#add-players-modal">Add Players</button>
-                        @endif
                     </h3>
+                    @if ($isDm)
+                        <button class="btn btn-primary float-right add-players" data-campaign-id="{{$campaign->id}}" data-campaign-name="{{$campaign->name}}" data-toggle="modal" data-target="#add-players-modal">Add Players</button>
+                    @endif
                 </div>
                 <div class="card-body">
                     <div class="row">
                         @forelse($campaign->active_players as $player)
                             <div class="col-sm-3">
-                                <a class="player-link" href="/profile/{{$player->user->id}}">
+                                <a class="dmshield-link" href="/profile/{{$player->user->id}}">
                                     <figure class="figure">
                                         @if ($player->user->avatar_url_small)
                                             <img src="{{$player->user->avatar_url_small}}" class="mr-3 figure-img rounded" alt="player avater">
@@ -47,26 +47,21 @@
     </div>
     {{-- MAPS --}}
     <div class="row justify-content-center mb-4">
-        <div class="col-md-8">
+        <div class="col-md">
             {{-- MAPS CARD --}}
             <div class="card">
-                <div class="card-header">
-                    <h3>
+                <div class="card-header d-flex justify-content-between">
+                    <h3 class="d-inline-block">
                         <i class="fa fa-map"></i>
                         Maps
-                        @if ($isDm)
-                            <button id="add-map" class="btn btn-primary float-right" data-toggle="modal" data-target="#add-map-modal">Add map</button>
-                        @endif
                     </h3>
+                    @if ($isDm)
+                        <button id="add-map" class="btn btn-primary" data-toggle="modal" data-target="#add-map-modal">Add map</button>
+                    @endif
                 </div>
                 <div class="card-body">
-                    @if (session('status'))
-                        <div class="alert alert-success" role="alert">
-                            {{ session('status') }}
-                        </div>
-                    @endif
                     {{-- MAP LIST GROUP --}}
-                    <div id="map-rows" class="list-group">
+                    <div id="map-rows" class="row row-cols-1 row-cols-md-2 row-cols-lg-3">
                         @forelse($maps as $map)
                             <x-map-list :map="$map" :is-dm="$isDm" />
                         @empty
@@ -78,7 +73,11 @@
         </div>
     </div>
     {{-- CAMPAIGN COMPENDIUM --}}
-    <x-compendium :campaign="$campaign" :is-dm="$isDm" path="campaign" />
+    <div class="card mb-4">
+        <div class="card-body">
+            <x-compendium :campaign="$campaign" :is-dm="$isDm" path="campaign" />
+        </div>
+    </div>
 </div>
 
 {{-- ADD MAP MODAL --}}
@@ -212,5 +211,5 @@
 @endsection
 
 @section('scripts')
-    <script src="{{ asset('js/campaign.js') }}"></script>
+    <script src="{{ asset('js/campaign.js') . '?' . time() }}"></script>
 @endsection

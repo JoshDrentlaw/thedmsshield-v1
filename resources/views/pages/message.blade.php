@@ -23,5 +23,5 @@
 @endsection
 
 @section('scripts')
-    <script src="{{ asset('js/message.js') }}"></script>
+    <script src="{{ asset('js/message.js') . '?' . time() }}"></script>
 @endsection

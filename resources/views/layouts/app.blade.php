@@ -23,8 +23,9 @@
             @yield('content')
         </div>
 
-        <script src="{{ asset('js/app.js') }}"></script>
+        <script src="{{ asset('js/app.js') . '?' . time() }}"></script>
         @include('inc.js_libraries')
         @yield('scripts')
+        @yield('component-scripts')
     </body>
 </html>

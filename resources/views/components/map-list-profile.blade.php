@@ -2,7 +2,7 @@
     <div class="row map-row mb-2">
         {{-- NAME AND IMAGE --}}
         <div class="col-sm-12">
-            <a class="map-link" href="/maps/{{$map->map_url}}">
+            <a class="dmshield-link" href="/maps/{{$map->map_url}}">
                 <h4 id="map-name-header-{{$map->id}}">{{$map->map_name}}</h4>
                 <img id="{{$map->map_url}}" src="{{$map->map_image_url}}" alt="{{$map->map_name}}" class="img-fluid image-thumbnail">
             </a>
@@ -14,7 +14,7 @@
             <div class="row">
                 @forelse($map->active_players as $player)
                     <div class="col-sm-3">
-                        <a class="player-link" href="/profile/{{$player->user->id}}">
+                        <a class="dmshield-link" href="/profile/{{$player->user->id}}">
                             <figure class="figure">
                                 @if ($player->user->avatar_url_small)
                                     <img src="{{$player->user->avatar_url_small}}" class="mr-3 figure-img rounded" alt="player avater">

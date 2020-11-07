@@ -84,15 +84,14 @@ class DashboardController extends Controller
             if ($user->avatar_public_id) {
                 Cloudder::destroyImages([$user->avatar_public_id]);
             } else {
-                $avatar_public_id = "thedmsshield.com/avatars/".$user->name."-".$user->id;
+                $env = env('APP_ENV');
+                $username = $user->username;
+                $avatar_public_id = "thedmsshield.com/{$env}/users/{$username}/avatar";
                 User::where('id', $id)->update(compact('avatar_public_id'));
             }
             $filename = $request->file('avatar')->path();
             Cloudder::upload($filename, $user->avatar_public_id);
-            $avatar_url = Cloudder::secureShow($user->avatar_public_id, ['width' => 180, 'height' => 180, 'crop' => 'scale', 'format' => 'jpg']);
-            $avatar_url_small = Cloudder::secureShow($user->avatar_public_id, ['width' => 64, 'height' => 64, 'crop' => 'scale', 'format' => 'jpg']);
-            User::where('id', $id)->update(compact('avatar_url', 'avatar_url_small'));
-            return ['status' => 200, 'avatar_url' => $avatar_url, 'message' => 'Avatar updated'];
+            return ['status' => 200, 'avatar_public_id' => $avatar_public_id, 'message' => 'Avatar updated'];
         } else {
             return ['status' => 500, 'request' => $request];
         }

@@ -2,7 +2,7 @@
     <div class="row campaign-row mb-2">
         {{-- NAME AND IMAGE --}}
         <div class="col-sm-12">
-            <a class="campaign-link" href="/campaigns/{{$campaign->url}}">
+            <a class="dmshield-link" href="/campaigns/{{$campaign->url}}">
                 <h4 id="campaign-name-header-{{$campaign->id}}">{{$campaign->name}}</h4>
                 <img id="{{$campaign->url}}" src="{{$campaign->image_url}}" alt="{{$campaign->name}}" class="img-fluid image-thumbnail">
             </a>
@@ -14,7 +14,7 @@
             <div class="row">
                 @forelse($campaign->active_players as $player)
                     <div class="col-sm-3">
-                        <a class="player-link" href="/profile/{{$player->user->id}}">
+                        <a class="dmshield-link" href="/profile/{{$player->user->id}}">
                             <figure class="figure">
                                 @if ($player->user->avatar_url_small)
                                     <img src="{{$player->user->avatar_url_small}}" class="mr-3 figure-img rounded" alt="player avater">

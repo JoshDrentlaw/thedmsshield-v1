@@ -10,11 +10,11 @@
     </div>
     {{-- USER SECTION --}}
     <div class="row justify-content-center mb-4">
-        <div class="col-md-8">
+        <div class="col-md">
             <div class="card">
                 <div class="card-header">
                     <h3>
-                        Hello <span class="interactive" data-user-id="{{$user->id}}" contenteditable="true">{{$user->name}}</span>!
+                        Hello <span class="interactive" data-user-id="{{$user->id}}" contenteditable="true">{{$user->username}}</span>!
                         <small class="text-muted float-right">Player #{{$user->id}}</small>
                     </h3>
                 </div>
@@ -23,8 +23,15 @@
                     <div class="row">
                         <div class="col-12">
                             <div class="media">
-                                @if ($user->avatar_url)
-                                    <img src="{{$user->avatar_url}}" class="img-thumbnail mr-3 interactive" id="edit-avatar" alt="Player profile picture" data-toggle="modal" data-target="#edit-avatar-modal">
+                                @if ($user->avatar_public_id)
+                                    <img
+                                        src="{{env('CLOUDINARY_IMG_PATH') . 'c_thumb,w_180,h_180/v' . time() . '/' . $user->avatar_public_id . '.jpg'}}"
+                                        class="img-thumbnail mr-3 interactive"
+                                        id="edit-avatar"
+                                        alt="Player profile picture"
+                                        data-toggle="modal"
+                                        data-target="#edit-avatar-modal"
+                                    >
                                 @else
                                     <div style="width:180px;height:180px;padding:1em;" class="img-thumbnail mr-3 interactive" id="edit-avatar" data-toggle="modal" data-target="#edit-avatar-modal"><i class="fa fa-user w-100 h-100"></i></div>
                                 @endif
@@ -41,7 +48,7 @@
     </div>
     {{-- MESSAGES --}}
     <div class="row justify-content-center mb-4">
-        <div class="col-md-8">
+        <div class="col-md">
             <div class="card">
                 <div class="card-header"><h3>Messages</h3></div>
                 <div class="card-body">
@@ -81,7 +88,7 @@
     </div>
     {{-- CAMPAIGNS --}}
     <div class="row justify-content-center mb-4">
-        <div class="col-md-8">
+        <div class="col-md">
             {{-- CAMPAIGNS CARD --}}
             <div class="card">
                 <div class="card-header">
@@ -97,7 +104,7 @@
                         </div>
                     @endif
                     {{-- CAMPAIGN LIST GROUP --}}
-                    <div id="campaign-rows" class="list-group">
+                    <div id="campaign-rows" class="row row-cols-1 row-cols-md-2 row-cols-lg-3">
                         @forelse($campaigns as $campaign)
                             <x-campaign-list :campaign="$campaign" />
                         @empty
@@ -216,5 +223,5 @@
 @endsection
 
 @section('scripts')
-    <script src="{{ asset('js/dashboard.js') }}"></script>
+    <script src="{{ asset('js/dashboard.js') . '?' . time() }}"></script>
 @endsection

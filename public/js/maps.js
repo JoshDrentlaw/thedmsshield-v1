@@ -17,7 +17,6 @@ $(document).ready(function() {
         popupAnchor: [1, -34],
         shadowSize: [41, 41]
     })
-    console.log(blueIcon)
     let green = 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png'
     let greenIcon = new L.Icon({
         iconUrl: green,
@@ -28,16 +27,19 @@ $(document).ready(function() {
         shadowSize: [41, 41]
     })
 
-    let popup, saveTimeout, editor,
-        sidebar = L.control.sidebar({
+    let popup, saveTimeout, editor
+
+    sidebar = L.control.sidebar({
             autopan: true,
             closeButton: true,
             container: 'map-sidebar',
             position: 'left'
         }).addTo(map)
-    sidebar.on('closing', function() {
+    sidebar.on('closing', function(e) {
+        this.disablePanel('marker')
         $(`[src="${green}"]`).attr('src', blue)
     })
+    sidebar.disablePanel('marker')
 
     // ADD MARKERS
     let mapMarkers = markers.map((marker, i) => {
@@ -49,13 +51,14 @@ $(document).ready(function() {
                 axios.put(`/markers/${marker.id}`, {type: 'movement', top: e.target._latlng.lat, left: e.target._latlng.lng})
                     .then(res => {
                         if (res.status === 200) {
-                            //$('.container').append(`<div class="alert alert-success">Map marker position updated!</div>`)
+                            pnotify.success({title: 'Map marker position updated!'})
                         }
                     })
             })
             .on('click', function() {
                 $(`[src="${green}"]`).attr('src', blue)
                 this.setIcon(greenIcon)
+                sidebar.enablePanel('marker')
                 sidebar.open('marker')
                 setMarkerSidebar(marker)
             })
@@ -66,6 +69,7 @@ $(document).ready(function() {
     })
 
     $('.marker-button').on('click', function() {
+        sidebar.enablePanel('marker')
         sidebar.open('marker')
         let markerId = $(this).data('marker-id')
         let thisMarker = markers.filter(marker => marker.id == markerId)[0]
@@ -96,79 +100,18 @@ $(document).ready(function() {
         let marker = markers[$('#marker-index').val()]
         $(this).addClass('d-none')
         $('#editor-container').removeClass('d-none')
-        tinymceInit(marker.place.id)
-        console.log(mapMarkers[$('#marker-index').val()])
+        editor = tinymceInit(marker.place.id, 'places', {selector: '#body-editor'})
         let iana = luxon.local().toFormat('z')
         $('#save-time').text(luxon.fromISO(marker.place.updated_at).setZone(iana).toFormat('FF'))
     })
-
-    function tinymceInit(id) {
-        editor = tinymce.init({
-            selector: '#body-editor',
-            height: 500,
-            skin_url: '/css/',
-            content_css: '/css/content.css',
-            plugins: 'autosave',
-            autosave_interval: '3s',
-            autosave_prefix: '{path}-autosave-{query}',
-            autosave_ask_before_unload: false,
-            indent: false,
-            init_instance_callback: function (editor) {
-                editor.on('input', function () {
-                    if (saveTimeout) {
-                        clearTimeout(saveTimeout)
-                    }
-                    saveTimeout = setTimeout(function () {
-                        let body = tinymce.activeEditor.getContent()
-                        axios.put(`/places/${id}`, {body})
-                            .then(function ({ data }) {
-                                if (data.status === 200) {
-                                    $('#save-time').addClass('shadow-pulse');
-                                    $('#save-time').on('animationend', function(){    
-                                        $('#save-time').removeClass('shadow-pulse');
-                                    });
-                                    let iana = luxon.local().toFormat('z')
-                                    $('#save-time').text(luxon.fromISO(data.updated_at).setZone(iana).toFormat('FF'))
-                                }
-                            }) 
-                    }, 1000)
-                })
-            }
-        })
-    }
 
     $('#change-view-btn').on('click', function () {
         let body = tinymce.activeEditor.getContent()
         tinymce.activeEditor.destroy()
         $('#editor-container').addClass('d-none')
-        $('#body-display').removeClass('d-none').html(body)
+        $('#body-display').removeClass('d-none')
+        $('#body-display').html(body)
     })
-
-    /* $('#note-submit').on('click', function() {
-        const $this = $(this)
-        const name = $this.parent().find('#place-name').text()
-        const body = tinymce.activeEditor.getContent()
-        const markerId = $('#marker-id').val()
-        markers = markers.map(marker => {
-            if (marker.id == markerId) {
-                marker.place.name = name
-                marker.place.body = body
-            }
-            return marker
-        })
-        $('#marker-list').find(`[data-marker-id="${id}"]`).text(name)
-
-        axios.put(`/places/${id}`, {name: name, body: body})
-            .then(res => {
-                console.log(res)
-                if (res.status === 200) {
-                    $('.alert').addClass('show').removeClass('invisible')
-                    setTimeout(function () {
-                        $('.alert').removeClass('show').addClass('fade')
-                    }, 3000)
-                }
-            })
-    }) */
 
     $('#new-marker').on('click', function() {
         axios.post('/markers', {map_id, top: mapHeight/2, left: mapWidth/2, campaign_id})
