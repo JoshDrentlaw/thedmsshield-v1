@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Debug;
-use App\Map;
-use App\Marker;
-use App\Place;
+use App\Models\Debug;
+use App\Models\Map;
+use App\Models\Marker;
+use App\Models\Place;
 use Illuminate\Http\Request;
 use Notify;
 

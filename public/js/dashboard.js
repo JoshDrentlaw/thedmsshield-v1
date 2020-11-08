@@ -43,20 +43,19 @@ $(document).ready(function() {
         })
     })
 
-    // CHANGE TO CAMPAIGN
     // ADD NEW CAMPAIGN
-    $('#campaign-upload').on('submit', function(e) {
+    $('#new-campaign-form').on('submit', function(e) {
         e.preventDefault()
-        let imgUpload = new FormData($(this)[0])
+        let newCampaign = new FormData($(this)[0])
         axios({
             method: 'post',
             url: '/campaigns',
-            data: imgUpload,
+            data: newCampaign,
             headers: {'Content-Type': 'multipart/form-data'}
         })
         .then(res => {
             if (res.data.status === 200) {
-                $('#add-campaign-modal').modal('hide')
+                $('#new-campaign-modal').modal('hide')
                 PNotify.success({
                     title: 'Campaign added',
                     text: res.data.msg,
@@ -75,7 +74,7 @@ $(document).ready(function() {
     })
 
     // REPLACE CAMPAIGN WITH NEW IMAGE
-    $('#new-campaign-form').on('submit', function(e) {
+    /* $('#new-campaign-form').on('submit', function(e) {
         e.preventDefault()
         const id = $('#config-campaign-id').val()
         let newImageUpload = new FormData($(this)[0])
@@ -95,7 +94,7 @@ $(document).ready(function() {
                 $(`#${res.data.campaign.url}`).attr('src', res.data.campaign.campaign_preview_url + '?' + d.getTime())
             }
         })
-    })
+    }) */
 
     // REPLACE CAMPAIGN NAME
     $('#campaign-name-form').on('submit', function(e) {
@@ -116,6 +115,27 @@ $(document).ready(function() {
                     })
                 }
             })
+    })
+
+    // REPLACE CAMPAIGN IMAGE
+    $('#campaign-image-form').on('submit', function(e) {
+        e.preventDefault()
+        let newImage = new FormData($(this)[0])
+        axios({
+            method: 'post',
+            url: '/campaigns',
+            data: newImage,
+            headers: {'Content-Type': 'multipart/form-data'}
+        })
+        .then(res => {
+            if (res.data.status === 200) {
+                PNotify.success({
+                    title: 'Campaign cover image updated.',
+                    text: res.data.msg,
+                    delay: 1000
+                })
+            }
+        })
     })
 
     // CONFIRM DELETION OF CAMPAIGN

@@ -50,13 +50,24 @@
     text-decoration: none !important;
 }
 
+.campaign-name-header {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.players-row {
+    min-height: 150px;
+    max-height: 150px;
+}
+
 .map-row {
     transition: opacity 500ms ease-in;
 }
 
 .map-image-thumbnail {
-    min-height: 150px;
-    max-height: 150px;
+    min-height: 175px;
+    max-height: 175px;
 }
 
 .leaflet-sidebar {

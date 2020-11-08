@@ -3,11 +3,11 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Map;
-use App\Marker;
+use App\Models\Map;
+use App\Models\Marker;
 use Cloudinary\Uploader;
 use JD\Cloudder\Facades\Cloudder;
-use App\Debug;
+use App\Models\Debug;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Auth;
 

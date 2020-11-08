@@ -1,5 +1,5 @@
 <?php
-use App\Debug;
+use App\Models\Debug;
 ?>
 
 @extends('layouts.app')

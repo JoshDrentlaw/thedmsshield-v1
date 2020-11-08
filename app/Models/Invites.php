@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -12,20 +12,20 @@ class Invites extends Model
     ];
 
     public function player_sent_to() {
-        return $this->belongsTo('App\Player', 'to_id');
+        return $this->belongsTo('App\Models\Player', 'to_id');
     }
 
     public function dm_sent_from() {
-        return $this->belongsTo('App\DM', 'from_id');
+        return $this->belongsTo('App\Models\DM', 'from_id');
     }
 
     public function message()
     {
-        return $this->hasOne('App\Message');
+        return $this->hasOne('App\Models\Message');
     }
 
     public function campaign()
     {
-        return $this->hasOne('App\Campaign');
+        return $this->hasOne('App\Models\Campaign');
     }
 }

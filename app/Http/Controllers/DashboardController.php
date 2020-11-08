@@ -2,15 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Campaign;
+use App\Models\Campaign;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use App\User;
-use App\DM;
-use App\Map;
-use App\Message;
-use App\Invites;
-use App\Debug;
+use App\Models\User;
+use App\Models\Message;
+use App\Models\Invites;
+use App\Models\Debug;
 use Illuminate\Support\Facades\Redirect;
 use JD\Cloudder\Facades\Cloudder;
 

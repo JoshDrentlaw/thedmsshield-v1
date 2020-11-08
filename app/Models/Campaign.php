@@ -1,41 +1,41 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
 class Campaign extends Model
 {
     public function dm() {
-        return $this->belongsTo('App\DM', 'dm_id');
+        return $this->belongsTo('App\Models\DM', 'dm_id');
     }
 
     public function players() {
-        return $this->hasMany('App\Player');
+        return $this->hasMany('App\Models\Player');
     }
 
     public function maps() {
-        return $this->hasMany('App\Map');
+        return $this->hasMany('App\Models\Map');
     }
 
     public function places() {
-        return $this->hasMany('App\Place');
+        return $this->hasMany('App\Models\Place');
     }
 
     public function things() {
-        return $this->hasMany('App\Thing');
+        return $this->hasMany('App\Models\Thing');
     }
 
     public function ideas() {
-        return $this->hasMany('App\Idea');
+        return $this->hasMany('App\Models\Idea');
     }
 
     public function creatures() {
-        return $this->hasMany('App\Creature');
+        return $this->hasMany('App\Models\Creature');
     }
 
     public function invites() {
-        return $this->hasMany('App\Invites');
+        return $this->hasMany('App\Models\Invites');
     }
 
     public function getActivePlayersAttribute()
