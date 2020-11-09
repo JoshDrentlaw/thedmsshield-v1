@@ -9,7 +9,7 @@ $(document).ready(function() {
         axios.post(`/dashboard/${id}/bio`, { bio })
             .then(res => {
                 if (res.data.status === 200) {
-                    PNotify.success({
+                    pnotify.success({
                         title: 'Bio updated',
                         text: res.data.msg,
                         delay: 1000
@@ -33,7 +33,7 @@ $(document).ready(function() {
         .then(res => {
             if (res.data.status === 200) {
                 $('#add-map-modal').modal('hide')
-                PNotify.success({
+                pnotify.success({
                     title: 'Avatar updated',
                     text: res.data.msg,
                     delay: 1000
@@ -56,7 +56,7 @@ $(document).ready(function() {
         .then(res => {
             if (res.data.status === 200) {
                 $('#new-campaign-modal').modal('hide')
-                PNotify.success({
+                pnotify.success({
                     title: 'Campaign added',
                     text: res.data.msg,
                     delay: 1000
@@ -85,7 +85,7 @@ $(document).ready(function() {
         .then(res => {
             if (res.status === 200) {
                 $('#new-campaign-image').val('')
-                PNotify.success({
+                pnotify.success({
                     title: 'Campaign updated',
                     text: res.data.msg,
                     delay: 1000
@@ -108,7 +108,7 @@ $(document).ready(function() {
                     $(`#campaign-${id}`).find('.dmshield-link').attr('href', `/campaigns/${res.data.url}`)
                     $('#config-campaign-name').text(name)
                     $(`#campaign-name-header-${id}`).text(name)
-                    PNotify.success({
+                    pnotify.success({
                         title: 'Campaign name updated',
                         text: res.data.msg,
                         delay: 1000
@@ -129,7 +129,7 @@ $(document).ready(function() {
         })
         .then(res => {
             if (res.data.status === 200) {
-                PNotify.success({
+                pnotify.success({
                     title: 'Campaign cover image updated.',
                     text: res.data.msg,
                     delay: 1000
@@ -149,7 +149,7 @@ $(document).ready(function() {
                     setTimeout(function() {
                         $(`#campaign-${id}`).remove()
                     }, 500)
-                    PNotify.success({
+                    pnotify.success({
                         title: 'Campaign deleted',
                         text: res.data.msg,
                         delay: 1000
@@ -241,7 +241,7 @@ $(document).ready(function() {
         axios.post(`/dashboard/send_player_invite`, { id, playerId })
             .then(res => {
                 if (res.status === 200) {
-                    PNotify.success({
+                    pnotify.success({
                         title: 'Invite sent',
                         text: res.data.msg,
                         delay: 1000

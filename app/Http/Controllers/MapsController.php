@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
+use App\Models\Campaign;
 use App\Models\Map;
 use App\Models\Marker;
 use Cloudinary\Uploader;
@@ -47,24 +49,26 @@ class MapsController extends Controller
      */
     public function store(Request $request)
     {
-        $this->validate($request,[
+        $validated = $this->validate($request,[
             'map-image'=>'required|mimes:jpeg,bmp,jpg,png|between:1, 6000',
+            'map-name' => 'required|unique:maps,name'
         ]);
         $map = new Map;
-        $map->campaign_id = $request->post('map-id');
-        $map->name = $request->post('map-name');
-        $map->url = implode('_', explode(' ', strtolower($map->name)));
-        $image = $request->file('map-image')->path();
+        $map->campaign_id = $request->post('campaign-id');
+        $map->name = $validated['map-name'];
+        $map->url = Str::slug($validated['map-name'], '_');
+        $image = $validated['map-image']->path();
         $env = env('APP_ENV');
-        $username = $map->dm->user->username;
-        $campaign = $map->campaign()->url;
+        $username = Auth::user()->username;
+        $campaign = Campaign::find($request->post('campaign-id'))->url;
         Cloudder::upload($image, "thedmsshield.com/{$env}/users/{$username}/campaigns/{$campaign}/maps/".$map->url);
-        $map->map_public_id = Cloudder::getPublicId();
+        $map->public_id = Cloudder::getPublicId();
         list($width, $height) = getimagesize($image);
         $map->width = $width;
         $map->height = $height;
-        $map->save();
-        $html = view('components.map-list', compact('map'))->render();
+        // $map->save();
+        $isDm = true;
+        $html = view('components.map-list', compact('map', 'isDm'))->render();
         return  ['status' => 200, 'message' => 'Map added', 'map' => $map, 'html' => $html];
     }
 

@@ -4,7 +4,7 @@ $(document).ready(function() {
         axios.post('/dashboard/accept_map_invite', { id })
             .then(res => {
                 if (res.status === 200) {
-                    PNotify.success({
+                    pnotify.success({
                         title: 'Invite accepted',
                         text: res.data.msg,
                         delay: 1000
