@@ -3,8 +3,8 @@
 namespace App\Providers;
 
 use App\Policies\CampaignPolicy;
-use App\Campaign;
-use App\Debug;
+use App\Models\Campaign;
+use App\Models\Debug;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
 

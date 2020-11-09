@@ -1,16 +1,16 @@
 <div class="col mb-4" id="campaign-{{$campaign->id}}">
     <div class="card campaign-row">
         <a class="dmshield-link" href="/campaigns/{{$campaign->url}}">
-            @if ($campaign->image_public_id)
-                <img id="{{$campaign->url}}" src="{{env('CLOUDINARY_IMG_PATH') . 'c_thumb,h_150/v' . time() . '/' . $campaign->image_public_id . '.jpg'}}" alt="{{$campaign->name}}" class="card-img-top">
+            @if ($campaign->cover_public_id)
+                <img id="{{$campaign->url}}" src="{{env('CLOUDINARY_IMG_PATH') . 'c_thumb,h_175,w_' . floor(175 * (16 / 9)) . '/v' . time() . '/' . $campaign->cover_public_id . '.jpg'}}" alt="{{$campaign->name}}" class="card-img-top map-image-thumbnail">
             @else
-                <div class="card-img-top bg-dark text-light d-flex justify-content-center align-items-center" style="height:150px;font-size:25px;"><span>No image</span></div>
+                <div class="card-img-top bg-dark text-light d-flex justify-content-center align-items-center" style="height:175px;font-size:25px;"><span>No image</span></div>
             @endif
         </a>
         <div class="card-body">
             {{-- NAME AND IMAGE --}}
             <a class="dmshield-link card-title" href="/campaigns/{{$campaign->url}}">
-                <h4 id="campaign-name-header-{{$campaign->id}}">{{$campaign->name}}</h4>
+                <h4 id="campaign-name-header-{{$campaign->id}}" class="campaign-name-header">{{$campaign->name}}</h4>
             </a>
             <div class="row players-row">
                 <div class="col-12">
@@ -30,7 +30,7 @@
                                 </a>
                             </div>
                         @empty
-                            <div class="col-sm-3">
+                            <div class="col-sm-12">
                                 <p><i>No players...</i></p>
                             </div>
                         @endforelse
