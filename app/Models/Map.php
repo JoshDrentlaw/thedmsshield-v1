@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -18,19 +18,19 @@ class Map extends Model
     // public $timestamps = false;
 
     public function campaign() {
-        return $this->belongsTo('App\Campaign');
+        return $this->belongsTo('App\Models\Campaign');
     }
 
     public function dm() {
-        return $this->hasOneThrough('App\DM', 'App\Campaign');
+        return $this->hasOneThrough('App\Models\DM', 'App\Models\Campaign');
     }
 
     public function players() {
-        return $this->hasManyThrough('App\Player', 'App\Campaign');
+        return $this->hasManyThrough('App\Models\Player', 'App\Models\Campaign');
     }
 
     public function markers() {
-        return $this->hasMany('App\Marker');
+        return $this->hasMany('App\Models\Marker');
     }
 
     protected static function booted()

@@ -92,7 +92,7 @@
             </div>
             <div class="modal-body">
                 <form id="map-upload">
-                    <input type="hidden" id="map-id" name="map-id" value="{{$dm->id}}">
+                    <input type="hidden" id="campaign-id" name="campaign-id" value="{{$campaign->id}}">
                     <div class="form-group">
                         <label for="map-image">Select an image to upload.</label>
                         <input type="file" accept=".jpg, .jpeg, .png" class="form-control" name="map-image" id="map-image" required>
