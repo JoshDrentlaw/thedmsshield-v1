@@ -78,14 +78,10 @@ class DashboardController extends Controller
                 'avatar' => 'required|mimes:jpeg,jpg,png|between:1, 1000'
             ]);
             $user = User::find($id);
-            if ($user->avatar_public_id) {
-                Cloudder::destroyImages([$user->avatar_public_id]);
-            } else {
-                $env = env('APP_ENV');
-                $username = $user->username;
-                $avatar_public_id = "thedmsshield.com/{$env}/users/{$username}/avatar";
-                User::where('id', $id)->update(compact('avatar_public_id'));
-            }
+            $env = env('APP_ENV');
+            $username = $user->username;
+            $avatar_public_id = "thedmsshield.com/{$env}/users/{$username}/avatar";
+            User::where('id', $id)->update(compact('avatar_public_id'));
             $filename = $request->file('avatar')->path();
             Cloudder::upload($filename, $user->avatar_public_id);
             return ['status' => 200, 'avatar_public_id' => $avatar_public_id, 'message' => 'Avatar updated'];

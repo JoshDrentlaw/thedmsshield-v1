@@ -32,13 +32,15 @@ $(document).ready(function() {
         })
         .then(res => {
             if (res.data.status === 200) {
-                $('#add-map-modal').modal('hide')
+                let src = $('#edit-avatar').attr('src').split('/')
+                src[7] = 'v' + luxon.local().valueOf()
+                $('#edit-avatar').attr('src', src.join('/'))
                 pnotify.success({
                     title: 'Avatar updated',
                     text: res.data.msg,
                     delay: 1000
                 })
-                $this.replaceWith(`<img src="${res.data.avatar_url}" class="img-thumbnail mr-3 interactive" id="edit-avatar" alt="Player profile picture" data-toggle="modal" data-target="#edit-avatar-modal">`).fadeIn()
+                $('#edit-avatar-modal').modal('hide')
             }
         })
     })

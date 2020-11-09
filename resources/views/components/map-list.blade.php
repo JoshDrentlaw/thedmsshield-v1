@@ -5,7 +5,7 @@
                 id="{{$map->url}}"
                 class="card-img-top map-image-thumbnail"
                 alt="{{$map->name}}"
-                src="{{env('CLOUDINARY_IMG_PATH') . 'c_thumb,h_150/v' . time() . '/' . $map->public_id . '.jpg'}}"
+                src="{{env('CLOUDINARY_IMG_PATH') . 'c_thumb,g_center,h_175,w_' . floor(175 * (16 / 9)) . '/v' . time() . '/' . $map->public_id . '.jpg'}}"
             >
         </a>
         {{-- NAME AND IMAGE --}}

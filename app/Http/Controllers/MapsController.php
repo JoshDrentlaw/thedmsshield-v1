@@ -66,7 +66,7 @@ class MapsController extends Controller
         list($width, $height) = getimagesize($image);
         $map->width = $width;
         $map->height = $height;
-        // $map->save();
+        $map->save();
         $isDm = true;
         $html = view('components.map-list', compact('map', 'isDm'))->render();
         return  ['status' => 200, 'message' => 'Map added', 'map' => $map, 'html' => $html];

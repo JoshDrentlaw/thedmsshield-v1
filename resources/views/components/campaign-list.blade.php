@@ -2,7 +2,7 @@
     <div class="card campaign-row">
         <a class="dmshield-link" href="/campaigns/{{$campaign->url}}">
             @if ($campaign->cover_public_id)
-                <img id="{{$campaign->url}}" src="{{env('CLOUDINARY_IMG_PATH') . 'c_thumb,h_175/v' . time() . '/' . $campaign->cover_public_id . '.jpg'}}" alt="{{$campaign->name}}" class="card-img-top map-image-thumbnail">
+                <img id="{{$campaign->url}}" src="{{env('CLOUDINARY_IMG_PATH') . 'c_thumb,h_175,w_' . floor(175 * (16 / 9)) . '/v' . time() . '/' . $campaign->cover_public_id . '.jpg'}}" alt="{{$campaign->name}}" class="card-img-top map-image-thumbnail">
             @else
                 <div class="card-img-top bg-dark text-light d-flex justify-content-center align-items-center" style="height:175px;font-size:25px;"><span>No image</span></div>
             @endif
