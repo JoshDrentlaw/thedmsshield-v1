@@ -123,19 +123,27 @@ $(document).ready(function() {
     $('#campaign-image-form').on('submit', function(e) {
         e.preventDefault()
         let newImage = new FormData($(this)[0])
+        newImage.append('_method', 'PUT')
+        const id = $('#config-campaign-id').val()
         axios({
             method: 'post',
-            url: '/campaigns',
+            url:` /campaigns/${id}/image`,
             data: newImage,
             headers: {'Content-Type': 'multipart/form-data'}
         })
         .then(res => {
+            console.log(res)
             if (res.data.status === 200) {
+                let campaign = res.data.campaign
+                $(`#campaign-${campaign.id}`).find('.card-img-top').replaceWith(`
+                    <img id="${campaign.url}" src="${res.data.img_path + 'c_thumb,h_175,w_' + Math.floor(175 * (16 / 9)) + '/v' + luxon.local().valueOf() + '/' + campaign.cover_public_id + '.jpg'}" alt="${campaign.name}" class="card-img-top map-image-thumbnail">
+                `)
                 pnotify.success({
                     title: 'Campaign cover image updated.',
                     text: res.data.msg,
                     delay: 1000
                 })
+                $('#edit-avatar-modal').modal('hide')
             }
         })
     })
