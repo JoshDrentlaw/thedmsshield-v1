@@ -50,13 +50,30 @@
     text-decoration: none !important;
 }
 
+.campaign-imagetron {
+    background-repeat: no-repeat;
+    background-position: center;
+    text-shadow: 0px 0px 10px white;
+}
+
+.campaign-name-header {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.players-row.tight {
+    min-height: 150px;
+    max-height: 150px;
+}
+
 .map-row {
     transition: opacity 500ms ease-in;
 }
 
 .map-image-thumbnail {
-    min-height: 150px;
-    max-height: 150px;
+    min-height: 175px;
+    max-height: 175px;
 }
 
 .leaflet-sidebar {

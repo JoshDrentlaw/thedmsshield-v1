@@ -4,11 +4,11 @@ namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
-use App\Campaign;
-use App\Creature;
+use App\Models\Campaign;
+use App\Models\Creature;
 use Illuminate\Http\Request;
 use JD\Cloudder\Facades\Cloudder;
-use App\Debug;
+use App\Models\Debug;
 use Exception;
 use Illuminate\Support\Facades\Gate;
 

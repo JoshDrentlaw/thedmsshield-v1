@@ -9,7 +9,7 @@ $(document).ready(function() {
         axios.post(`/dashboard/${id}/bio`, { bio })
             .then(res => {
                 if (res.data.status === 200) {
-                    PNotify.success({
+                    pnotify.success({
                         title: 'Bio updated',
                         text: res.data.msg,
                         delay: 1000
@@ -32,32 +32,33 @@ $(document).ready(function() {
         })
         .then(res => {
             if (res.data.status === 200) {
-                $('#add-map-modal').modal('hide')
-                PNotify.success({
+                let src = $('#edit-avatar').attr('src').split('/')
+                src[7] = 'v' + luxon.local().valueOf()
+                $('#edit-avatar').attr('src', src.join('/'))
+                pnotify.success({
                     title: 'Avatar updated',
                     text: res.data.msg,
                     delay: 1000
                 })
-                $this.replaceWith(`<img src="${res.data.avatar_url}" class="img-thumbnail mr-3 interactive" id="edit-avatar" alt="Player profile picture" data-toggle="modal" data-target="#edit-avatar-modal">`).fadeIn()
+                $('#edit-avatar-modal').modal('hide')
             }
         })
     })
 
-    // CHANGE TO CAMPAIGN
     // ADD NEW CAMPAIGN
-    $('#campaign-upload').on('submit', function(e) {
+    $('#new-campaign-form').on('submit', function(e) {
         e.preventDefault()
-        let imgUpload = new FormData($(this)[0])
+        let newCampaign = new FormData($(this)[0])
         axios({
             method: 'post',
             url: '/campaigns',
-            data: imgUpload,
+            data: newCampaign,
             headers: {'Content-Type': 'multipart/form-data'}
         })
         .then(res => {
             if (res.data.status === 200) {
-                $('#add-campaign-modal').modal('hide')
-                PNotify.success({
+                $('#new-campaign-modal').modal('hide')
+                pnotify.success({
                     title: 'Campaign added',
                     text: res.data.msg,
                     delay: 1000
@@ -75,7 +76,7 @@ $(document).ready(function() {
     })
 
     // REPLACE CAMPAIGN WITH NEW IMAGE
-    $('#new-campaign-form').on('submit', function(e) {
+    /* $('#new-campaign-form').on('submit', function(e) {
         e.preventDefault()
         const id = $('#config-campaign-id').val()
         let newImageUpload = new FormData($(this)[0])
@@ -86,7 +87,7 @@ $(document).ready(function() {
         .then(res => {
             if (res.status === 200) {
                 $('#new-campaign-image').val('')
-                PNotify.success({
+                pnotify.success({
                     title: 'Campaign updated',
                     text: res.data.msg,
                     delay: 1000
@@ -95,7 +96,7 @@ $(document).ready(function() {
                 $(`#${res.data.campaign.url}`).attr('src', res.data.campaign.campaign_preview_url + '?' + d.getTime())
             }
         })
-    })
+    }) */
 
     // REPLACE CAMPAIGN NAME
     $('#campaign-name-form').on('submit', function(e) {
@@ -109,13 +110,42 @@ $(document).ready(function() {
                     $(`#campaign-${id}`).find('.dmshield-link').attr('href', `/campaigns/${res.data.url}`)
                     $('#config-campaign-name').text(name)
                     $(`#campaign-name-header-${id}`).text(name)
-                    PNotify.success({
+                    pnotify.success({
                         title: 'Campaign name updated',
                         text: res.data.msg,
                         delay: 1000
                     })
                 }
             })
+    })
+
+    // REPLACE CAMPAIGN IMAGE
+    $('#campaign-image-form').on('submit', function(e) {
+        e.preventDefault()
+        let newImage = new FormData($(this)[0])
+        newImage.append('_method', 'PUT')
+        const id = $('#config-campaign-id').val()
+        axios({
+            method: 'post',
+            url:` /campaigns/${id}/image`,
+            data: newImage,
+            headers: {'Content-Type': 'multipart/form-data'}
+        })
+        .then(res => {
+            console.log(res)
+            if (res.data.status === 200) {
+                let campaign = res.data.campaign
+                $(`#campaign-${campaign.id}`).find('.card-img-top').replaceWith(`
+                    <img id="${campaign.url}" src="${res.data.img_path + 'c_thumb,h_175,w_' + Math.floor(175 * (16 / 9)) + '/v' + luxon.local().valueOf() + '/' + campaign.cover_public_id + '.jpg'}" alt="${campaign.name}" class="card-img-top map-image-thumbnail">
+                `)
+                pnotify.success({
+                    title: 'Campaign cover image updated.',
+                    text: res.data.msg,
+                    delay: 1000
+                })
+                $('#edit-avatar-modal').modal('hide')
+            }
+        })
     })
 
     // CONFIRM DELETION OF CAMPAIGN
@@ -129,7 +159,7 @@ $(document).ready(function() {
                     setTimeout(function() {
                         $(`#campaign-${id}`).remove()
                     }, 500)
-                    PNotify.success({
+                    pnotify.success({
                         title: 'Campaign deleted',
                         text: res.data.msg,
                         delay: 1000
@@ -221,7 +251,7 @@ $(document).ready(function() {
         axios.post(`/dashboard/send_player_invite`, { id, playerId })
             .then(res => {
                 if (res.status === 200) {
-                    PNotify.success({
+                    pnotify.success({
                         title: 'Invite sent',
                         text: res.data.msg,
                         delay: 1000

@@ -94,7 +94,7 @@
                 <div class="card-header">
                     <h3>
                         Campaigns
-                        <button id="add-campaign" class="btn btn-success float-right" data-toggle="modal" data-target="#add-campaign-modal">Add campaign</button>
+                        <button id="new-campaign" class="btn btn-success float-right" data-toggle="modal" data-target="#new-campaign-modal">New campaign</button>
                     </h3>
                 </div>
                 <div class="card-body">
@@ -112,6 +112,40 @@
                         @endforelse
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{{-- NEW CAMPAIGN MODAL --}}
+<div class="modal" id="new-campaign-modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">New Campaign</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="new-campaign-form">
+                    <div class="form-group">
+                        <label for="campaign-image-image">Select an image to upload.</label>
+                        <input type="file" accept=".jpg, .jpeg, .png" class="form-control" name="campaign-image" id="campaign-image">
+                    </div>
+                    <div class="form-group">
+                        <label for="campaign-name">Campaign name</label>
+                        <input type="text" class="form-control" id="campaign-name" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="campaign-description">Campaign description</label>
+                        <textarea type="text" class="form-control" id="campaign-description" name="description" required></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="submit" form="new-campaign-form" class="btn btn-primary" id="confirm-new-campaign">Submit</button>
             </div>
         </div>
     </div>
@@ -158,13 +192,13 @@
             <div class="modal-body">
                 <input type="hidden" id="config-campaign-id" name="old-campaign-id">
                 {{-- REPLACE MAP IMAGE --}}
-                <form id="new-campaign-form">
+                <form id="campaign-image-form">
                     <div class="form-group">
                         <label for="new-campaign-image">Change campaign image</label>
                         <div class="input-group">
                             <input type="file" accept=".jpg, .jpeg, .png" name="new-campaign-image" class="form-control" id="new-campaign-image" required>
                             <div class="input-group-append">
-                                <button type="submit" form="new-campaign-form" id="new-campaign-btn" class="btn btn-primary">Upload</button>
+                                <button type="submit" form="campaign-image-form" id="new-campaign-btn" class="btn btn-primary">Upload</button>
                             </div>
                         </div>
                     </div>
@@ -182,7 +216,6 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" id="confirm-change-campaign">Save changes</button>
             </div>
         </div>
     </div>

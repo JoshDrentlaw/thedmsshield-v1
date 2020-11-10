@@ -3,10 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Auth;
-use App\Campaign;
+use App\Models\Campaign;
 use Illuminate\Http\Request;
 use JD\Cloudder\Facades\Cloudder;
-use App\Debug;
+use App\Models\Debug;
 use Illuminate\Support\Facades\Gate;
 
 class CampaignsController extends Controller
@@ -49,21 +49,24 @@ class CampaignsController extends Controller
      */
     public function store(Request $request)
     {
-        $this->validate($request,[
-            'campaign-image'=>'required|mimes:jpeg,bmp,jpg,png|between:1, 6000',
+        $validated = $this->validate($request,[
+            'campaign-image'=>'mimes:jpeg,bmp,jpg,png|between:1, 6000',
+            'name' => 'required',
+            'description' => 'required'
         ]);
+        $env = env('APP_ENV');
+        $user = Auth::user();
         $campaign = new Campaign;
-        $campaign->campaign_id = $request->post('campaign-id');
-        $campaign->name = $request->post('campaign-name');
+        $campaign->dm_id = $user->id;
+        $username = $user->username;
+        $campaign->name = $validated['name'];
+        $campaign->description = $validated['description'];
         $campaign->url = implode('_', explode(' ', strtolower($campaign->name)));
-        $image = $request->file('campaign-image')->path();
-        Cloudder::upload($image, 'thedmsshield.com/campaigns/'.$campaign->url);
-        $campaign->campaign_public_id = Cloudder::getPublicId();
-        list($width, $height) = getimagesize($image);
-        $campaign->campaign_width = $width;
-        $campaign->campaign_height = $height;
-        $campaign->image_url = Cloudder::secureShow($campaign->campaign_public_id, ['width' => $width, 'height' => $height, 'format' => 'jpg']);
-        $campaign->campaign_preview_url = Cloudder::secureShow($campaign->campaign_public_id, ['width' => 300, 'height' => 195, 'crop' => 'scale', 'format' => 'jpg']);
+        if (isset($validated['campaign-image'])) {
+            $image = $request->file('campaign-image')->path();
+            Cloudder::upload($image, "thedmsshield.com/{$env}/users/{$username}/campaigns/" . $campaign->url . '/cover');
+            $campaign->cover_public_id = Cloudder::getPublicId();
+        }
         $campaign->save();
         $html = view('components.campaign-list', compact('campaign'))->render();
         return  ['status' => 200, 'message' => 'Campaign added', 'campaign' => $campaign, 'html' => $html];
@@ -94,7 +97,8 @@ class CampaignsController extends Controller
             'campaign' => $campaign,
             'maps' => $maps,
             'players' => $players,
-            'isDm' => $user->id === $dm->id
+            'isDm' => $user->id === $dm->id,
+            'img_path' => env('CLOUDINARY_IMG_PATH')
         ]);
     }
 
@@ -120,19 +124,18 @@ class CampaignsController extends Controller
     {
         switch ($type) {
             case 'image':
-                if ($request->hasFile('new-campaign-image')) {
-                    $this->validate($request,[
+                if ($request->has('new-campaign-image')) {
+                    $validated = $this->validate($request,[
                         'new-campaign-image' => 'required|mimes:jpeg,jpg,png|between:1, 6000'
                     ]);
+                    $env = env('APP_ENV');
+                    $username = Auth::user()->username;
                     $campaign = Campaign::find($id);
-                    Cloudder::destroyImages([$campaign->campaign_public_id]);
-                    $filename = $request->file('new-campaign-image')->path();
-                    Cloudder::upload($filename, $campaign->campaign_public_id);
-                    list($campaign_width, $campaign_height) = getimagesize($filename);
-                    $image_url = Cloudder::secureShow($campaign->campaign_public_id, ['width' => $campaign_width, 'height' => $campaign_height, 'format' => 'jpg']);
-                    $campaign_preview_url = Cloudder::secureShow($campaign->campaign_public_id, ['width' => 300, 'height' => 195, 'crop' => 'scale', 'format' => 'jpg']);
-                    Campaign::where('id', $id)->update(compact('image_url', 'campaign_preview_url', 'campaign_width', 'campaign_height'));
-                    return ['status' => 200, 'campaign' => $campaign, 'message' => 'Campaign image updated'];
+                    $filename = $validated['new-campaign-image']->path();
+                    Cloudder::upload($filename, "thedmsshield.com/{$env}/users/{$username}/campaigns/" . $campaign->url . '/cover');
+                    $cover_public_id = Cloudder::getPublicId();
+                    Campaign::where('id', $id)->update(compact('cover_public_id'));
+                    return ['status' => 200, 'campaign' => $campaign, 'img_path' => env('CLOUDINARY_IMG_PATH'), 'message' => 'Campaign image updated'];
                 } else {
                     return ['status' => 500, 'request' => $request];
                 }

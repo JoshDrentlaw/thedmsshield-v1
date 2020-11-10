@@ -1,4 +1,9 @@
 $(document).ready(function() {
+    $('.campaign-imagetron').css(
+        'background-image',
+        `url(${img_path}w_${$('.campaign-imagetron').outerWidth()}/v${luxon.local().valueOf()}/${campaign.cover_public_id}.jpg)`
+    )
+
     // ADD NEW MAP
     $('#map-upload').on('submit', function(e) {
         e.preventDefault()
@@ -12,11 +17,14 @@ $(document).ready(function() {
         .then(res => {
             if (res.data.status === 200) {
                 $('#add-map-modal').modal('hide')
-                PNotify.success({
+                pnotify.success({
                     title: 'Map added',
                     text: res.data.msg,
                     delay: 1000
                 })
+                if ($('#map-rows').children(':first-child').is('p')) {
+                    $('#map-rows').children().remove()
+                }
                 $('#map-rows').append(res.data.html).fadeIn()
             }
         })
@@ -40,7 +48,7 @@ $(document).ready(function() {
         .then(res => {
             if (res.status === 200) {
                 $('#new-map-image').val('')
-                PNotify.success({
+                pnotify.success({
                     title: 'Map updated',
                     text: res.data.msg,
                     delay: 1000
@@ -63,7 +71,7 @@ $(document).ready(function() {
                     $(`#map-${id}`).find('.dmshield-link').attr('href', `/maps/${res.data.map_url}`)
                     $('#config-map-name').text(map_name)
                     $(`#map-name-header-${id}`).text(map_name)
-                    PNotify.success({
+                    pnotify.success({
                         title: 'Map name updated',
                         text: res.data.msg,
                         delay: 1000
@@ -83,7 +91,7 @@ $(document).ready(function() {
                     setTimeout(function() {
                         $(`#map-${id}`).remove()
                     }, 500)
-                    PNotify.success({
+                    pnotify.success({
                         title: 'Map deleted',
                         text: res.data.msg,
                         delay: 1000
@@ -175,7 +183,7 @@ $(document).ready(function() {
         axios.post(`/dashboard/send_player_invite`, { id, playerId })
             .then(res => {
                 if (res.status === 200) {
-                    PNotify.success({
+                    pnotify.success({
                         title: 'Invite sent',
                         text: res.data.msg,
                         delay: 1000
