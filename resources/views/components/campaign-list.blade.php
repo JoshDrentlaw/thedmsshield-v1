@@ -12,7 +12,7 @@
             <a class="dmshield-link card-title" href="/campaigns/{{$campaign->url}}">
                 <h4 id="campaign-name-header-{{$campaign->id}}" class="campaign-name-header">{{$campaign->name}}</h4>
             </a>
-            <div class="row players-row">
+            <div class="row players-row tight">
                 <div class="col-12">
                     <label><strong>Players</strong></label>
                     <div class="row">

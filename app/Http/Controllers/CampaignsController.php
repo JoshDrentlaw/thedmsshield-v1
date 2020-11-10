@@ -97,7 +97,8 @@ class CampaignsController extends Controller
             'campaign' => $campaign,
             'maps' => $maps,
             'players' => $players,
-            'isDm' => $user->id === $dm->id
+            'isDm' => $user->id === $dm->id,
+            'img_path' => env('CLOUDINARY_IMG_PATH')
         ]);
     }
 
@@ -123,19 +124,18 @@ class CampaignsController extends Controller
     {
         switch ($type) {
             case 'image':
-                if ($request->hasFile('new-campaign-image')) {
-                    $this->validate($request,[
+                if ($request->has('new-campaign-image')) {
+                    $validated = $this->validate($request,[
                         'new-campaign-image' => 'required|mimes:jpeg,jpg,png|between:1, 6000'
                     ]);
                     $env = env('APP_ENV');
-                    $user = Auth::user();
-                    $username = $user->username;
+                    $username = Auth::user()->username;
                     $campaign = Campaign::find($id);
-                    $filename = $request->file('new-campaign-image')->path();
+                    $filename = $validated['new-campaign-image']->path();
                     Cloudder::upload($filename, "thedmsshield.com/{$env}/users/{$username}/campaigns/" . $campaign->url . '/cover');
                     $cover_public_id = Cloudder::getPublicId();
                     Campaign::where('id', $id)->update(compact('cover_public_id'));
-                    return ['status' => 200, 'campaign' => $campaign, 'message' => 'Campaign image updated'];
+                    return ['status' => 200, 'campaign' => $campaign, 'img_path' => env('CLOUDINARY_IMG_PATH'), 'message' => 'Campaign image updated'];
                 } else {
                     return ['status' => 500, 'request' => $request];
                 }

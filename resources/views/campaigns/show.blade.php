@@ -1,11 +1,12 @@
 @extends('layouts.app')
 
 @section('content')
+<?php
+    $img = env('CLOUDINARY_IMG_PATH') . 'h_203' . '/v' . time() . '/' . $campaign->cover_public_id . '.jpg';
+?>
 <div class="container">
-    <div class="alert alert-success fixed-top invisible" id="success-message-alert" style="z-index: 10000;" role="alert">
-        <h4 id="success-message"></h4>
-    </div>
-    <div class="jumbotron text-center">
+    <div class="jumbotron text-center campaign-imagetron">
+        {{-- <img src="" class="img-fluid" alt="Campaign cover image"> --}}
         <h1 class="display-4">{{$campaign->name}}</h1>
     </div>
     <div class="row players-row justify-content-center mb-4">
@@ -211,5 +212,9 @@
 @endsection
 
 @section('scripts')
+    <script>
+        const img_path = '{!!$img_path!!}'
+        const campaign = {!!$campaign!!}
+    </script>
     <script src="{{ asset('js/campaign.js') . '?' . time() }}"></script>
 @endsection

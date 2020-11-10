@@ -1,4 +1,9 @@
 $(document).ready(function() {
+    $('.campaign-imagetron').css(
+        'background-image',
+        `url(${img_path}w_${$('.campaign-imagetron').outerWidth()}/v${luxon.local().valueOf()}/${campaign.cover_public_id}.jpg)`
+    )
+
     // ADD NEW MAP
     $('#map-upload').on('submit', function(e) {
         e.preventDefault()
