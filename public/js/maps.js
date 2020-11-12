@@ -2,10 +2,10 @@ $(document).ready(function() {
     const bounds = [[0,0], [mapHeight, mapWidth]]
     const map = L.map('map-container', {
         crs: L.CRS.Simple,
-        // maxBounds: bounds,
-        minZoom: -3,
-        keepInView: true
+        keepInView: true,
+        minZoom: -1
     })
+    map.setZoom(5)
     const image = L.imageOverlay(mapUrl, bounds).addTo(map)
     map.fitBounds(bounds)
     let blue = 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png'
@@ -111,6 +111,11 @@ $(document).ready(function() {
         $('#editor-container').addClass('d-none')
         $('#body-display').removeClass('d-none')
         $('#body-display').html(body)
+    })
+
+    $('.compendium-item').on('click', '.to-marker-btn', function (e) {
+        e.preventDefault()
+        console.log('to marker')
     })
 
     $('#new-marker').on('click', function() {

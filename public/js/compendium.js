@@ -44,17 +44,19 @@ $(document).ready(function () {
     })
 
     // SHOW PLACE
-    $('.compendium-place').on('click', function () {
-        place_id = $(this).data('place-id')
-        axios.post('/places/show_component', {id: place_id, isDm})
-            .then(({ data }) => {
-                if (data.status === 200) {
-                    $('#show-place-modal').modal('show')
-                    $('#show-place-modal').find('.modal-body').html(data.showComponent)
-                }
-            })
-        if (typeof sidebar !== 'undefined') {
-            sidebar.close()
+    $('.compendium-place').on('click', function (e) {
+        if (!($(e.target).hasClass('to-marker-btn') || $(e.target).parents('.to-marker-btn').length > 0)) {
+            place_id = $(this).data('place-id')
+            axios.post('/places/show_component', {id: place_id, isDm})
+                .then(({ data }) => {
+                    if (data.status === 200) {
+                        $('#show-place-modal').modal('show')
+                        $('#show-place-modal').find('.modal-body').html(data.showComponent)
+                    }
+                })
+            if (typeof sidebar !== 'undefined') {
+                sidebar.close()
+            }
         }
     })
 
