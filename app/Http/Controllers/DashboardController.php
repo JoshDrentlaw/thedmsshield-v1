@@ -80,7 +80,7 @@ class DashboardController extends Controller
             $user = User::find($id);
             $env = env('APP_ENV');
             $username = $user->username;
-            $avatar_public_id = "thedmsshield.com/{$env}/users/{$username}/avatar";
+            $avatar_public_id = "thedmsshield.com/{$env}/users/{$username}/{$username}_avatar";
             User::where('id', $id)->update(compact('avatar_public_id'));
             $filename = $request->file('avatar')->path();
             Cloudder::upload($filename, $user->avatar_public_id);
