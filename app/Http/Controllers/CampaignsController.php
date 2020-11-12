@@ -64,7 +64,7 @@ class CampaignsController extends Controller
         $campaign->url = implode('_', explode(' ', strtolower($campaign->name)));
         if (isset($validated['campaign-image'])) {
             $image = $request->file('campaign-image')->path();
-            Cloudder::upload($image, "thedmsshield.com/{$env}/users/{$username}/campaigns/" . $campaign->url . '/cover');
+            Cloudder::upload($image, "thedmsshield.com/{$env}/users/{$username}/campaigns/" . $campaign->url . '/' . $campaign->url . '_cover');
             $campaign->cover_public_id = Cloudder::getPublicId();
         }
         $campaign->save();
@@ -132,7 +132,7 @@ class CampaignsController extends Controller
                     $username = Auth::user()->username;
                     $campaign = Campaign::find($id);
                     $filename = $validated['new-campaign-image']->path();
-                    Cloudder::upload($filename, "thedmsshield.com/{$env}/users/{$username}/campaigns/" . $campaign->url . '/cover');
+                    Cloudder::upload($filename, "thedmsshield.com/{$env}/users/{$username}/campaigns/" . $campaign->url . '/' . $campaign->url . '_cover');
                     $cover_public_id = Cloudder::getPublicId();
                     Campaign::where('id', $id)->update(compact('cover_public_id'));
                     return ['status' => 200, 'campaign' => $campaign, 'img_path' => env('CLOUDINARY_IMG_PATH'), 'message' => 'Campaign image updated'];
