@@ -26,6 +26,15 @@ $(document).ready(function() {
         popupAnchor: [1, -34],
         shadowSize: [41, 41]
     })
+    let black = 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-black.png'
+    /* let blackIcon = new L.Icon({
+        iconUrl: black,
+        shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+        iconSize: [25, 41],
+        iconAnchor: [12, 41],
+        popupAnchor: [1, -34],
+        shadowSize: [41, 41]
+    }) */
 
     let popup, saveTimeout, editor
 
@@ -41,10 +50,8 @@ $(document).ready(function() {
     })
     sidebar.disablePanel('marker')
 
-    // ADD MARKERS
-    let mapMarkers = markers.map((marker, i) => {
-        marker['index'] = i
-        let mapMarker = L
+    function addMarker(marker) {
+        return L
             .marker([marker.top, marker.left], {draggable: true, icon: blueIcon})
             .addTo(map)
             .on('dragend', function(e) {
@@ -62,6 +69,12 @@ $(document).ready(function() {
                 sidebar.open('marker')
                 setMarkerSidebar(marker)
             })
+    }
+
+    // ADD MARKERS
+    let mapMarkers = markers.map((marker, i) => {
+        marker['index'] = i
+        let mapMarker = addMarker(marker)
         return {
             marker: mapMarker,
             index: i
@@ -113,34 +126,83 @@ $(document).ready(function() {
         $('#body-display').html(body)
     })
 
-    $('#new-marker').on('click', function() {
-        axios.post('/markers', {map_id, top: mapHeight/2, left: mapWidth/2, campaign_id})
-            .then(res => {
-                let marker = res.data.marker
-                let place = res.data.place
-                marker.place = place
-                L
-                    .marker([mapHeight/2, mapWidth/2], {draggable: true})
-                    .addTo(map)
-                    .setIcon(greenIcon)
-                    .on('dragend', function(e) {
-                        axios.put(`/markers/${marker.id}`, {type: 'movement', top: e.target._latlng.lat, left: e.target._latlng.lng})
-                            .then(res => {
-                                if (res.status === 200) {
-                                    //$('.container').append(`<div class="alert alert-success">Map marker position updated!</div>`)
-                                }
-                            })
-                    })
-                    .on('click', function() {
-                        sidebar.open('marker')
-                        setMarkerSidebar(marker)
-                    })
-                $('#marker-list').append(`<button type="button" class="list-group-item list-group-item-action marker-button" data-marker-index="${mapMarkers.length}" data-marker-id="${marker.id}">${place.name}</button>`)
-                mapMarkers.push(marker)
-                sidebar.open('marker')
-                $('#place-name').focus()
-                setMarkerSidebar(marker)
+    $('#new-marker').on('click', function(e) {
+        let coor
+        sidebar.close()
+        $('#map-container').append(`<img id="new-map-marker" src="${black}" alt="Black map marker icon">`)
+        $('#new-map-marker').css({
+            position: 'fixed',
+            top: e.offsetX + 12.5,
+            left: e.offsetY - 12,
+            zIndex: '5000'
+        })
+        $('#map-container').css('cursor', `pointer`)
+        map.on('mousemove', function (e) {
+            console.log(e)
+            $('#new-map-marker').css({
+                top: e.originalEvent.offsetY + 12.5,
+                left: e.originalEvent.offsetX - 12
             })
+        })
+        map.on('click', function (e) {
+            console.log(e)
+            $('#new-map-marker').remove()
+            $('#map-container').css('cursor', `grab`)
+            L.marker([e.latlng.lat, e.latlng.lng], {draggable: true, icon: blueIcon}).addTo(map)
+            let name = randomWords({
+                exactly: 1,
+                wordsPerString: 2,
+                join: ' ',
+                formatter: function (word) {
+                    return word.slice(0, 1).toUpperCase() + word.slice(1)
+                }
+            })
+            axios.post('/markers', {map_id, top: e.latlng.lat, left: e.latlng.lng, campaign_id, name })
+                .then(res => {
+                    let marker = res.data.marker
+                    let place = res.data.place
+                    marker.place = place
+                    addMarker(marker)
+                    $('#marker-list').append(`
+                        <a class="list-group-item list-group-item-action interactive dmshield-link compendium-place" data-place-id="${place.id}">
+                            ${place.name}
+                            <i class="fa fa-map-marker-alt"></i>
+                            <small class="text-muted">${mapModel.name}</small>
+                        </a>
+                    `)
+                    mapMarkers.push(marker)
+                    sidebar.open('marker')
+                    $('#place-name').focus()
+                    setMarkerSidebar(marker)
+                })
+        })
+    })
+
+    $(document).on('click', '.to-marker-btn', function () {
+        sidebar.close()
+        $('#map-container').css('cursor', `url(${black}), auto`)
+        map.on('click', function (e) {
+            console.log(e)
+            axios.post('/markers', {map_id, top: e.latlng.lat, left: e.latlng.lng, campaign_id})
+                .then(res => {
+                    $('#map-container').css('cursor', `grab`)
+                    let marker = res.data.marker
+                    let place = res.data.place
+                    marker.place = place
+                    addMarker(marker)
+                    $('#marker-list').append(`
+                        <a class="list-group-item list-group-item-action interactive dmshield-link compendium-place" data-place-id="${place.id}">
+                            ${place.name}
+                            <i class="fa fa-map-marker-alt"></i>
+                            <small class="text-muted">${mapModel.name}</small>
+                        </a>
+                    `)
+                    mapMarkers.push(marker)
+                    sidebar.open('marker')
+                    $('#place-name').focus()
+                    setMarkerSidebar(marker)
+                })
+        })
     })
 
     $('#delete-marker').on('click', function() {
