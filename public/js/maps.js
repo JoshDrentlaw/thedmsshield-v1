@@ -137,18 +137,17 @@ $(document).ready(function() {
             zIndex: '5000'
         })
         $('#map-container').css('cursor', `pointer`)
-        map.on('mousemove', function (e) {
-            console.log(e)
+        let mousemove = map.on('mousemove', function (e) {
             $('#new-map-marker').css({
                 top: e.originalEvent.offsetY + 12.5,
                 left: e.originalEvent.offsetX - 12
             })
         })
-        map.on('click', function (e) {
-            console.log(e)
+        let click = map.on('click', function (e) {
+            mousemove.off()
+            click.off()
             $('#new-map-marker').remove()
             $('#map-container').css('cursor', `grab`)
-            L.marker([e.latlng.lat, e.latlng.lng], {draggable: true, icon: blueIcon}).addTo(map)
             let name = randomWords({
                 exactly: 1,
                 wordsPerString: 2,
@@ -174,6 +173,9 @@ $(document).ready(function() {
                     sidebar.open('marker')
                     $('#place-name').focus()
                     setMarkerSidebar(marker)
+                })
+                .catch(rej => {
+                    console.log(rej)
                 })
         })
     })
