@@ -127,7 +127,6 @@ $(document).ready(function() {
     })
 
     $('#new-marker').on('click', function(e) {
-        let coor
         sidebar.close()
         $('#map-container').append(`<img id="new-map-marker" src="${black}" alt="Black map marker icon">`)
         $('#new-map-marker').css({
@@ -170,6 +169,7 @@ $(document).ready(function() {
                         </a>
                     `)
                     mapMarkers.push(marker)
+                    sidebar.enablePanel('marker')
                     sidebar.open('marker')
                     $('#place-name').focus()
                     setMarkerSidebar(marker)
@@ -184,7 +184,6 @@ $(document).ready(function() {
         sidebar.close()
         $('#map-container').css('cursor', `url(${black}), auto`)
         map.on('click', function (e) {
-            console.log(e)
             axios.post('/markers', {map_id, top: e.latlng.lat, left: e.latlng.lng, campaign_id})
                 .then(res => {
                     $('#map-container').css('cursor', `grab`)
