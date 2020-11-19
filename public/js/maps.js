@@ -47,6 +47,16 @@ $(document).ready(function() {
     sidebar.on('closing', function(e) {
         this.disablePanel('marker')
         $(`[src="${green}"]`).attr('src', blue)
+        if ($('#change-view-btn').is(':visible')) {
+            $('#change-view-btn').trigger('click')
+        }
+    })
+    sidebar.on('content', function (e) {
+        if (e.id !== 'marker') {
+            if ($('#change-view-btn').is(':visible')) {
+                $('#change-view-btn').trigger('click')
+            }
+        }
     })
     sidebar.disablePanel('marker')
 
@@ -72,13 +82,8 @@ $(document).ready(function() {
     }
 
     // ADD MARKERS
-    let mapMarkers = markers.map((marker, i) => {
-        marker['index'] = i
-        let mapMarker = addMarker(marker)
-        return {
-            marker: mapMarker,
-            index: i
-        }
+    markers.map(marker => {
+        addMarker(marker)
     })
 
     $('.marker-button').on('click', function() {
@@ -87,10 +92,17 @@ $(document).ready(function() {
         let markerId = $(this).data('marker-id')
         let thisMarker = markers.filter(marker => marker.id == markerId)[0]
         let markerIndex = $(this).data('marker-index')
-        let thisMapMarker = mapMarkers.filter(marker => marker.index == markerIndex)[0]
-        let otherMapMarkers = mapMarkers.filter(marker => marker.index != markerIndex)
-        thisMapMarker.marker.setIcon(greenIcon)
-        otherMapMarkers.map(marker => marker.marker.setIcon(blueIcon))
+        let thisMapMarker = mapMarkers.filter(marker => {
+            if (marker.index == markerIndex) {
+                marker.marker.setIcon(greenIcon)
+                return marker
+            }
+        })
+        mapMarkers.filter(marker => {
+            if (marker.index != markerIndex) {
+                marker.marker.setIcon(blueIcon)
+            }
+        })
         setMarkerSidebar(thisMarker, thisMapMarker.marker)
     })
 
@@ -157,21 +169,11 @@ $(document).ready(function() {
             })
             axios.post('/markers', {map_id, top: e.latlng.lat, left: e.latlng.lng, campaign_id, name })
                 .then(res => {
-                    let marker = res.data.marker
-                    let place = res.data.place
-                    marker.place = place
-                    addMarker(marker)
                     $('#marker-list').append(`
-                        <a class="list-group-item list-group-item-action interactive dmshield-link compendium-place" data-place-id="${place.id}">
-                            ${place.name}
-                            <i class="fa fa-map-marker-alt"></i>
-                            <small class="text-muted">${mapModel.name}</small>
-                        </a>
+                        <button type="button" class="list-group-item list-group-item-action marker-button" data-marker-index="${mapMarker.index}" data-marker-id="${marker.id}">${place.name}</button>
                     `)
-                    mapMarkers.push(marker)
                     sidebar.enablePanel('marker')
                     sidebar.open('marker')
-                    $('#place-name').focus()
                     setMarkerSidebar(marker)
                 })
                 .catch(rej => {
