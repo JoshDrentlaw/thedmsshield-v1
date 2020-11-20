@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use App\Models\Debug;
 use App\Models\Map;
 use App\Models\Marker;
 use App\Models\Place;
-use Illuminate\Http\Request;
 use Notify;
 
 class MarkersController extends Controller
@@ -42,11 +43,11 @@ class MarkersController extends Controller
     {
         $marker = new Marker;
         $place = new Place;
-        list($name, $url) = self::getRandomWords();
+        $name = $request->post('name');
         $place->campaign_id = $request->post('campaign_id');
-        $place->url = $url;
+        $place->url = Str::slug($name, '_');
         $place->name = $name;
-        $place->body = '<p>New note</p>';
+        $place->body = "<p>Tell everyone about {$name}</p>";
         $place->save();
         $marker->top = $request->post('top');
         $marker->left = $request->post('left');
@@ -54,19 +55,6 @@ class MarkersController extends Controller
         $marker->place_id = $place->id;
         $marker->save();
         return compact('marker', 'place');
-    }
-
-    public static function getRandomWords()
-    {
-        $curl = curl_init();
-        $url = sprintf("%s?%s", "https://random-word-api.herokuapp.com/word", http_build_query(['number' => 2, 'swear' => 0]));
-        curl_setopt($curl, CURLOPT_URL, $url);
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-        $result = json_decode(curl_exec($curl));
-        $name = ucwords(join(' ', $result));
-        $url = join('_', $result);
-        curl_close($curl);
-        return [$name, $url];
     }
 
     /**
@@ -77,7 +65,8 @@ class MarkersController extends Controller
      */
     public function show(Marker $marker)
     {
-        return Marker::find($marker);
+        return $marker;
+        // return Marker::find($marker);
     }
 
     /**

@@ -72,6 +72,14 @@ import 'tinymce/icons/default/icons'
 window.tinymce = tinymce
 
 /**
+ * 
+ *  Random words
+ * 
+ *  */
+import randomWords from 'random-words'
+window.randomWords = randomWords
+
+/**
  * Echo exposes an expressive API for subscribing to channels and listening
  * for events that are broadcast by Laravel. Echo and event broadcasting
  * allows your team to easily build robust real-time web applications.

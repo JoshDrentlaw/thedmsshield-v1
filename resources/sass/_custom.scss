@@ -14,12 +14,21 @@
 }
 
 [contenteditable] {
-    padding: 0 0.1em;
+    padding: 0 0.2em;
+    border: 1px solid #eeeeee;
+    border-radius: 6px;
+
+    .leaflet-sidebar-header > & {
+        border: 1px solid #1861ab;
+    }
 
     &:hover {
         border: 1px solid #a7a7a7;
-        border-radius: 6px;
     }
+}
+
+.leaflet-sidebar-header [contenteditable]::selection {
+    background: #333;
 }
 
 .form-check {
