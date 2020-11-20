@@ -65,7 +65,8 @@ class MarkersController extends Controller
      */
     public function show(Marker $marker)
     {
-        return Marker::find($marker);
+        return $marker;
+        // return Marker::find($marker);
     }
 
     /**

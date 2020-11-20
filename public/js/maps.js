@@ -2,12 +2,11 @@ $(document).ready(function() {
     const bounds = [[0,0], [mapHeight, mapWidth]]
     const map = L.map('map-container', {
         crs: L.CRS.Simple,
-        // maxBounds: bounds,
         minZoom: -3,
         keepInView: true
     })
     const image = L.imageOverlay(mapUrl, bounds).addTo(map)
-    map.fitBounds(bounds)
+    map.fitBounds(bounds).setZoom(-1)
     let blue = 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png'
     let blueIcon = new L.Icon({
         iconUrl: blue,
@@ -27,16 +26,8 @@ $(document).ready(function() {
         shadowSize: [41, 41]
     })
     let black = 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-black.png'
-    /* let blackIcon = new L.Icon({
-        iconUrl: black,
-        shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-        iconSize: [25, 41],
-        iconAnchor: [12, 41],
-        popupAnchor: [1, -34],
-        shadowSize: [41, 41]
-    }) */
 
-    let popup, saveTimeout, editor
+    let mapMarkers = []
 
     sidebar = L.control.sidebar({
             autopan: true,
@@ -62,7 +53,11 @@ $(document).ready(function() {
 
     function addMarker(marker) {
         return L
-            .marker([marker.top, marker.left], {draggable: true, icon: blueIcon})
+            .marker([marker.top, marker.left], {
+                draggable: true,
+                icon: blueIcon,
+                id: marker.id
+            })
             .addTo(map)
             .on('dragend', function(e) {
                 axios.put(`/markers/${marker.id}`, {type: 'movement', top: e.target._latlng.lat, left: e.target._latlng.lng})
@@ -83,27 +78,25 @@ $(document).ready(function() {
 
     // ADD MARKERS
     markers.map(marker => {
-        addMarker(marker)
+        mapMarkers.push(addMarker(marker))
     })
 
-    $('.marker-button').on('click', function() {
-        sidebar.enablePanel('marker')
-        sidebar.open('marker')
+    $('.marker-list-button').on('click', function() {
         let markerId = $(this).data('marker-id')
-        let thisMarker = markers.filter(marker => marker.id == markerId)[0]
-        let markerIndex = $(this).data('marker-index')
-        let thisMapMarker = mapMarkers.filter(marker => {
-            if (marker.index == markerIndex) {
-                marker.marker.setIcon(greenIcon)
-                return marker
-            }
-        })
-        mapMarkers.filter(marker => {
-            if (marker.index != markerIndex) {
-                marker.marker.setIcon(blueIcon)
-            }
-        })
-        setMarkerSidebar(thisMarker, thisMapMarker.marker)
+        axios.get(`/markers/${markerId}`)
+            .then(res => {
+                let marker = res.data
+                sidebar.enablePanel('marker')
+                sidebar.open('marker')
+                mapMarkers.map(mapMarker => {
+                    if (mapMarker.options.id == marker.id) {
+                        mapMarker.setIcon(greenIcon)
+                        setMarkerSidebar(marker, mapMarker)
+                    } else {
+                        mapMarker.setIcon(blueIcon)
+                    }
+                })
+            })
     })
 
     function setMarkerSidebar(marker, mapMarker=false) {
@@ -116,7 +109,6 @@ $(document).ready(function() {
             map.flyTo(markerLatLng, 0.5, {duration: 1, easeLinearity: 1})
         }
         $('#marker-id').val(marker.id)
-        $('#marker-index').val(marker.index)
         $('#place-name').text(marker.place.name)
         $('#body-editor, #body-display').html(marker.place.body)
     }
@@ -170,7 +162,7 @@ $(document).ready(function() {
             axios.post('/markers', {map_id, top: e.latlng.lat, left: e.latlng.lng, campaign_id, name })
                 .then(res => {
                     $('#marker-list').append(`
-                        <button type="button" class="list-group-item list-group-item-action marker-button" data-marker-index="${mapMarker.index}" data-marker-id="${marker.id}">${place.name}</button>
+                        <button type="button" class="list-group-item list-group-item-action marker-list-button" data-marker-id="${marker.id}">${place.name}</button>
                     `)
                     sidebar.enablePanel('marker')
                     sidebar.open('marker')
@@ -210,18 +202,13 @@ $(document).ready(function() {
 
     $('#delete-marker').on('click', function() {
         const id = $('#marker-id').val()
-        const index = $('#marker-index').val()
-        let thisMapMarker = mapMarkers.filter(marker => marker.index == index)[0]
+        let thisMapMarker = mapMarkers.filter(marker => marker.options.id == id)[0]
         axios.delete(`/markers/${id}`)
             .then(res => {
                 if (res.status === 200) {
                     sidebar.close()
                     thisMapMarker.marker.removeFrom(map)
-                    $('#alert-message').text(res.data.message)
-                    $('#ajax-message').addClass(`show ${res.data.class}`).removeClass('invisible')
-                    setTimeout(function () {
-                        $('#ajax-message').removeClass('show').addClass('fade')
-                    }, 3000)
+                    pnotify.success({title: res.data.message})
                 }
             })
     })
