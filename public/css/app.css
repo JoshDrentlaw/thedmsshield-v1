@@ -16118,12 +16118,25 @@ a.text-dark:focus {
 }
 
 [contenteditable] {
-  padding: 0 0.1em;
+  padding: 0 0.2em;
+  border: 1px solid #eeeeee;
+  border-radius: 6px;
+}
+
+.leaflet-sidebar-header > [contenteditable] {
+  border: 1px solid #1861ab;
 }
 
 [contenteditable]:hover {
   border: 1px solid #a7a7a7;
-  border-radius: 6px;
+}
+
+.leaflet-sidebar-header [contenteditable]::-moz-selection {
+  background: #333;
+}
+
+.leaflet-sidebar-header [contenteditable]::selection {
+  background: #333;
 }
 
 .form-check {
@@ -16230,6 +16243,10 @@ a.text-dark:focus {
 
 .compendium-list-group::-webkit-scrollbar-thumb:hover {
   background: #555;
+}
+
+.compendium-item {
+  font-size: 17px;
 }
 
 .map-container-underlay {

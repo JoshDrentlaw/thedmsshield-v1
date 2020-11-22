@@ -23,6 +23,8 @@
             @yield('content')
         </div>
 
+        @yield('modals')
+
         <script src="{{ asset('js/app.js') . '?' . time() }}"></script>
         @include('inc.js_libraries')
         @yield('scripts')
