@@ -5,6 +5,7 @@ $(document).ready(function() {
         minZoom: -3,
         keepInView: true
     })
+    map.setZoom(5)
     const image = L.imageOverlay(mapUrl, bounds).addTo(map)
     map.fitBounds(bounds).setZoom(-1)
     let blue = 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png'
@@ -81,7 +82,7 @@ $(document).ready(function() {
         mapMarkers.push(addMarker(marker))
     })
 
-    $('.marker-list-button').on('click', function() {
+    $(document).on('click', '.marker-list-button', function() {
         let markerId = $(this).data('marker-id')
         axios.get(`/markers/${markerId}`)
             .then(res => {
@@ -109,6 +110,7 @@ $(document).ready(function() {
             map.flyTo(markerLatLng, 0.5, {duration: 1, easeLinearity: 1})
         }
         $('#marker-id').val(marker.id)
+        $('#place-id').val(marker.place.id)
         $('#place-name').text(marker.place.name)
         $('#body-editor, #body-display').html(marker.place.body)
     }
@@ -130,9 +132,9 @@ $(document).ready(function() {
         $('#body-display').html(body)
     })
 
-    $('#new-marker').on('click', function(e) {
+    function addMapMarker(e, placeId = false) {
         sidebar.close()
-        $('#map-container').append(`<img id="new-map-marker" src="${black}" alt="Black map marker icon">`)
+        $('#map-container').append(`<img id="new-map-marker" data-place-id="${placeId}" src="${black}" alt="Black map marker icon">`)
         $('#new-map-marker').css({
             position: 'fixed',
             top: e.offsetX + 12.5,
@@ -140,74 +142,96 @@ $(document).ready(function() {
             zIndex: '5000'
         })
         $('#map-container').css('cursor', `pointer`)
-        let mousemove = map.on('mousemove', function (e) {
-            $('#new-map-marker').css({
-                top: e.originalEvent.offsetY + 12.5,
-                left: e.originalEvent.offsetX - 12
-            })
+        map.on('mousemove', newMarkerMouseMove)
+        map.on('click', newMarkerClick)
+        map.on('contextmenu', newMarkerCancel)
+    }
+
+    function newMarkerMouseMove(e) {
+        $('#new-map-marker').css({
+            top: e.originalEvent.offsetY + 12.5,
+            left: e.originalEvent.offsetX - 12
         })
-        let click = map.on('click', function (e) {
-            mousemove.off()
-            click.off()
-            $('#new-map-marker').remove()
-            $('#map-container').css('cursor', `grab`)
-            let name = randomWords({
-                exactly: 1,
-                wordsPerString: 2,
-                join: ' ',
-                formatter: function (word) {
-                    return word.slice(0, 1).toUpperCase() + word.slice(1)
-                }
-            })
-            axios.post('/markers', {map_id, top: e.latlng.lat, left: e.latlng.lng, campaign_id, name })
-                .then(res => {
-                    $('#marker-list').append(`
-                        <button type="button" class="list-group-item list-group-item-action marker-list-button" data-marker-id="${marker.id}">${place.name}</button>
+    }
+
+    function newMarkerClick(e) {
+        turnOffNewMarkerEvents()
+        let placeId = $('#new-map-marker').data('place-id')
+        $('#new-map-marker').remove()
+        $('#map-container').css('cursor', `grab`)
+        let name = randomWords({
+            exactly: 1,
+            wordsPerString: 2,
+            join: ' ',
+            formatter: function (word) {
+                return word.slice(0, 1).toUpperCase() + word.slice(1)
+            }
+        })
+        axios.post('/markers', {map_id, top: e.latlng.lat, left: e.latlng.lng, campaign_id, name, placeId })
+            .then(res => {
+                let marker = res.data.marker
+                $('#marker-list').append(`
+                    <button
+                        type="button"
+                        class="list-group-item list-group-item-action marker-list-button"
+                        data-marker-id="${marker.id}"
+                        data-place-id="${marker.place.id}"
+                    >
+                        ${marker.place.name}
+                    </button>
+                `)
+                if (placeId) {
+                    let $place = $(`.compendium-place[data-place-id="${placeId}"]`)
+                    $place.find('.to-marker-btn').remove()
+                    $place.html(`
+                        ${$place.text()}
+                        <i class="fa fa-map-marker-alt"></i>
+                        <small class="text-muted">${mapModel.name}</small>
                     `)
-                    sidebar.enablePanel('marker')
-                    sidebar.open('marker')
-                    setMarkerSidebar(marker)
-                })
-                .catch(rej => {
-                    console.log(rej)
-                })
-        })
+                }
+                let mapMarker = addMarker(marker)
+                mapMarkers.push(mapMarker)
+                sidebar.enablePanel('marker')
+                sidebar.open('marker')
+                setMarkerSidebar(marker, mapMarker)
+            })
+    }
+
+    function newMarkerCancel() {
+        turnOffNewMarkerEvents()
+        $('#new-map-marker').remove()
+        $('#map-container').css('cursor', `grab`)
+        sidebar.open('compendium')
+    }
+
+    function turnOffNewMarkerEvents() {
+        map.off('click', newMarkerClick)
+        map.off('contextmenu', newMarkerCancel)
+        map.off('mousemove', newMarkerMouseMove)
+    }
+
+    $('#new-marker').on('click', function(e) {
+        addMapMarker(e)
     })
 
-    $(document).on('click', '.to-marker-btn', function () {
-        sidebar.close()
-        $('#map-container').css('cursor', `url(${black}), auto`)
-        map.on('click', function (e) {
-            axios.post('/markers', {map_id, top: e.latlng.lat, left: e.latlng.lng, campaign_id})
-                .then(res => {
-                    $('#map-container').css('cursor', `grab`)
-                    let marker = res.data.marker
-                    let place = res.data.place
-                    marker.place = place
-                    addMarker(marker)
-                    $('#marker-list').append(`
-                        <a class="list-group-item list-group-item-action interactive dmshield-link compendium-place" data-place-id="${place.id}">
-                            ${place.name}
-                            <i class="fa fa-map-marker-alt"></i>
-                            <small class="text-muted">${mapModel.name}</small>
-                        </a>
-                    `)
-                    mapMarkers.push(marker)
-                    sidebar.open('marker')
-                    $('#place-name').focus()
-                    setMarkerSidebar(marker)
-                })
-        })
+    $(document).on('click', '.to-marker-btn', function (e) {
+        addMapMarker(e, $(this).data('place-id'))
     })
 
     $('#delete-marker').on('click', function() {
-        const id = $('#marker-id').val()
-        let thisMapMarker = mapMarkers.filter(marker => marker.options.id == id)[0]
-        axios.delete(`/markers/${id}`)
+        const markerId = $('#marker-id').val()
+        const placeId = $('#place-id').val()
+        let thisMapMarker = mapMarkers.filter(marker => marker.options.id == markerId)[0]
+        axios.delete(`/markers/${markerId}`)
             .then(res => {
                 if (res.status === 200) {
+                    thisMapMarker.removeFrom(map)
+                    $(`.marker-list-button[data-place-id="${placeId}"]`).remove()
+                    $(`.compendium-place[data-place-id="${placeId}"]`).children().remove()
+                    $(`.compendium-place[data-place-id="${placeId}"]`).append(`
+                        <button class="btn btn-success btn-sm float-right to-marker-btn" data-place-id="${placeId}"><i class="fa fa-map-marker-alt"></i></button>
+                    `)
                     sidebar.close()
-                    thisMapMarker.marker.removeFrom(map)
                     pnotify.success({title: res.data.message})
                 }
             })

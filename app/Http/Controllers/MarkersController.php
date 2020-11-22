@@ -41,20 +41,27 @@ class MarkersController extends Controller
      */
     public function store(Request $request)
     {
-        $marker = new Marker;
-        $place = new Place;
         $name = $request->post('name');
-        $place->campaign_id = $request->post('campaign_id');
-        $place->url = Str::slug($name, '_');
-        $place->name = $name;
-        $place->body = "<p>Tell everyone about {$name}</p>";
-        $place->save();
+        $marker = new Marker;
+        if ($request->has('placeId')) {
+            $place_id = $request->post('placeId');
+            $place = Place::find($place_id);
+        } else {
+            $place = new Place;
+            $place->campaign_id = $request->post('campaign_id');
+            $place->url = Str::slug($name, '_');
+            $place->name = $name;
+            $place->body = "<p>Tell everyone about {$name}</p>";
+            $place->save();
+            $place_id = $place->id;
+        }
         $marker->top = $request->post('top');
         $marker->left = $request->post('left');
         $marker->map_id = $request->post('map_id');
-        $marker->place_id = $place->id;
+        $marker->place_id = $place_id;
         $marker->save();
-        return compact('marker', 'place');
+        $marker = Marker::where('id', $marker->id)->with('place')->get()[0];
+        return compact('marker');
     }
 
     /**
@@ -112,10 +119,7 @@ class MarkersController extends Controller
     public function destroy($id)
     {
         $marker = Marker::find($id);
-        $place_id = $marker->place_id;
-        $place = Place::find($place_id);
         $marker->delete();
-        $place->delete();
         return ['status' => 200, 'message' => 'Marker deleted', 'class' => 'alert-success'];
     }
 }
