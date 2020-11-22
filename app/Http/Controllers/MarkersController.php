@@ -43,7 +43,7 @@ class MarkersController extends Controller
     {
         $name = $request->post('name');
         $marker = new Marker;
-        if ($request->has('placeId')) {
+        if ($request->post('placeId')) {
             $place_id = $request->post('placeId');
             $place = Place::find($place_id);
         } else {
