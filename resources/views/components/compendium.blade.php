@@ -81,7 +81,7 @@
                                 <small class="text-muted">{{$place->marker->map->name}}</small>
                             @else
                                 @if($path === 'map')
-                                    <button class="btn btn-success btn-sm float-right to-marker-btn"><i class="fa fa-map-marker-alt"></i></button>
+                                    <button class="btn btn-success btn-sm float-right to-marker-btn" data-place-id="{{$place->id}}"><i class="fa fa-map-marker-alt"></i></button>
                                 @endif
                             @endif
                         </a>
