@@ -27,16 +27,18 @@
                     </h1>
                     <button id="new-marker" class="mt-3 btn btn-success btn-block">New Marker</button>
                     <div id="marker-list" class="list-group list-group-flush">
-                        @foreach($markers as $i => $marker)
-                            <button
-                                type="button"
-                                class="list-group-item list-group-item-action marker-list-button"
-                                data-place-id="{{$marker->place->id}}"
-                                data-marker-id="{{$marker->id}}"
-                            >
-                                {{$marker->place->name}}
-                            </button>
-                        @endforeach
+                        @if (count($markers) > 0)
+                            @foreach($markers as $i => $marker)
+                                <button
+                                    type="button"
+                                    class="list-group-item list-group-item-action marker-list-button"
+                                    data-place-id="{{$marker->place->id}}"
+                                    data-marker-id="{{$marker->id}}"
+                                >
+                                    {{$marker->place->name}}
+                                </button>
+                            @endforeach
+                        @endif
                     </div>
                 </div>
                 {{-- MARKER --}}
