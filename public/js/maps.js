@@ -39,14 +39,14 @@ $(document).ready(function() {
     sidebar.on('closing', function(e) {
         this.disablePanel('marker')
         $(`[src="${green}"]`).attr('src', blue)
-        if ($('#change-view-btn').is(':visible')) {
-            $('#change-view-btn').trigger('click')
+        if ($('.show-place-change-view-btn').is(':visible')) {
+            $('.show-place-change-view-btn').trigger('click')
         }
     })
     sidebar.on('content', function (e) {
         if (e.id !== 'marker') {
-            if ($('#change-view-btn').is(':visible')) {
-                $('#change-view-btn').trigger('click')
+            if ($('.show-place-change-view-btn').is(':visible')) {
+                $('.show-place-change-view-btn').trigger('click')
             }
         }
     })
@@ -111,26 +111,27 @@ $(document).ready(function() {
         }
         $('#marker-id').val(marker.id)
         $('#place-id').val(marker.place.id)
-        $('#place-name').text(marker.place.name)
-        $('#body-editor, #body-display').html(marker.place.body)
+        $('.save-time').text(marker.place.updated_at)
+        $('.show-place-name').text(marker.place.name)
+        $('.show-place-body-editor, .show-place-body-display').html(marker.place.body)
     }
 
-    $('#body-display').on('click', function () {
+    /* $('.show-place-body-display').on('click', function () {
         let marker = markers[$('#marker-index').val()]
         $(this).addClass('d-none')
         $('#editor-container').removeClass('d-none')
-        editor = tinymceInit(marker.place.id, 'places', {selector: '#body-editor'})
+        editor = tinymceInit(marker.place.id, 'places', {selector: '.show-place-body-editor'})
         let iana = luxon.local().toFormat('z')
         $('#save-time').text(luxon.fromISO(marker.place.updated_at).setZone(iana).toFormat('FF'))
     })
 
-    $('#change-view-btn').on('click', function () {
+    $('.show-place-change-view-btn').on('click', function () {
         let body = tinymce.activeEditor.getContent()
         tinymce.activeEditor.destroy()
         $('#editor-container').addClass('d-none')
-        $('#body-display').removeClass('d-none')
-        $('#body-display').html(body)
-    })
+        $('.show-place-body-display').removeClass('d-none')
+        $('.show-place-body-display').html(body)
+    }) */
 
     function addMapMarker(e, placeId = false) {
         sidebar.close()
