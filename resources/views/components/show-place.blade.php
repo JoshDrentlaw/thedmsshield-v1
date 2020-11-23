@@ -1,6 +1,6 @@
 <div id="place-body">
     <h1 class="card-title">
-        <span class="<?= $isDm ? 'interactive' : '' ?>" id="show-place-name" contenteditable="true">
+        <span class="show-place-name<?= $isDm ? ' interactive' : '' ?>" contenteditable="true">
             @csrf
             {{$place->name}}
         </span>
@@ -8,15 +8,17 @@
             <small class="text-muted">{{$place->marker->map->name}}</small>
         @endif
     </h1>
-    <div id="show-place-editor-container" class="d-none">
-        <span>Last updated: <em id="show-place-save-time">{{$lastUpdated->format('c')}}</em></span>
-        <div id="show-place-body-editor" class="">
+    <input id="marker-id" value="{{$place->marker->id}}" type="hidden">
+    <input id="place-id" value="{{$place->id}}" type="hidden">
+    <div class="show-place-editor-container d-none">
+        <span>Last updated: <em class="save-time">{{$lastUpdated->format('c')}}</em></span>
+        <div class="show-place-body-editor">
             {!!$place->body!!}
         </div>
-        <button type="button" id="show-place-change-view-btn" class="btn btn-secondary mt-4">Change view</button>
+        <button type="button" class="show-place-change-view-btn btn btn-secondary mt-4">Change view</button>
     </div>
 
-    <div id="show-place-body-display" class="<?= $isDm ? 'interactive' : '' ?>" contenteditable="false">
+    <div class="show-place-body-display<?= $isDm ? ' interactive' : '' ?>" contenteditable="false">
         {!!$place->body!!}
     </div>
 </div>

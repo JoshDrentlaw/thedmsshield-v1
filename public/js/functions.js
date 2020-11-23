@@ -13,6 +13,7 @@ function showValidationErrors(errors, model) {
 }
 
 function tinymceInit(id, path, opts) {
+    console.log(id)
     let saveTimeout
     let options = {
         height: 500,
@@ -24,6 +25,7 @@ function tinymceInit(id, path, opts) {
         autosave_ask_before_unload: false,
         indent: false,
         init_instance_callback: function (editor) {
+            console.log(id)
             if (id !== 'new') {
                 editor.on('input', function () {
                     if (saveTimeout) {
@@ -34,12 +36,12 @@ function tinymceInit(id, path, opts) {
                         axios.put(`/${path}/${id}`, {body})
                             .then(function ({ data }) {
                                 if (data.status === 200) {
-                                    $('#save-time').addClass('shadow-pulse');
-                                    $('#save-time').on('animationend', function(){    
-                                        $('#save-time').removeClass('shadow-pulse');
+                                    $('.save-time:visible').addClass('shadow-pulse');
+                                    $('.save-time:visible').on('animationend', function(){    
+                                        $('.save-time:visible').removeClass('shadow-pulse');
                                     });
                                     let iana = luxon.local().toFormat('z')
-                                    $('#save-time').text(luxon.fromISO(data.updated_at).setZone(iana).toFormat('FF'))
+                                    $('.save-time:visible').text(luxon.fromISO(data.updated_at).setZone(iana).toFormat('FF'))
                                 }
                             }) 
                     }, 1000)

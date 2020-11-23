@@ -44,29 +44,20 @@
                 {{-- MARKER --}}
                 <div class="leaflet-sidebar-pane" id="marker">
                     <h1 class="leaflet-sidebar-header mb-4 d-flex align-items-center justify-content-between">
-                        <span id="place-name" class="interactive" contenteditable="true"></span>
+                        <span class="show-place-name interactive" contenteditable="true"></span>
                         <div class="leaflet-sidebar-close d-block">
                             <i class="fa fa-caret-left"></i>
                         </div>
                     </h1>
                     <input id="marker-id" type="hidden">
                     <input id="place-id" type="hidden">
-                    {{-- <div id="body-container">
-                        <div id="editor-container" class="d-none">
-                            <span>Last updated: <em id="save-time"></em></span>
-                            <div id="" class="place-body-editor"></div>
-                            <button type="button" id="change-view-btn" class="btn btn-secondary btn-block mt-4">Change view</button>
-                        </div>
-                
-                        <div id="body-display" class="interactive"></div>
-                    </div> --}}
-                    <div id="editor-container" class="d-none">
-                        <span>Last updated: <em id="save-time"></em></span>
-                        <div id="body-editor" class=""></div>
-                        <button type="button" id="change-view-btn" class="btn btn-secondary btn-block mt-4">Change view</button>
+                    <div class="show-place-editor-container d-none">
+                        <span>Last updated: <em class="save-time"></em></span>
+                        <div class="show-place-body-editor"></div>
+                        <button type="button" class="show-place-change-view-btn btn btn-secondary btn-block mt-4">Change view</button>
                     </div>
                 
-                    <div id="body-display" class="<?= $isDm ? 'interactive' : '' ?>" contenteditable="false"></div>
+                    <div class="show-place-body-display<?= $isDm ? ' interactive' : '' ?>" contenteditable="false"></div>
                     <button id="delete-marker" class="mt-3 btn btn-danger btn-block">Delete Marker</button>
                 </div>
                 {{-- COMPENDIUM --}}
