@@ -193,23 +193,23 @@
     #form-container {
         width: 75%;
     }
+}
 
-    /* ANIMATIONS */
+/* ANIMATIONS */
 
-    @keyframes shadowPulse {
-        0% {
-            box-shadow: 0 0 7px 2px #498adc;
-        }
-
-        100% {
-            box-shadow: 0 0 1px 1px white;
-        }
+@keyframes shadowPulse {
+    0% {
+        box-shadow: 0 0 7px 2px #498adc;
     }
 
-    .shadow-pulse {
-        animation-name: shadowPulse;
-        animation-duration: 1.5s;
-        animation-iteration-count: 1;
-        animation-timing-function: linear;
+    100% {
+        box-shadow: 0 0 1px 1px white;
     }
+}
+
+.shadow-pulse {
+    animation-name: shadowPulse;
+    animation-duration: 1.5s;
+    animation-iteration-count: 1;
+    animation-timing-function: linear;
 }
