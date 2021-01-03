@@ -30,16 +30,16 @@
                         <i class="fa fa-users"></i>
                         Creatures
                     </h4>
-                    <div class="btn-group btn-group-sm mb-2 {{$btnGrpFloat}}">
+                    <div class="btn-group btn-group-sm mb-2 compendium-btn-group {{$btnGrpFloat}}">
                         <button class="btn btn-secondary" data-target="#creatureDescription" data-toggle="collapse" aria-expanded="false" aria-controls="creatureDescription">Description</button>
                         @if ($isDm)
                             <button class="btn btn-primary btn-sm float-right" id="new-creature-btn">New creature</button>
                         @endif
                     </div>
                 </div>
-                <div class="collapse mb-2" id="creatureDescription">
+                <div class="collapse mb-2 compendium-description" id="creatureDescription">
                     <div class="card card-body">
-                        <p>A person or creature is any location in this campaign that is important. It doesn't matter how big or small it is. It could be as small as a plaque or an entire universe.</p>
+                        <p>A person or creature is any NPC or creature that your players might encounter.</p>
                     </div>
                 </div>
                 <div class="list-group list-group-flush compendium-list-group" id="compendium-creatures-list">
@@ -57,14 +57,14 @@
                         <i class="fa fa-landmark"></i>
                         Places
                     </h4>
-                    <div class="btn-group btn-group-sm mb-2 {{$btnGrpFloat}}">
+                    <div class="btn-group btn-group-sm mb-2 compendium-btn-group {{$btnGrpFloat}}">
                         <button class="btn btn-secondary" data-target="#placesDescription" data-toggle="collapse" aria-expanded="false" aria-controls="placesDescription">Description</button>
                         @if ($isDm)
                             <button class="btn btn-primary" id="new-place-btn">New place</button>
                         @endif
                     </div>
                 </div>
-                <div class="collapse mb-2" id="placesDescription">
+                <div class="collapse mb-2 compendium-description" id="placesDescription">
                     <div class="card card-body">
                         <p>A place is any location in this campaign that is important. It doesn't matter how big or small it is. It could be as small as a plaque or an entire universe.</p>
                         @if ($isDm)
@@ -95,16 +95,16 @@
                         <i class="fa fa-magic"></i>
                         Things
                     </h4>
-                    <div class="btn-group btn-group-sm mb-2 {{$btnGrpFloat}}">
+                    <div class="btn-group btn-group-sm mb-2 compendium-btn-group {{$btnGrpFloat}}">
                         <button class="btn btn-secondary" data-target="#thingsDescription" data-toggle="collapse" aria-expanded="false" aria-controls="thingsDescription">Description</button>
                         @if ($isDm)
                             <button class="btn btn-primary btn-sm float-right" id="new-thing-btn">New thing</button>
                         @endif
                     </div>
                 </div>
-                <div class="collapse mb-2" id="thingsDescription">
+                <div class="collapse mb-2 compendium-description" id="thingsDescription">
                     <div class="card card-body">
-                        <p>A place is any location in this campaign that is important. It doesn't matter how big or small it is. It could be as small as a plaque or an entire universe.</p>
+                        <p>Things are extra stuff you could add to your game such as items, vehicles, points of interest, skills, abilities, or classes.</p>
                     </div>
                 </div>
                 <div class="list-group list-group-flush compendium-list-group" id="compendium-things-list">
