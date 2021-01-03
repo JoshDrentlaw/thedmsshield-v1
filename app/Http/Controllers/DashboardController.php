@@ -61,7 +61,7 @@ class DashboardController extends Controller
     public function player_search(Request $request) {
         $search = $request->post('search');
         $id = $request->post('id');
-        $users = User::select('id', 'name as text', 'bio', 'avatar_url_small')->where([
+        $users = User::select('id', 'name as text', 'bio', 'avatar_public_id')->where([
             ['id', '!=', $id],
             ['id', 'like', "%$search%"]
         ])->orWhere([
