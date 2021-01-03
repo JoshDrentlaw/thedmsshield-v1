@@ -61,7 +61,7 @@ class MapsController extends Controller
         $env = env('APP_ENV');
         $username = Auth::user()->username;
         $campaign = Campaign::find($request->post('campaign-id'))->url;
-        Cloudder::upload($image, "thedmsshield.com/{$env}/users/{$username}/campaigns/{$campaign}/maps/" . $campaign->url . '_' . $map->url);
+        Cloudder::upload($image, "thedmsshield.com/{$env}/users/{$username}/campaigns/{$campaign}/maps/" . $campaign . '_' . $map->url);
         $map->public_id = Cloudder::getPublicId();
         list($width, $height) = getimagesize($image);
         $map->width = $width;
