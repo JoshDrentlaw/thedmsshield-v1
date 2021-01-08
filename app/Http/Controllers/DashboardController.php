@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Campaign;
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\Player;
 use App\Models\Message;
 use App\Models\Invites;
 use App\Models\Debug;
@@ -34,7 +35,9 @@ class DashboardController extends Controller
         $user = User::find($user_id);
         $dm = $user->dm;
         $campaigns = $dm->campaigns;
-        return view('pages.dashboard', compact('campaigns', 'user', 'dm'));
+        $player = $user->player;
+        $playingIn = $player->campaigns;
+        return view('pages.dashboard', compact('campaigns', 'playingIn', 'user', 'dm'));
     }
 
     public function message($id)
@@ -107,6 +110,7 @@ class DashboardController extends Controller
         $invite->from_id = $dm->id;
         $invite->to_id = $player_id;
         $invite->campaign_id = $campaign_id;
+        $invite->save();
         // NEW MESSAGE
         $message = new Message;
         $message->from_id = $dm->id;
@@ -115,10 +119,9 @@ class DashboardController extends Controller
         $message->body = "{$dm->user->name} has invited you to join {$campaign->name}.";
         $message->message_type = 'invite';
         // ASSIGN ID'S
+        $message->invite_id = $invite->id;
         $message->save();
-        $invite->message_id = $message->id;
-        $invite->save();
-        $message->update(['invite_id' => $invite->id]);
+        $invite->update(['message_id' => $message->id]);
         // GET PENDING PLAYERS COMPONENT
         $players = $campaign->pending_players;
         $html = view('components.pending-invites', compact('players'))->render();
@@ -128,7 +131,12 @@ class DashboardController extends Controller
 
     public function accept_map_invite(Request $request)
     {
-        Invites::find($request->post('id'))->update(['accepted' => 1]);
+        $invite = Invites::find($request->post('id'));
+        $invite->update(['accepted' => 1]);
+        $campaign_id = $invite->campaign_id;
+        $player_id = $invite->to_id;
+        $player = Player::find($player_id);
+        $player->campaigns()->sync([$campaign_id], false);
         $msg = 'Campaign invite accepted!';
         return compact('msg');
     }

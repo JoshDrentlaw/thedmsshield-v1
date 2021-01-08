@@ -2,6 +2,7 @@
 
 @section('content')
 <div class="container">
+    @csrf
     <div class="alert alert-success fixed-top invisible" id="success-message-alert" style="z-index: 10000;" role="alert">
         <h4 id="success-message"></h4>
     </div>
@@ -93,7 +94,7 @@
             <div class="card">
                 <div class="card-header">
                     <h3>
-                        Campaigns
+                        My Campaigns
                         <button id="new-campaign" class="btn btn-success float-right" data-toggle="modal" data-target="#new-campaign-modal">New campaign</button>
                     </h3>
                 </div>
@@ -106,6 +107,32 @@
                     {{-- CAMPAIGN LIST GROUP --}}
                     <div id="campaign-rows" class="row row-cols-1 row-cols-md-2 row-cols-lg-3">
                         @forelse($campaigns as $campaign)
+                            <x-campaign-list :campaign="$campaign" />
+                        @empty
+                            <p><i>No campaigns...</i></p>
+                        @endforelse
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {{-- PLAYING IN --}}
+    <div class="row justify-content-center mb-4">
+        <div class="col-md">
+            {{-- PLAYING IN CARD --}}
+            <div class="card">
+                <div class="card-header">
+                    <h3>Playing In</h3>
+                </div>
+                <div class="card-body">
+                    @if (session('status'))
+                        <div class="alert alert-success" role="alert">
+                            {{ session('status') }}
+                        </div>
+                    @endif
+                    {{-- CAMPAIGN LIST GROUP --}}
+                    <div id="campaign-rows" class="row row-cols-1 row-cols-md-2 row-cols-lg-3">
+                        @forelse($playingIn as $campaign)
                             <x-campaign-list :campaign="$campaign" />
                         @empty
                             <p><i>No campaigns...</i></p>
@@ -139,7 +166,7 @@
                     </div>
                     <div class="form-group">
                         <label for="campaign-description">Campaign description</label>
-                        <textarea type="text" class="form-control" id="campaign-description" name="description" required></textarea>
+                        <textarea type="text" class="form-control" id="campaign-description" name="description"></textarea>
                     </div>
                 </form>
             </div>

@@ -234,8 +234,8 @@ $(document).ready(function() {
     // SET ADD PLAYERS MODAL
     $(document).on('click', '.add-players', function() {
         $('#player-search').val(null).trigger('change')
-        let id = $(this).data('map-id')
-        $('#add-player-map-id').val(id)
+        let id = $(this).data('campaign-id')
+        $('#add-player-campaign-id').val(id)
         axios.post('/dashboard/get_pending_players', { id })
             .then(res => {
                 if (res.status === 200) {
@@ -246,7 +246,7 @@ $(document).ready(function() {
 
     // SEND PLAYER REQUEST
     $('#confirm-add-player').on('click', function() {
-        let id = parseInt($('#add-player-map-id').val())
+        let id = parseInt($('#add-player-campaign-id').val())
         let playerId = parseInt($('#player-search').val())
         axios.post(`/dashboard/send_player_invite`, { id, playerId })
             .then(res => {

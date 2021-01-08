@@ -1,4 +1,5 @@
 <?php
+    $isDm = $isDm ? 1 : 0;
     switch ($path) {
         case 'map':
             $btnGrpFloat = '';
@@ -80,7 +81,7 @@
                                 <i class="fa fa-map-marker-alt"></i>
                                 <small class="text-muted">{{$place->marker->map->name}}</small>
                             @else
-                                @if($path === 'map')
+                                @if($path === 'map' && $isDm)
                                     <button class="btn btn-success btn-sm float-right to-marker-btn" data-place-id="{{$place->id}}"><i class="fa fa-map-marker-alt"></i></button>
                                 @endif
                             @endif

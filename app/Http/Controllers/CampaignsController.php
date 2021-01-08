@@ -51,8 +51,7 @@ class CampaignsController extends Controller
     {
         $validated = $this->validate($request,[
             'campaign-image'=>'mimes:jpeg,bmp,jpg,png|between:1, 6000',
-            'name' => 'required',
-            'description' => 'required'
+            'name' => 'required'
         ]);
         $env = env('APP_ENV');
         $user = Auth::user();
@@ -60,7 +59,7 @@ class CampaignsController extends Controller
         $campaign->dm_id = $user->id;
         $username = $user->username;
         $campaign->name = $validated['name'];
-        $campaign->description = $validated['description'];
+        $campaign->description = $request->post('description');
         $campaign->url = implode('_', explode(' ', strtolower($campaign->name)));
         if (isset($validated['campaign-image'])) {
             $image = $request->file('campaign-image')->path();

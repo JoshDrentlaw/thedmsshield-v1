@@ -1,6 +1,6 @@
 $(document).ready(function() {
     $('#accept').on('click', function() {
-        let id = $(this).data('invite-id')
+        let id = $('#invite-id').val()
         axios.post('/dashboard/accept_map_invite', { id })
             .then(res => {
                 if (res.status === 200) {
