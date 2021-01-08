@@ -1,3 +1,6 @@
+<?php
+$isDm = $isDm ? 1 : 0;
+?>
 @extends('layouts.app')
 
 @section('content')
