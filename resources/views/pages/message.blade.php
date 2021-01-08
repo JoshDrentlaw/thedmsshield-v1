@@ -6,6 +6,7 @@
     </div>
     <div class="card mt-4">
         <div class="card-body">
+            <input type="hidden" id="invite-id" value="{{$message->invite->id}}">
             <h1>
                 {{$message->title}}
                 <button class="btn btn-danger float-right">Delete</button>
@@ -14,8 +15,8 @@
             <p>{{$message->body}}</p>
             @if($message->message_type === 'invite')
                 <div id="invite-btns">
-                    <button class="btn btn-success mr-2" id="accept" data-invite-id="{{$message->invite->id}}">Accept</button>
-                    <button class="btn btn-danger" id="deny" data-invite-id="{{$message->invite->id}}">Deny</button>
+                    <button class="btn btn-success mr-2" id="accept">Accept</button>
+                    <button class="btn btn-danger" id="deny">Deny</button>
                 </div>
             @endif
         </div>
