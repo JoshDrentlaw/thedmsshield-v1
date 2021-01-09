@@ -2,49 +2,15 @@
 
 @section('content')
 <?php
+$img = '';
+if ($campaign->cover_public_id) {
     $img = env('CLOUDINARY_IMG_PATH') . 'h_203' . '/v' . time() . '/' . $campaign->cover_public_id . '.jpg';
+}
 ?>
 <div class="container">
     <div class="jumbotron text-center campaign-imagetron">
         {{-- <img src="" class="img-fluid" alt="Campaign cover image"> --}}
         <h1 class="display-4">{{$campaign->name}}</h1>
-    </div>
-    <div class="row players-row justify-content-center mb-4">
-        <div class="col-md">
-            <div class="card">
-                <div class="card-header d-flex justify-content-between">
-                    <h3 class="d-inline-block">
-                        <i class="fa fa-user"></i>
-                        Players
-                    </h3>
-                    @if ($isDm)
-                        <button class="btn btn-primary float-right add-players" data-campaign-id="{{$campaign->id}}" data-campaign-name="{{$campaign->name}}" data-toggle="modal" data-target="#add-players-modal">Add Players</button>
-                    @endif
-                </div>
-                <div class="card-body">
-                    <div class="row">
-                        @forelse($campaign->active_players as $player)
-                            <div class="col-sm-3">
-                                <a class="dmshield-link" href="/profile/{{$player->user->id}}">
-                                    <figure class="figure">
-                                        @if ($player->user->avatar_url_small)
-                                            <img src="{{$player->user->avatar_url_small}}" class="mr-3 figure-img rounded" alt="player avater">
-                                        @else
-                                            <div style="width:64px;height:64px;padding:0.5em;"><i class="w-100 h-100 fa fa-user"></i></div>
-                                        @endif
-                                        <figcaption class="figure-caption">{{$player->user->name}}</figcaption>
-                                    </figure>
-                                </a>
-                            </div>
-                        @empty
-                            <div class="col-sm-3">
-                                <p><i>No players...</i></p>
-                            </div>
-                        @endforelse
-                    </div>
-                </div>
-            </div>
-        </div>
     </div>
     {{-- MAPS --}}
     <div class="row justify-content-center mb-4">
@@ -66,7 +32,44 @@
                         @forelse($maps as $map)
                             <x-map-list :map="$map" :is-dm="$isDm" />
                         @empty
-                            <p><i>No maps...</i></p>
+                            <p class="px-3"><i>No maps...</i></p>
+                        @endforelse
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row players-row justify-content-center mb-4">
+        <div class="col-md">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between">
+                    <h3 class="d-inline-block">
+                        <i class="fa fa-user"></i>
+                        Players
+                    </h3>
+                    @if ($isDm)
+                        <button class="btn btn-primary float-right add-players" data-campaign-id="{{$campaign->id}}" data-campaign-name="{{$campaign->name}}" data-toggle="modal" data-target="#add-players-modal">Add Players</button>
+                    @endif
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        @forelse($campaign->players as $player)
+                            <div class="col-6 col-sm-2 col-md-2 col-lg-1">
+                                <a class="dmshield-link" href="/profile/{{$player->user->id}}">
+                                    <figure class="figure">
+                                        @if ($player->user->avatar_public_id)
+                                            <img src="{{env('CLOUDINARY_IMG_PATH') . 'c_thumb/v' . time() . '/' . $player->user->avatar_public_id . '.jpg'}}" class="figure-img img-fluid rounded" alt="player avater">
+                                        @else
+                                            <div style="padding:0.5em;"><i class="w-100 h-100 fa fa-user"></i></div>
+                                        @endif
+                                        <figcaption class="figure-caption text-center">{{$player->user->name}}</figcaption>
+                                    </figure>
+                                </a>
+                            </div>
+                        @empty
+                            <div class="col-sm-3">
+                                <p class="px-3"><i>No players...</i></p>
+                            </div>
                         @endforelse
                     </div>
                 </div>
