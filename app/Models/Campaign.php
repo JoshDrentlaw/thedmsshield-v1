@@ -11,7 +11,7 @@ class Campaign extends Model
     }
 
     public function players() {
-        return $this->hasMany('App\Models\Player');
+        return $this->belongsToMany('App\Models\Player');
     }
 
     public function maps() {
