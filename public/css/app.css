@@ -16205,6 +16205,19 @@ a.text-dark:focus {
   text-decoration: none !important;
 }
 
+.dashboard-message-container {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dashboard-message-title {
+  max-width: 200px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .campaign-imagetron {
   background-repeat: no-repeat;
   background-position: center;
