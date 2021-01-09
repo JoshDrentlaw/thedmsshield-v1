@@ -75,29 +75,6 @@ $(document).ready(function() {
         $('#config-campaign-id').val($(this).data('campaign-id'))
     })
 
-    // REPLACE CAMPAIGN WITH NEW IMAGE
-    /* $('#new-campaign-form').on('submit', function(e) {
-        e.preventDefault()
-        const id = $('#config-campaign-id').val()
-        let newImageUpload = new FormData($(this)[0])
-        newImageUpload.append('_method', 'PUT')
-        axios.post(`/campaigns/${id}/image`, newImageUpload, {
-            headers: {'Content-Type': 'multipart/form-data'}
-        })
-        .then(res => {
-            if (res.status === 200) {
-                $('#new-campaign-image').val('')
-                pnotify.success({
-                    title: 'Campaign updated',
-                    text: res.data.msg,
-                    delay: 1000
-                })
-                let d = new Date()
-                $(`#${res.data.campaign.url}`).attr('src', res.data.campaign.campaign_preview_url + '?' + d.getTime())
-            }
-        })
-    }) */
-
     // REPLACE CAMPAIGN NAME
     $('#campaign-name-form').on('submit', function(e) {
         e.preventDefault()
