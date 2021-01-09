@@ -143,34 +143,4 @@ class DashboardController extends Controller
 
     public function deny_map_invite(Request $request)
     {}
-
-    public function mark_message_read(Request $request)
-    {
-        $read = $request->post('read');
-        if (is_array($read)) {
-            foreach ($read as $id) {
-                $message = Message::find($id);
-                $message->update(['read' => 1]);
-            }
-        } else {
-            $message = Message::find($read);
-            $message->update(['read' => 1]);
-        }
-        return ['status' => 200];
-    }
-
-    public function mark_message_unread(Request $request)
-    {
-        $unread = $request->post('unread');
-        if (is_array($unread)) {
-            foreach ($unread as $id) {
-                $message = Message::find($id);
-                $message->update(['read' => 0]);
-            }
-        } else {
-            $message = Message::find($unread);
-            $message->update(['read' => 0]);
-        }
-        return ['status' => 200];
-    }
 }

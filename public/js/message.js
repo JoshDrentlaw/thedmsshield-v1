@@ -22,33 +22,43 @@ $(document).ready(function () {
     })
 
     $(document).on('click', '#dashboard-message-mark-read', function () {
-        let read = checkedSequence.filter(c => c.read)
-        axios.post('/dashboard/mark_message_read', { read })
+        let unread = checkedSequence.filter(c => {
+            if (!c.read) {
+                return c.id
+            }
+        })
+        axios.post('/messages/mark_message_read', { unread })
             .then(res => {
-                if (res.data.status === 200) {
+                if (res.status === 200) {
                     checkedSequence = checkedSequence.filter(c => {
-                        if (c.read) {
-                            $(`[data-id="${c.id}"]`).siblings('.read-icon').removeClass('fa-envelope').addClass('fa-envelope-open-text')
-                        } else {
-                            return c
+                        if (!c.read) {
+                            c.read = 1
+                            $(`[data-id="${c.id}"]`).siblings('[data-fa-i2svg]').removeClass('fa-envelope').addClass('fa-envelope-open-text')
                         }
+                        return c
                     })
+                    $('.message-select').trigger('change')
                 }
             })
     })
 
     $(document).on('click', '#dashboard-message-mark-unread', function () {
-        let unread = checkedSequence.filter(c => c.read)
-        axios.post('/dashboard/mark_message_unread', { unread })
+        let read = checkedSequence.filter(c => {
+            if (c.read) {
+                return c.id
+            }
+        })
+        axios.post('/messages/mark_message_unread', { read })
             .then(res => {
-                if (res.data.status === 200) {
+                if (res.status === 200) {
                     checkedSequence = checkedSequence.filter(c => {
-                        if (!c.read) {
-                            $(`[data-id="${c.id}"]`).siblings('.read-icon').removeClass('fa-envelope-open-text').addClass('fa-envelope')
-                        } else {
-                            return c
+                        if (c.read) {
+                            c.read = 0
+                            $(`[data-id="${c.id}"]`).siblings('[data-fa-i2svg]').removeClass('fa-envelope-open-text').addClass('fa-envelope')
                         }
+                        return c
                     })
+                    $('.message-select').trigger('change')
                 }
             })
     })
@@ -70,7 +80,6 @@ $(document).ready(function () {
         })
 
         $('.message-select:not(:checked)').each(function () {
-            console.log($(this).data('id'))
             let idx,
                 included = checkedSequence.find((c, i) => {
                 if (c.id === $(this).data('id')) {
