@@ -109,7 +109,7 @@
                         @forelse($campaigns as $campaign)
                             <x-campaign-list :campaign="$campaign" />
                         @empty
-                            <p><i>No campaigns...</i></p>
+                            <p class="px-3"><i>No campaigns...</i></p>
                         @endforelse
                     </div>
                 </div>
@@ -135,7 +135,7 @@
                         @forelse($playingIn as $campaign)
                             <x-campaign-list :campaign="$campaign" />
                         @empty
-                            <p><i>No campaigns...</i></p>
+                            <p class="px-3"><i>No campaigns...</i></p>
                         @endforelse
                     </div>
                 </div>

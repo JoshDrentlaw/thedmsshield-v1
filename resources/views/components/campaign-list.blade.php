@@ -16,12 +16,12 @@
                 <div class="col-12">
                     <label><strong>Players</strong></label>
                     <div class="row">
-                        @forelse($campaign->active_players as $player)
+                        @forelse($campaign->players as $player)
                             <div class="col-3 col-sm-2 col-lg-4">
                                 <a class="dmshield-link" href="/profile/{{$player->user->id}}">
                                     <figure class="figure">
-                                        @if ($player->user->avatar_url_small)
-                                            <img src="{{$player->user->avatar_url_small}}" class="mr-3 figure-img rounded" alt="player avater">
+                                        @if ($player->user->avatar_public_id)
+                                            <img src="{{env('CLOUDINARY_IMG_PATH') . 'c_thumb,h_50/v' . time() . '/' . $player->user->avatar_public_id . '.jpg'}}" class="figure-img rounded" alt="player avater">
                                         @else
                                             <div style="height:64px;padding:0.25em;"><i class="w-100 h-100 fa fa-user"></i></div>
                                         @endif
