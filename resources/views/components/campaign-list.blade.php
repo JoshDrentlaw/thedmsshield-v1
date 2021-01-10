@@ -12,18 +12,18 @@
             <a class="dmshield-link card-title" href="/campaigns/{{$campaign->url}}">
                 <h4 id="campaign-name-header-{{$campaign->id}}" class="campaign-name-header">{{$campaign->name}}</h4>
             </a>
-            <div class="row players-row tight">
+            <div class="row players-row tight overflow-auto">
                 <div class="col-12">
                     <label><strong>Players</strong></label>
                     <div class="row">
-                        @forelse($campaign->active_players as $player)
-                            <div class="col-3 col-sm-2 col-lg-4">
+                        @forelse($campaign->players as $player)
+                            <div class="col-4 col-lg-3">
                                 <a class="dmshield-link" href="/profile/{{$player->user->id}}">
                                     <figure class="figure">
-                                        @if ($player->user->avatar_url_small)
-                                            <img src="{{$player->user->avatar_url_small}}" class="mr-3 figure-img rounded" alt="player avater">
+                                        @if ($player->user->avatar_public_id)
+                                            <img src="{{env('CLOUDINARY_IMG_PATH') . 'c_thumb/v' . time() . '/' . $player->user->avatar_public_id . '.jpg'}}" class="figure-img img-fluid rounded" alt="player avater">
                                         @else
-                                            <div style="height:64px;padding:0.25em;"><i class="w-100 h-100 fa fa-user"></i></div>
+                                            <div style="padding:0.5em;"><i class="w-100 h-100 fa fa-user"></i></div>
                                         @endif
                                         <figcaption class="figure-caption text-center">{{$player->user->name}}</figcaption>
                                     </figure>

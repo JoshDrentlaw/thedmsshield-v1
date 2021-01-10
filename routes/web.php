@@ -46,12 +46,14 @@ Route::put('maps/{id}/{type}', 'MapsController@update');
 Route::get('campaigns/{campaign_id}/maps/{map_id}', 'MapsController@show');
 
 Route::get('/dashboard', 'DashboardController@index')->name('dashboard');
-Route::get('/message/{id}', 'DashboardController@message')->name('message');
 Route::post('/dashboard/{id}/{type}', 'DashboardController@update');
 Route::post('/dashboard/player_search', 'DashboardController@player_search');
 Route::post('/dashboard/get_pending_players', 'DashboardController@get_pending_players');
 Route::post('/dashboard/send_player_invite', 'DashboardController@send_player_invite');
 Route::post('/dashboard/accept_map_invite', 'DashboardController@accept_map_invite');
 Route::post('/dashboard/deny_map_invite', 'DashboardController@deny_map_invite');
+Route::get('/message/{id}', 'DashboardController@message')->name('message');
+Route::post('/messages/mark_message_read', 'MessagesController@mark_message_read');
+Route::post('/messages/mark_message_unread', 'MessagesController@mark_message_unread');
 
 Auth::routes();

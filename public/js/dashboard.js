@@ -75,29 +75,6 @@ $(document).ready(function() {
         $('#config-campaign-id').val($(this).data('campaign-id'))
     })
 
-    // REPLACE CAMPAIGN WITH NEW IMAGE
-    /* $('#new-campaign-form').on('submit', function(e) {
-        e.preventDefault()
-        const id = $('#config-campaign-id').val()
-        let newImageUpload = new FormData($(this)[0])
-        newImageUpload.append('_method', 'PUT')
-        axios.post(`/campaigns/${id}/image`, newImageUpload, {
-            headers: {'Content-Type': 'multipart/form-data'}
-        })
-        .then(res => {
-            if (res.status === 200) {
-                $('#new-campaign-image').val('')
-                pnotify.success({
-                    title: 'Campaign updated',
-                    text: res.data.msg,
-                    delay: 1000
-                })
-                let d = new Date()
-                $(`#${res.data.campaign.url}`).attr('src', res.data.campaign.campaign_preview_url + '?' + d.getTime())
-            }
-        })
-    }) */
-
     // REPLACE CAMPAIGN NAME
     $('#campaign-name-form').on('submit', function(e) {
         e.preventDefault()
@@ -234,8 +211,8 @@ $(document).ready(function() {
     // SET ADD PLAYERS MODAL
     $(document).on('click', '.add-players', function() {
         $('#player-search').val(null).trigger('change')
-        let id = $(this).data('map-id')
-        $('#add-player-map-id').val(id)
+        let id = $(this).data('campaign-id')
+        $('#add-player-campaign-id').val(id)
         axios.post('/dashboard/get_pending_players', { id })
             .then(res => {
                 if (res.status === 200) {
@@ -246,7 +223,7 @@ $(document).ready(function() {
 
     // SEND PLAYER REQUEST
     $('#confirm-add-player').on('click', function() {
-        let id = parseInt($('#add-player-map-id').val())
+        let id = parseInt($('#add-player-campaign-id').val())
         let playerId = parseInt($('#player-search').val())
         axios.post(`/dashboard/send_player_invite`, { id, playerId })
             .then(res => {
