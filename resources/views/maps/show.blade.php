@@ -85,16 +85,15 @@ $isDm = $isDm ? 1 : 0;
                     <div class="py-3">
                         <div class="row mb-2">
                             <div class="col-sm-12">
-                                <form action="" class="form-inline">
-                                    <div class="form-group">
-                                        <input type="text" id="first-die-amt" class="form-control mr-2">
+                                <form id="first-die-form" class="form-inline">
+                                    <div class="form-group mb-3">
+                                        <input type="number" value="1" id="first-die-amt" min="1" style="width:100px;" class="form-control mr-2">
                                         <div class="input-group">
                                             <div class="input-group-prepend">
                                                 <label class="input-group-text" for="first-die">D</label>
                                             </div>
                                             <select class="custom-select" id="first-die">
-                                                <option selected>Choose Die</option>
-                                                <option value="4">4</option>
+                                                <option value="4" selected>4</option>
                                                 <option value="6">6</option>
                                                 <option value="8">8</option>
                                                 <option value="10">10</option>
@@ -103,6 +102,10 @@ $isDm = $isDm ? 1 : 0;
                                                 <option value="100">100</option>
                                             </select>
                                         </div>
+                                        <button type="button" class="btn btn-primary" id="first-die-btn">Roll!!</button>
+                                    </div>
+                                    <div class="form-group">
+                                        <textarea rows="4" readonly id="first-die-results" class="form-control"></textarea>
                                     </div>
                                 </form>         
                             </div>
