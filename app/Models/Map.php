@@ -33,6 +33,10 @@ class Map extends Model
         return $this->hasMany('App\Models\Marker');
     }
 
+    public function places() {
+        return $this->hasManyThrough('App\Models\Place', 'App\Models\Marker');
+    }
+
     protected static function booted()
     {
         parent::boot();
