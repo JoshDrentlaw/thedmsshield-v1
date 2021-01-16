@@ -13,7 +13,7 @@ $isDm = $isDm ? 1 : 0;
                     <li><a href="#home" role="tab" class="sidebar-tab-link"><i class="fa fa-bars"></i></a></li>
                     <li><a href="#marker" role="tab" class="sidebar-tab-link"><i class="fa fa-map-marker-alt"></i></a></li>
                     <li><a href="#compendium" role="tab" class="sidebar-tab-link"><i class="fa fa-book"></i></a></li>
-                    {{-- <li><a href="#players" role="tab" class="sidebar-tab-link"><i class="fa fa-users"></i></a></li> --}}
+                    <li><a href="#die-rollers" role="tab" class="sidebar-tab-link"><i class="fa fa-dice-d20"></i></a></li>
                 </ul>
                 <!-- bottom aligned tabs
                 <ul role="tablist">
@@ -75,9 +75,9 @@ $isDm = $isDm ? 1 : 0;
                         <x-compendium :campaign="$campaign" :is-dm="$isDm" path="map" />
                     </div>
                 </div>
-                {{-- <div class="leaflet-sidebar-pane" id="players">
+                <div class="leaflet-sidebar-pane" id="die-rollers">
                     <h1 class="leaflet-sidebar-header d-flex align-items-center justify-content-between">
-                        Players
+                        Die Rollerz
                         <div class="leaflet-sidebar-close">
                             <i class="fa fa-caret-left"></i>
                         </div>
@@ -85,11 +85,33 @@ $isDm = $isDm ? 1 : 0;
                     <div class="py-3">
                         <div class="row mb-2">
                             <div class="col-sm-12">
-                                <h3>{{$campaign->name}}</h3>
+                                <form id="first-die-form" class="form-inline">
+                                    <div class="form-group mb-3">
+                                        <input type="number" value="1" id="first-die-amt" min="1" style="width:100px;" class="form-control mr-2">
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <label class="input-group-text" for="first-die">D</label>
+                                            </div>
+                                            <select class="custom-select" id="first-die">
+                                                <option value="4" selected>4</option>
+                                                <option value="6">6</option>
+                                                <option value="8">8</option>
+                                                <option value="10">10</option>
+                                                <option value="12">12</option>
+                                                <option value="20">20</option>
+                                                <option value="100">100</option>
+                                            </select>
+                                        </div>
+                                        <button type="button" class="btn btn-primary" id="first-die-btn">Roll!!</button>
+                                    </div>
+                                    <div class="form-group">
+                                        <textarea rows="4" readonly id="first-die-results" class="form-control"></textarea>
+                                    </div>
+                                </form>         
                             </div>
                         </div>
                     </div>
-                </div> --}}
+                </div>
             </div>
         </div>
     </div>
@@ -276,4 +298,5 @@ $isDm = $isDm ? 1 : 0;
     <script type="module" src="{{ asset('js/show-thing.js') . '?' . time() }}"></script>
     <script type="module" src="{{ asset('js/show-idea.js') . '?' . time() }}"></script>
     <script type="module" src="{{ asset('js/show-creature.js') . '?' . time() }}"></script>
+    <script type="module" src="{{ asset('js/die-roller.js') . '?' . time() }}"></script>
 @endsection
