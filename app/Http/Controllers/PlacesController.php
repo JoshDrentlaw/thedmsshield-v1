@@ -29,9 +29,11 @@ class PlacesController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index($campaign_url)
     {
-        //
+        $campaign = Campaign::firstWhere('url', $campaign_url);
+        $places = Place::all()->where('campaign_id', $campaign->id);
+        return view('places.index', compact('campaign', 'places'));
     }
 
     /**
@@ -153,6 +155,12 @@ class PlacesController extends Controller
                 array_splice($http, -1, 1, $url);
                 $res['redirect'] = implode('/', $http);
                 Place::where('id', $id)->update(['name' => $valid['name'], 'url' => $url]);
+            }
+            if (isset($post['description'])) {
+                $valid = $request->validate([
+                    'description' => 'max:65535'
+                ]);
+                Place::where('id', $id)->update(['description' => $valid['description']]);
             }
             return $res;
         } catch (Exception $e) {
