@@ -63,7 +63,7 @@
                 </div>
                 <div class="list-group list-group-flush">
                     @forelse($user->received_messages as $message)
-                        <a href="/message/{{$message->id}}" class="list-group-item list-group-item-action dashboard-message-container">
+                        <a href="/message/{{$message->id}}" class="list-group-item list-group-item-action ellipsis">
                             <input class="mr-3 message-select" type="checkbox" name="message-select" data-id="{{$message->id}}" data-message-read="{{$message->read}}">
                             <i class="mr-3 read-icon fa fa-envelope{{($message->read ? '-open-text' : '')}}"></i>
                             @if($message->message_type === 'invite')
@@ -76,7 +76,7 @@
                                     </div>
                                 @endif
                             @endif
-                            <strong class="mr-3 dashboard-message-title">{{$message->title}}</strong>
+                            <strong class="mr-3 dashboard-message-title ellipsis">{{$message->title}}</strong>
                             {{$message->body}}
                         </a>
                     @empty
