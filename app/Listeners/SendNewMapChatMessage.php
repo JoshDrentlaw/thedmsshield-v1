@@ -9,13 +9,6 @@ use Illuminate\Queue\InteractsWithQueue;
 class SendNewMapChatMessage implements ShouldQueue
 {
     /**
-     * The name of the queue connection to use when broadcasting the event.
-     *
-     * @var string
-     */
-    // public $connection = 'database';
-
-    /**
      * The name of the queue on which to place the broadcasting job.
      *
      * @var string
