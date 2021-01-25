@@ -51,7 +51,7 @@ class NewMapChatMessage implements ShouldBroadcastNow
      */
     public function broadcastOn()
     {
-        return new PrivateChannel('map-chat-message-2'/*  . $this->mapChatMessage->map_id */);
+        return new PrivateChannel('map-chat-message-' . $this->mapChatMessage->map_id);
     }
 
     /* public function broadcastAs()

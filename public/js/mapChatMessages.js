@@ -9,8 +9,9 @@ $(document).ready(function () {
                 })
         }
 
-        Echo.private(`map-chat-message-2`)
+        Echo.private(`map-chat-message-${map_id}`)
             .listen('NewMapChatMessage', (e) => {
+                console.log('new message!')
                 console.log(e.mapChatMessage);
             })
     }, 1000)
