@@ -52,4 +52,8 @@ class User extends Authenticatable
     public function received_messages() {
         return $this->hasMany('App\Models\Message', 'to_id');
     }
+
+    public function map_chat_messages() {
+        return $this->hasMany(MapChatMessage::class);
+    }
 }
