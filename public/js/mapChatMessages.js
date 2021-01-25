@@ -1,6 +1,6 @@
 $(document).ready(function () {
     setTimeout(function () {
-        const testing = { message: 'TESTING sunday', mapId: 2, userId: 1 }
+        const testing = { message: 'TESTING sunday', mapId: 6, userId: 1 }
 
         if (!isDm) {
             axios.post('/mapChatMessages', testing)
