@@ -1,6 +1,10 @@
 <?php
 
+use App\Models\MapChatMessage;
+use App\Models\Map;
+use App\Models\Debug;
 use Illuminate\Support\Facades\Broadcast;
+use App\Broadcasting\MapChatMessageChannel;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,3 +20,13 @@ use Illuminate\Support\Facades\Broadcast;
 Broadcast::channel('App.User.{id}', function ($user, $id) {
     return (int) $user->id === (int) $id;
 });
+
+/* Broadcast::channel('map-chat-message-{mapId}', function ($user, $mapId) {
+    $map = Map::find($mapId);
+    $isDm = (int) $map->campaign->dm->id === (int) $user->id;
+    $isPlayer = in_array($user->id, $map->campaign->active_player_ids);
+    return $isDm || $isPlayer;
+    // return false;
+}); */
+
+Broadcast::channel('map-chat-message-{mapId}', MapChatMessageChannel::class);

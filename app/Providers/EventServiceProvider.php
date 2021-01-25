@@ -7,6 +7,9 @@ use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Event;
 
+use App\Events\NewMapChatMessage;
+use App\Listeners\SendNewMapChatMessage;
+
 class EventServiceProvider extends ServiceProvider
 {
     /**
@@ -18,7 +21,20 @@ class EventServiceProvider extends ServiceProvider
         Registered::class => [
             SendEmailVerificationNotification::class,
         ],
+        NewMapChatMessage::class => [
+            SendNewMapChatMessage::class,
+        ],
     ];
+
+    /**
+     * Determine if events and listeners should be automatically discovered.
+     *
+     * @return bool
+     */
+    /* public function shouldDiscoverEvents()
+    {
+        return true;
+    } */
 
     /**
      * Register any events for your application.

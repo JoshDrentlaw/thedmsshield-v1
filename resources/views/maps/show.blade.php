@@ -299,4 +299,5 @@ $isDm = $isDm ? 1 : 0;
     <script type="module" src="{{ asset('js/show-idea.js') . '?' . time() }}"></script>
     <script type="module" src="{{ asset('js/show-creature.js') . '?' . time() }}"></script>
     <script type="module" src="{{ asset('js/die-roller.js') . '?' . time() }}"></script>
+    <script type="module" src="{{ asset('js/mapChatMessages.js') . '?' . time() }}"></script>
 @endsection
