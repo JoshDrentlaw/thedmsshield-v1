@@ -40,7 +40,6 @@ class ProcessMapChat implements ShouldQueue
      */
     public function handle()
     {
-        $res = broadcast(new NewMapChatMessage($this->mapChatMessage))->toOthers();
-        // var_dump($res);
+        //
     }
 }

@@ -59,7 +59,6 @@ class MapChatMessagesController extends Controller
         ]);
         $mapChatMessage->save();
 
-        // ProcessMapChat::dispatch($mapChatMessage)->onQueue('database');
         broadcast(new NewMapChatMessage($mapChatMessage))->toOthers();
         return compact('mapChatMessage');
     }
