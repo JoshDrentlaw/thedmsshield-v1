@@ -9,6 +9,7 @@ use App\Models\Player;
 use App\Models\Message;
 use App\Models\Invites;
 use App\Models\Debug;
+use App\Models\Map;
 use Illuminate\Support\Facades\Redirect;
 use JD\Cloudder\Facades\Cloudder;
 

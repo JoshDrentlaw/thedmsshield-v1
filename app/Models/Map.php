@@ -37,6 +37,10 @@ class Map extends Model
         return $this->hasManyThrough('App\Models\Place', 'App\Models\Marker');
     }
 
+    public function map_chat_messages() {
+        return $this->hasMany(MapChatMessage::class);
+    }
+
     protected static function booted()
     {
         parent::boot();

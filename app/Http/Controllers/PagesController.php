@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 class PagesController extends Controller
 {
     public function index() {
+        /* echo csrf_token();
+        return; */
         $title = 'Welcome to The DM\'s Shield';
         return view('pages.index')->with(['title' => $title]);
     }
