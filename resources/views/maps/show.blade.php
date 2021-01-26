@@ -114,6 +114,7 @@ $isDm = $isDm ? 1 : 0;
                 </div>
             </div>
         </div>
+        <div id="logged-in-users-container"></div>
     </div>
     {{-- <div class="map-container-underlay"></div> --}}
 
@@ -277,6 +278,7 @@ $isDm = $isDm ? 1 : 0;
 @section('scripts')
     <script>
         const mapModel = {!!$map!!}
+        const CLOUDINARY_IMG_PATH = '{!!env('CLOUDINARY_IMG_PATH')!!}'
         let mapUrl = '{!!$map_url!!}'
         let map_id = {!!$map->id!!}
         let mapWidth = {!!$map->width!!}
