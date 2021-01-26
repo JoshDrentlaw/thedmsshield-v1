@@ -16241,6 +16241,19 @@ a.text-dark:focus {
   max-height: 175px;
 }
 
+#logged-in-users-container {
+  position: absolute;
+  width: 150px;
+  height: auto;
+  bottom: 10px;
+  right: 10px;
+  background-color: #fffffff2;
+  padding: 1em;
+  border-radius: 2px;
+  box-shadow: 0 0 2px 1px #8a8a8a;
+  z-index: 2000;
+}
+
 .leaflet-sidebar {
   z-index: 1040;
 }
