@@ -16242,8 +16242,8 @@ a.text-dark:focus {
 }
 
 #logged-in-users-container {
-  position: absolute;
-  width: 150px;
+  position: fixed;
+  width: auto;
   height: auto;
   bottom: 10px;
   right: 10px;
