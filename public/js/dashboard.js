@@ -158,7 +158,7 @@ $(document).ready(function() {
     * 
     *============================*/
 
-    const CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
+    const CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content')
     $('#player-search').select2({
         ajax: {
             url: '/dashboard/player_search',

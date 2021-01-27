@@ -22,7 +22,8 @@ Route::resources([
     'creatures' => 'CreaturesController',
     'places' => 'PlacesController',
     'things' => 'ThingsController',
-    'ideas' => 'IdeasController'
+    'ideas' => 'IdeasController',
+    'mapChatMessages' => 'MapChatMessagesController'
 ]);
 
 Route::get('/', 'PagesController@index');

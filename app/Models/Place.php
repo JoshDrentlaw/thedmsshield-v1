@@ -15,4 +15,9 @@ class Place extends Model
     public function marker() {
         return $this->hasOne('App\Models\Marker');
     }
+
+    public function getMarkerlessAttribute()
+    {
+        return !$this->marker ? true : false;
+    }
 }

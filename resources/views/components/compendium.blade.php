@@ -44,11 +44,16 @@
                     </div>
                 </div>
                 <div class="list-group list-group-flush compendium-list-group" id="compendium-creatures-list">
-                    @foreach ($campaign->creatures as $creature)
+                    <?php
+                        $lastFiveCreatures = $campaign->creatures->sortBy(['created_at', 'desc'])->take(5);
+                    ?>
+                    @forelse ($lastFiveCreatures as $creature)
                         <a class="list-group-item list-group-item-action interactive dmshield-link compendium-creature compendium-item" data-creature-id="{{$creature->id}}" {{$path === 'map' ? '' : 'href=/campaigns/' . $campaign->url . '/compendium/creatures/' . $creature->url}}>
                             {{$creature->name}}
                         </a>
-                    @endforeach
+                    @empty
+                        <p class="mb-0">Add your first creature!</p>
+                    @endforelse
                 </div>
             </li>
             {{-- PLACES --}}
@@ -74,7 +79,10 @@
                     </div>
                 </div>
                 <div class="list-group list-group-flush compendium-list-group" id="compendium-places-list">
-                    @foreach ($campaign->places as $place)
+                    <?php
+                        $lastFivePlaces = $campaign->places->sortBy(['created_at', 'desc'])->take(5);
+                    ?>
+                    @forelse ($lastFivePlaces as $place)
                         <a class="list-group-item list-group-item-action interactive dmshield-link compendium-place compendium-item" data-place-id="{{$place->id}}" {{$path === 'map' ? '' : 'href=/campaigns/' . $campaign->url . '/compendium/places/' . $place->url}}>
                             {{$place->name}}
                             @if($place->marker)
@@ -86,8 +94,13 @@
                                 @endif
                             @endif
                         </a>
-                    @endforeach
+                    @empty
+                        <p class="mb-0">Add your first place!</p>
+                    @endforelse
                 </div>
+                @if($lastFivePlaces->count() === 5)
+                    <a href="/campaigns/{{$campaign->url}}/compendium/places" class="btn btn-primary">View all places</a>
+                @endif
             </li>
             {{-- THINGS --}}
             <li class="list-group-item">
@@ -109,11 +122,16 @@
                     </div>
                 </div>
                 <div class="list-group list-group-flush compendium-list-group" id="compendium-things-list">
-                    @foreach ($campaign->things as $thing)
+                    <?php
+                        $lastFiveThings = $campaign->things->sortBy(['created_at', 'desc'])->take(5);
+                    ?>
+                    @forelse ($lastFiveThings as $thing)
                         <a class="list-group-item list-group-item-action interactive dmshield-link compendium-thing compendium-item" data-thing-id="{{$thing->id}}" {{$path === 'map' ? '' : 'href=/campaigns/' . $campaign->url . '/compendium/things/' . $thing->url}}>
                             {{$thing->name}}
                         </a>
-                    @endforeach
+                    @empty
+                        <p class="mb-0">Add your first thing!</p>
+                    @endforelse
                 </div>
             </li>
             {{-- IDEAS --}}
