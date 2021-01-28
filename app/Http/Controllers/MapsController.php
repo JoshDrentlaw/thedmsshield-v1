@@ -12,6 +12,7 @@ use JD\Cloudder\Facades\Cloudder;
 use App\Models\Debug;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Auth;
+use App\Models\MapChatMessage;
 
 class MapsController extends Controller
 {
@@ -92,6 +93,8 @@ class MapsController extends Controller
 
         $markers = Marker::where('map_id', $map->id)->with('place')->get();
 
+        $messages = MapChatMessage::where('map_id', $map->id)->with('user')->get();
+
         return view('maps.show', [
             'map' => $map,
             'map_url' => env('CLOUDINARY_IMG_PATH') . 'v' . time() . '/' . $map->public_id . '.jpg',
@@ -99,7 +102,9 @@ class MapsController extends Controller
             'dm' => $map->campaign->dm,
             'isDm' => $user->id === $map->campaign->dm->id,
             'markers' => $markers,
-            'players' => $map->active_players
+            'players' => $map->active_players,
+            'user_id' => $user->id,
+            'messages' => $messages 
         ]);
     }
 

@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\MapChatMessage;
-use App\Models\Debug;
+use App\Debug\Debug;
 use App\Events\NewMapChatMessage;
 use App\Jobs\ProcessMapChat;
 use Illuminate\Support\Facades\Auth;
@@ -58,6 +58,12 @@ class MapChatMessagesController extends Controller
             'user_id' => $request->post('userId')
         ]);
         $mapChatMessage->save();
+
+        $user = $mapChatMessage->user;
+
+        $mapChatMessage->push($user);
+
+        //Debug::log($mapChatMessage->user);
 
         broadcast(new NewMapChatMessage($mapChatMessage))->toOthers();
         return compact('mapChatMessage');

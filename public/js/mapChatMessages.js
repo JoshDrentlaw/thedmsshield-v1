@@ -11,6 +11,7 @@ $(document).ready(function () {
             .listen('NewMapChatMessage', (e) => {
                 console.log('new message!')
                 console.log(e.mapChatMessage);
+                showMessage(e.mapChatMessage)
             })
             .leaving(user => {
                 $(`#user-${user.id}`).remove()
