@@ -105,7 +105,21 @@ $isDm = $isDm ? 1 : 0;
                                         <button type="button" class="btn btn-primary" id="first-die-btn">Roll!!</button>
                                     </div>
                                     <div class="form-group">
-                                        <textarea rows="4" readonly id="first-die-results" class="form-control"></textarea>
+                                        <ul class="list-unstyled" id="chat-message-list">
+                                            @forelse($messages->sortByDesc('created_at') as $message)
+                                                <?php
+                                                $timestamp = date('M d, Y, h:i:s A', strtotime($message->created_at));
+                                                ?>
+                                                <li class="media">
+                                                    <div class="media-body">
+                                                        <h5 class="mt-0 mb-1">{{$message->message}}</h5>
+                                                        <p>{{$message->user->username}} {{$timestamp}}</p>
+                                                    </div>
+                                                </li>
+                                            @empty
+                                                <p>Be the first to send a message</p>
+                                            @endforelse
+                                        </ul>
                                     </div>
                                 </form>         
                             </div>
@@ -281,6 +295,7 @@ $isDm = $isDm ? 1 : 0;
         const CLOUDINARY_IMG_PATH = '{!!env('CLOUDINARY_IMG_PATH')!!}'
         let mapUrl = '{!!$map_url!!}'
         let map_id = {!!$map->id!!}
+        let user_id = {!!$user_id!!}
         let mapWidth = {!!$map->width!!}
         let mapHeight = {!!$map->height!!}
         let markers = {!!json_encode($markers)!!}
@@ -292,6 +307,7 @@ $isDm = $isDm ? 1 : 0;
         let idea_id = ''
         let creature_id = ''
         let sidebar
+        let showMessage
     </script>
 
     <script type="module" src="{{ asset('js/compendium.js') . '?' . time() }}"></script>
