@@ -86,13 +86,13 @@ $isDm = $isDm ? 1 : 0;
                         <div class="row mb-2">
                             <div class="col-sm-12">
                                 <form id="first-die-form" class="form-inline">
-                                    <div class="form-group mb-3">
-                                        <input type="number" value="1" id="first-die-amt" min="1" style="width:100px;" class="form-control mr-2">
+                                    <div class="form-group mb-3 die-roll-group">
+                                        <input type="number" value="1" min="1" style="width:100px;" class="die-amount form-control mr-2">
                                         <div class="input-group">
                                             <div class="input-group-prepend">
-                                                <label class="input-group-text" for="first-die">D</label>
+                                                <label class="input-group-text">D</label>
                                             </div>
-                                            <select class="custom-select" id="first-die">
+                                            <select class="custom-select die-select">
                                                 <option value="4" selected>4</option>
                                                 <option value="6">6</option>
                                                 <option value="8">8</option>
@@ -102,9 +102,35 @@ $isDm = $isDm ? 1 : 0;
                                                 <option value="100">100</option>
                                             </select>
                                         </div>
-                                        <button type="button" class="btn btn-primary" id="first-die-btn">Roll!!</button>
+                                        <button type="button" class="btn btn-primary" id="die-roll-btn">Roll!!</button>
                                     </div>
-                                    <div class="form-group">
+                                    <p>
+                                        
+                                        <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                                            <i class="fa fa-angle-double-down"></i>
+                                        </button>
+                                    </p>
+                                    <div class="collapse" id="collapseExample">
+                                        <div class="form-group mb-3 die-roll-group">
+                                            <input type="number" value="1" min="1" style="width:100px;" class="die-amount form-control mr-2">
+                                            <div class="input-group">
+                                                <div class="input-group-prepend">
+                                                    <label class="input-group-text">D</label>
+                                                </div>
+                                                <select class="custom-select die-select">
+                                                    <option value="4" selected>4</option>
+                                                    <option value="6">6</option>
+                                                    <option value="8">8</option>
+                                                    <option value="10">10</option>
+                                                    <option value="12">12</option>
+                                                    <option value="20">20</option>
+                                                    <option value="100">100</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="form-group w-100">
                                         <ul class="list-unstyled" id="chat-message-list">
                                             @forelse($messages->sortByDesc('created_at') as $message)
                                                 <?php
