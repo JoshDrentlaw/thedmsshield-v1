@@ -8,3 +8,9 @@
 #note-editor {
     overflow-wrap: break-word;
 }
+
+#chat-message-list {
+    overflow:auto;
+    width:100%;
+    height: 500px;
+}
