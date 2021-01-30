@@ -258,17 +258,8 @@ $(document).ready(function() {
                     showMapPing(res.data.ping)
                 })
         }, 1000)
-    }).on('mouseup mousemove', function (e) {
-        if (isPinging) {
-            isPinging = false
-            axios.post('/maps/map_ping', { status: 'remove', map_id })
-            $('#map-container').css('cursor', 'grab')
-            clearTimeout(pingTimeout)
-            if (pingMarker) {
-                pingMarker.remove(map)
-            }
-        }
-    })
+    }).on('mouseup', removeMapPing)
+    .on('mousemove', removeMapPing)
 
     console.log({campaignMapChannel})
     campaignMapChannel.listen('MapPinged', (e) => {
@@ -294,5 +285,18 @@ $(document).ready(function() {
             `
         })
         pingMarker = L.marker([ping.lat, ping.lng], { icon: pingIcon }).addTo(map)
+        pingMarker.once('mouseup', removeMapPing)
+    }
+
+    function removeMapPing() {
+        clearTimeout(pingTimeout)
+        if (pingMarker) {
+            pingMarker.remove(map)
+        }
+        if (isPinging) {
+            isPinging = false
+            $('#map-container').css('cursor', 'grab')
+            axios.post('/maps/map_ping', { status: 'remove', map_id })
+        }
     }
 })
