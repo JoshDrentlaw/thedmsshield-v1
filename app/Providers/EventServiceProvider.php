@@ -1,14 +1,17 @@
 <?php
 
 namespace App\Providers;
-
-use Illuminate\Auth\Events\Registered;
-use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Event;
 
+use Illuminate\Auth\Events\Registered;
+use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
+
 use App\Events\NewMapChatMessage;
 use App\Listeners\SendNewMapChatMessage;
+
+use App\Events\MapPinged;
+use App\Listeners\LogMapPing;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -24,6 +27,9 @@ class EventServiceProvider extends ServiceProvider
         NewMapChatMessage::class => [
             SendNewMapChatMessage::class,
         ],
+        MapPinged::class => [
+            LogMapPing::class
+        ]
     ];
 
     /**

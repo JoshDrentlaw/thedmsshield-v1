@@ -2,18 +2,18 @@
 
 namespace App\Listeners;
 
-use App\Events\NewMapChatMessage;
+use App\Events\MapPinged;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 
-class SendNewMapChatMessage implements ShouldQueue
+class LogMapPing implements ShouldQueue
 {
     /**
      * The name of the queue on which to place the broadcasting job.
      *
      * @var string
      */
-    public $queue = 'mapMessages';
+    public $queue = 'mapPings';
 
     /**
      * Create the event listener.
@@ -28,11 +28,11 @@ class SendNewMapChatMessage implements ShouldQueue
     /**
      * Handle the event.
      *
-     * @param  NewMapChatMessage  $event
+     * @param  MapPinged  $event
      * @return void
      */
-    public function handle(NewMapChatMessage $event)
+    public function handle(MapPinged $event)
     {
-        // var_dump($event);
+        //
     }
 }

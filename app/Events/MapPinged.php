@@ -2,7 +2,6 @@
 
 namespace App\Events;
 
-use App\Models\MapChatMessage;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PresenceChannel;
@@ -12,29 +11,29 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class NewMapChatMessage implements ShouldBroadcastNow
+use App\Models\MapPing;
+
+class MapPinged implements ShouldBroadcastNow
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $mapChatMessage;
+    public $ping;
 
     /**
      * The name of the queue on which to place the broadcasting job.
      *
      * @var string
      */
-    public $queue = 'mapMessages';
-
-    // public $afterCommit = true;
+    public $queue = 'mapPings';
 
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct(MapChatMessage $mapChatMessage)
+    public function __construct($ping)
     {
-        $this->mapChatMessage = $mapChatMessage;
+        $this->ping = $ping;
     }
 
     /**
@@ -44,11 +43,6 @@ class NewMapChatMessage implements ShouldBroadcastNow
      */
     public function broadcastOn()
     {
-        return new PresenceChannel('campaign-map-' . $this->mapChatMessage->map->id);
+        return new PresenceChannel('campaign-map-' . $this->ping->map_id);
     }
-
-    /* public function broadcastAs()
-    {
-        return 'new-map-chat-message';
-    } */
 }
