@@ -5,7 +5,7 @@ namespace App\Broadcasting;
 use App\Models\User;
 use App\Models\Map;
 
-class MapChatMessageChannel
+class CampaignMapChannel
 {
     /**
      * Create a new channel instance.

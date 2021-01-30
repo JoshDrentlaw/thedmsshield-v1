@@ -7,12 +7,15 @@ use Illuminate\Support\Str;
 use App\Models\Campaign;
 use App\Models\Map;
 use App\Models\Marker;
+use App\Models\MapPing;
 use Cloudinary\Uploader;
 use JD\Cloudder\Facades\Cloudder;
-use App\Models\Debug;
+use App\Debug\Debug;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Auth;
 use App\Models\MapChatMessage;
+
+use App\Events\MapPinged;
 
 class MapsController extends Controller
 {
@@ -172,5 +175,14 @@ class MapsController extends Controller
         Cloudder::destroyImages([$map->map_public_id]);
         $map->delete();
         return ['status' => 200, 'message' => 'Map deleted'];
+    }
+
+    public function map_ping(Request $request) {
+        $post = $request->post();
+        $ping = (object) $post;
+        // $ping = new MapPing($post);
+        // $ping = collect($post);
+        broadcast(new MapPinged($ping))->toOthers();
+        return compact('ping');
     }
 }

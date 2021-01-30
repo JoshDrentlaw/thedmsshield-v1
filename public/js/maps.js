@@ -237,4 +237,62 @@ $(document).ready(function() {
                 }
             })
     })
+
+    // PING MAP
+    let pingTimeout, pingIcon, pingMarker, isPinging = false
+    map.on('mousedown', function (e) {
+        console.log(e)
+        let lat = e.latlng.lat,
+            lng = e.latlng.lng,
+            zoom = map.getZoom(),
+            point = map.latLngToLayerPoint([lat, lng])
+        
+        setTimeout(function () {
+            $('#map-container').css('cursor', 'pointer')
+        }, 500)
+        pingTimeout = setTimeout(function () {
+            isPinging = true
+            axios.post('/maps/map_ping', { status: 'show', lat, lng, map_id })
+                .then(res => {
+                    console.log({res})
+                    showMapPing(res.data.ping)
+                })
+        }, 1000)
+    }).on('mouseup mousemove', function (e) {
+        if (isPinging) {
+            isPinging = false
+            axios.post('/maps/map_ping', { status: 'remove', map_id })
+            $('#map-container').css('cursor', 'grab')
+            clearTimeout(pingTimeout)
+            if (pingMarker) {
+                pingMarker.remove(map)
+            }
+        }
+    })
+
+    console.log({campaignMapChannel})
+    campaignMapChannel.listen('MapPinged', (e) => {
+        console.log(e)
+        if (e.ping.status === 'show') {
+            showMapPing(e.ping)
+        } else if (e.ping.status === 'remove') {
+            pingMarker.remove(map)
+        }
+    })
+
+    function showMapPing(ping) {
+        console.log('show map ping')
+        pingIcon = L.divIcon({
+            className: 'outer-ping-container',
+            html: `
+                <div class="ping-container">
+                    <div class="ping-circle" style="animation-delay: 0s"></div>
+                    <div class="ping-circle" style="animation-delay: 1s"></div>
+                    <div class="ping-circle" style="animation-delay: 2s"></div>
+                    <div class="ping-circle" style="animation-delay: 3s"></div>
+                </div>
+            `
+        })
+        pingMarker = L.marker([ping.lat, ping.lng], { icon: pingIcon }).addTo(map)
+    }
 })
