@@ -6,6 +6,14 @@ $isDm = $isDm ? 1 : 0;
 @section('content')
     <div id="map-container">
         @csrf
+        {{-- <div class="outer-ping-container">
+            <div class="ping-container">
+                <div class="ping-circle" style="animation-delay: 0s"></div>
+                <div class="ping-circle" style="animation-delay: 1s"></div>
+                <div class="ping-circle" style="animation-delay: 2s"></div>
+                <div class="ping-circle" style="animation-delay: 3s"></div>
+            </div>
+        </div> --}}
         <div id="map-sidebar" class="leaflet-sidebar collapsed">
             <!-- Nav tabs -->
             <div class="leaflet-sidebar-tabs">
@@ -334,6 +342,62 @@ $isDm = $isDm ? 1 : 0;
         let creature_id = ''
         let sidebar
         let showMessage
+        let campaignMapChannel
+
+        new Promise((res, rej) => {
+            while (!Echo.socketId) {
+                setTimeout(() => {}, 50)
+            }
+            res(true)
+        }).then(() => {
+            console.log('got socket id')
+            campaignMapChannel = Echo.join(`campaign-map-${map_id}`)
+            .here(users => {
+                console.log(users)
+                showLoggedInUsers(users)
+            })
+            .joining(user => {
+                showLoggedInUser(user)
+            })
+            .leaving(user => {
+                $(`#user-${user.id}`).remove()
+            })
+
+            console.log({campaignMapChannel})
+        })
+
+        function showLoggedInUsers(users) {
+            $('#logged-in-users-container').children().remove()
+            users.forEach(u => {
+                showLoggedInUser(u)
+            })
+        }
+
+        function showLoggedInUser(user) {
+            let content = `
+                <div class="media" id="user-${user.id}">
+            `
+            if (user.avatar) {
+                content += `
+                    <img src="${CLOUDINARY_IMG_PATH}c_thumb,w_25,h_25/v${luxon.local().valueOf()}/${user.avatar}.jpg" class="mr-3">
+                `
+            } else {
+                content += `
+                    <div style="width:25px;height:25px;padding:0.25em;" class="img-thumbnail mr-3" id="edit-avatar"><i class="fa fa-user w-100 h-100"></i></div>
+                `
+            }
+            content += `
+                    <div class="media-body">
+                        <h5>${user.username}</h5>
+                    </div>
+                </div>
+            `
+            if (user.isDm) {
+                $('#logged-in-users-container').prepend(content)
+            } else {
+                $('#logged-in-users-container').append(content)
+            }
+        }
     </script>
 
     <script type="module" src="{{ asset('js/compendium.js') . '?' . time() }}"></script>
