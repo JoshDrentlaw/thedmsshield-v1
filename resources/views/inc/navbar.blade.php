@@ -7,10 +7,12 @@
     $campaign = false;
     $mapUrl = false;
     $split = explode('/', $uri);
-    if (count($split) === 5 && $split[count($split) - 2] === 'maps') {
-        $campaignUrl = $split[count($split) - 3];
+    if ($split[1] === 'campaigns') {
+        $campaignUrl = $split[2];
         $campaign = Campaign::firstWhere('url', $campaignUrl);
-        $mapUrl = $split[count($split) - 1];
+        if (isset($split[3]) && $split[3] === 'maps' && isset($split[4])) {
+            $mapUrl = $split[4];
+        }
     }
 ?>
 
@@ -44,11 +46,19 @@
                                         <?php
                                             $active = $mapUrl === $map->url ? ' active' : '';
                                         ?>
-                                        <a class="dropdown-item{{$active}}" href="/campaigns/{{$campaign->url}}/maps/{{$map->url}}">{{$map->name}}</a>
+                                        <a class="dropdown-item{{$active}}" href="/campaigns/{{$campaign->url}}/maps/{{$map->url}}">
+                                            {{$map->name}}
+                                            @if($active)
+                                                <i class="fa fa-user ml-2"></i>
+                                            @endif
+                                        </a>
                                     @endforeach
                                     <div class="dropdown-divider"></div>
                                 @endif
-                                <a class="dropdown-item" href="/campaigns/{{$campaign->url}}/compendium">Compendium</a>
+                                <h6 class="dropdown-header dms-navbar-dropdown-header">Campaign Compendium</h6>
+                                <a class="dropdown-item" href="/campaigns/{{$campaign->url}}/compendium/creatures">Creatures</a>
+                                <a class="dropdown-item" href="/campaigns/{{$campaign->url}}/compendium/places">Places</a>
+                                <a class="dropdown-item" href="/campaigns/{{$campaign->url}}/compendium/things">Things</a>
                             </div>
                         </li>
                     @endif
