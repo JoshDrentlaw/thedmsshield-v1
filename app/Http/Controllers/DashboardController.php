@@ -53,8 +53,9 @@ class DashboardController extends Controller
     public function update(Request $request, $id, $type) {
         switch ($type) {
             case 'bio':
-                $status = User::where('id', $id)->update(['bio' => $request->post('bio')]) ? 200 : 500;
-                return ['status' => $status, 'message' => 'Bio saved.'];
+            case 'username':
+                $status = User::where('id', $id)->update([$type => $request->post($type)]) ? 200 : 500;
+                return ['status' => $status];
             case 'avatar':
                 return self::uploadAvatar($this, $request, $id);
             default:
