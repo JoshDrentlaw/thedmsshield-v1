@@ -1,3 +1,6 @@
+<?php
+    $isDm = Auth::user()->id === $campaign->dm->id;
+?>
 <div class="col mb-4" id="campaign-{{$campaign->id}}">
     <div class="card campaign-row">
         <a class="dmshield-link" href="/campaigns/{{$campaign->url}}">
@@ -38,13 +41,15 @@
                 </div>
             </div>
         </div>
-        <div class="btn-group-vertical">
-            {{-- CONFIG --}}
-            <button class="btn btn-secondary btn-block config-campaign rounded-0" data-campaign-id="{{$campaign->id}}" data-campaign-name="{{$campaign->name}}" data-toggle="modal" data-target="#config-campaign-modal">Configure</button>
-            {{-- PLAYERS --}}
-            <button class="btn btn-primary btn-block add-players" data-campaign-id="{{$campaign->id}}" data-campaign-name="{{$campaign->name}}" data-toggle="modal" data-target="#add-players-modal">Add Players</button>
-            {{-- DELETE --}}
-            <button class="btn btn-danger btn-block delete-campaign" data-campaign-id="{{$campaign->id}}" data-toggle="modal" data-target="#delete-campaign-modal">Delete</button>
-        </div>
+        @if ($isDm)
+            <div class="btn-group-vertical">
+                {{-- CONFIG --}}
+                <button class="btn btn-secondary btn-block config-campaign rounded-0" data-campaign-id="{{$campaign->id}}" data-campaign-name="{{$campaign->name}}" data-toggle="modal" data-target="#config-campaign-modal">Configure</button>
+                {{-- PLAYERS --}}
+                <button class="btn btn-primary btn-block add-players" data-campaign-id="{{$campaign->id}}" data-campaign-name="{{$campaign->name}}" data-toggle="modal" data-target="#add-players-modal">Add Players</button>
+                {{-- DELETE --}}
+                <button class="btn btn-danger btn-block delete-campaign" data-campaign-id="{{$campaign->id}}" data-toggle="modal" data-target="#delete-campaign-modal">Delete</button>
+            </div>
+        @endif
     </div>
 </div>

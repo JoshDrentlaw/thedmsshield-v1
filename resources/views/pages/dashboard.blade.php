@@ -134,7 +134,7 @@
                     {{-- ANCHOR CAMPAIGN LIST GROUP --}}
                     <div id="campaign-rows" class="row row-cols-1 row-cols-md-2 row-cols-lg-3">
                         @forelse($playingIn as $campaign)
-                            <x-campaign-list :campaign="$campaign" />
+                            <x-campaign-list :campaign="$campaign" :is-dm="$dm" />
                         @empty
                             <p class="px-3"><i>No campaigns...</i></p>
                         @endforelse
