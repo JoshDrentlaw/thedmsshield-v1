@@ -135,37 +135,33 @@ class PlacesController extends Controller
      */
     public function update(Request $request, $id)
     {
-        try {
-            $res = ['status' => 200];
-            $post = $request->post();
-            if (isset($post['body'])) {
-                $valid = $request->validate([
-                    'body' => 'max:2000'
-                ]);
-                $updated = Place::where('id', $id)->first()->updated_at;
-                $res['updated_at'] = $updated;
-                Place::where('id', $id)->update(['body' => $valid['body']]);
-            }
-            if (isset($post['name'])) {
-                $valid = $request->validate([
-                    'name' => 'max:50'
-                ]);
-                $url = strtolower(str_replace(' ', '_', $valid['name']));
-                $http = explode('/', $_SERVER['HTTP_REFERER']);
-                array_splice($http, -1, 1, $url);
-                $res['redirect'] = implode('/', $http);
-                Place::where('id', $id)->update(['name' => $valid['name'], 'url' => $url]);
-            }
-            if (isset($post['description'])) {
-                $valid = $request->validate([
-                    'description' => 'max:65535'
-                ]);
-                Place::where('id', $id)->update(['description' => $valid['description']]);
-            }
-            return $res;
-        } catch (Exception $e) {
-            return ['status' => 500, 'message' => $e->getMessage()];
+        $res = ['status' => 200];
+        $post = $request->post();
+        if (isset($post['body'])) {
+            $valid = $request->validate([
+                'body' => 'max:2000'
+            ]);
+            $updated = Place::where('id', $id)->first()->updated_at;
+            $res['updated_at'] = $updated;
+            Place::where('id', $id)->update(['body' => $valid['body']]);
         }
+        if (isset($post['name'])) {
+            $valid = $request->validate([
+                'name' => 'max:50'
+            ]);
+            $url = strtolower(str_replace(' ', '_', $valid['name']));
+            $http = explode('/', $_SERVER['HTTP_REFERER']);
+            array_splice($http, -1, 1, $url);
+            $res['redirect'] = implode('/', $http);
+            Place::where('id', $id)->update(['name' => $valid['name'], 'url' => $url]);
+        }
+        if (isset($post['description'])) {
+            $valid = $request->validate([
+                'description' => 'max:65535'
+            ]);
+            Place::where('id', $id)->update(['description' => $valid['description']]);
+        }
+        return $res;
     }
 
     /**

@@ -3,6 +3,9 @@ $(document).ready(function () {
 
     $(document).on('blur', '.show-place-name', function () {
         let name = $(this).text()
+        if (!place_id) {
+            place_id = $('#place-id').val()
+        }
         axios.put(`/places/${place_id}`, {name})
             .then(function ({ data }) {
                 if (data.status === 200) {

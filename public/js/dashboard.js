@@ -1,8 +1,8 @@
 $(document).ready(function() {
-    //BIO
+    // BIO
     $('#bio').on('focus', function() {
         $(this).addClass('editing')
-    }).on('blur', function() {
+    }).on('blur', function () {
         $(this).removeClass('editing')
         let bio = $(this).text()
         let id = $('#user-id').val()
@@ -11,11 +11,36 @@ $(document).ready(function() {
                 if (res.data.status === 200) {
                     pnotify.success({
                         title: 'Bio updated',
-                        text: res.data.msg,
                         delay: 1000
                     })
                 }
             })
+    }).on('keypress', function (e) {
+        if (e.key === 'Enter') {
+            $(this).trigger('blur')
+        }
+    })
+
+    // USERNAME
+    $('#username').on('focus', function() {
+        $(this).addClass('editing')
+    }).on('blur', function() {
+        $(this).removeClass('editing')
+        let username = $(this).text()
+        let id = $(this).data('user-id')
+        axios.post(`/dashboard/${id}/username`, { username })
+            .then(res => {
+                if (res.data.status === 200) {
+                    pnotify.success({
+                        title: 'Username updated',
+                        delay: 1000
+                    })
+                }
+            })
+    }).on('keypress', function (e) {
+        if (e.key === 'Enter') {
+            $(this).trigger('blur')
+        }
     })
 
     // EDIT AVATAR
