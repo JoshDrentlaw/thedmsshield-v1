@@ -4,7 +4,7 @@ namespace App\Providers;
 
 use App\Policies\CampaignPolicy;
 use App\Models\Campaign;
-use App\Models\Debug;
+use App\Debug\Debug;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
 

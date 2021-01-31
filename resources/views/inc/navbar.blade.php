@@ -1,5 +1,19 @@
 <?php
+    use App\Debug\Debug;
+    use App\Models\Campaign;
+    use App\Models\Map;
+
     $uri = $_SERVER['REQUEST_URI'];
+    $campaign = false;
+    $mapUrl = false;
+    $split = explode('/', $uri);
+    if ($split[1] === 'campaigns') {
+        $campaignUrl = $split[2];
+        $campaign = Campaign::firstWhere('url', $campaignUrl);
+        if (isset($split[3]) && $split[3] === 'maps' && isset($split[4])) {
+            $mapUrl = $split[4];
+        }
+    }
 ?>
 
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -15,8 +29,39 @@
             <ul class="nav navbar-nav">
                 <li class="nav-item {{$uri === '/' ? 'active' : ''}}"><a class="nav-link" href="/">Home</a></li>
                 @auth
-                    <li class="nav-item {{$uri === '/dashboard' ? 'active' : ''}}"><a class="nav-link" href="/dashboard">Dashboard</a></li>
-                    {{-- <li class="nav-item {{$uri === '/maps' ? 'active' : ''}}"><a class="nav-link" href="/maps">Maps</a></li> --}}
+                    <li class="nav-item {{$uri === '/dashboard' ? 'active' : ''}}">
+                        <a class="nav-link" href="/dashboard">Dashboard</a>
+                    </li>
+                    @if($campaign)
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="campaign-link-dropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                {{$campaign->name}}
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="campaign-link-dropdown">
+                                <a class="dropdown-item" href="/campaigns/{{$campaign->url}}">Campaign Dashboard</a>
+                                <div class="dropdown-divider"></div>
+                                @if($campaign->maps->count() > 1)
+                                    <h6 class="dropdown-header dms-navbar-dropdown-header">Campaign Maps</h6>
+                                    @foreach($campaign->maps as $map)
+                                        <?php
+                                            $active = $mapUrl === $map->url ? ' active' : '';
+                                        ?>
+                                        <a class="dropdown-item{{$active}}" href="/campaigns/{{$campaign->url}}/maps/{{$map->url}}">
+                                            {{$map->name}}
+                                            @if($active)
+                                                <i class="fa fa-user ml-2"></i>
+                                            @endif
+                                        </a>
+                                    @endforeach
+                                    <div class="dropdown-divider"></div>
+                                @endif
+                                <h6 class="dropdown-header dms-navbar-dropdown-header">Campaign Compendium</h6>
+                                <a class="dropdown-item" href="/campaigns/{{$campaign->url}}/compendium/creatures">Creatures</a>
+                                <a class="dropdown-item" href="/campaigns/{{$campaign->url}}/compendium/places">Places</a>
+                                <a class="dropdown-item" href="/campaigns/{{$campaign->url}}/compendium/things">Things</a>
+                            </div>
+                        </li>
+                    @endif
                 @endauth
             </ul>
         </div>

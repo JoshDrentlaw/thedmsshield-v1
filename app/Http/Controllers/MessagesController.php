@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Message;
 use App\Models\Invites;
-use App\Models\Debug;
+use App\Debug\Debug;
 
 class MessagesController extends Controller
 {

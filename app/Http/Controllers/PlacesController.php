@@ -8,9 +8,10 @@ use App\Models\Campaign;
 use App\Models\Place;
 use Illuminate\Http\Request;
 use JD\Cloudder\Facades\Cloudder;
-use App\Models\Debug;
+use App\Debug\Debug;
 use Exception;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Redirect;
 
 class PlacesController extends Controller
 {
@@ -31,6 +32,9 @@ class PlacesController extends Controller
      */
     public function index($campaign_url)
     {
+        if (!$campaign_url) {
+            Redirect::to($_SERVER['HTTP_REFERER']);
+        }
         $campaign = Campaign::firstWhere('url', $campaign_url);
         $places = Place::all()->where('campaign_id', $campaign->id);
         return view('places.index', compact('campaign', 'places'));
