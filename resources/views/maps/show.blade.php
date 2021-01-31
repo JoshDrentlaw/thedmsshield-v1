@@ -6,14 +6,6 @@ $isDm = $isDm ? 1 : 0;
 @section('content')
     <div id="map-container">
         @csrf
-        {{-- <div class="outer-ping-container">
-            <div class="ping-container">
-                <div class="ping-circle" style="animation-delay: 0s"></div>
-                <div class="ping-circle" style="animation-delay: 1s"></div>
-                <div class="ping-circle" style="animation-delay: 2s"></div>
-                <div class="ping-circle" style="animation-delay: 3s"></div>
-            </div>
-        </div> --}}
         <div id="map-sidebar" class="leaflet-sidebar collapsed">
             <!-- Nav tabs -->
             <div class="leaflet-sidebar-tabs">
@@ -36,7 +28,9 @@ $isDm = $isDm ? 1 : 0;
                         All Markers
                         <div class="leaflet-sidebar-close"><i class="fa fa-caret-left"></i></div>
                     </h1>
-                    <button id="new-marker" class="mt-3 btn btn-success btn-block">New Marker</button>
+                    @if($isDm)
+                        <button id="new-marker" class="mt-3 btn btn-success btn-block">New Marker</button>
+                    @endif
                     <div id="marker-list" class="list-group list-group-flush">
                         @if (count($markers) > 0)
                             @foreach($markers as $i => $marker)
@@ -55,7 +49,7 @@ $isDm = $isDm ? 1 : 0;
                 {{-- MARKER --}}
                 <div class="leaflet-sidebar-pane" id="marker">
                     <h1 class="leaflet-sidebar-header mb-4 d-flex align-items-center justify-content-between">
-                        <span class="show-place-name interactive" contenteditable="true"></span>
+                        <span class="show-place-name<?= $isDm ? ' interactive' : '' ?>" contenteditable="<?= $isDm ? 'true' : 'false' ?>"></span>
                         <div class="leaflet-sidebar-close d-block">
                             <i class="fa fa-caret-left"></i>
                         </div>
@@ -68,8 +62,10 @@ $isDm = $isDm ? 1 : 0;
                         <button type="button" class="show-place-change-view-btn btn btn-secondary btn-block mt-4">Change view</button>
                     </div>
                 
-                    <div class="show-place-body-display<?= $isDm ? ' interactive' : '' ?>" contenteditable="false"></div>
-                    <button id="delete-marker" class="mt-3 btn btn-danger btn-block">Delete Marker</button>
+                    <div class="show-place-body-display<?= $isDm ? ' interactive' : '' ?>" contenteditable="<?= $isDm ? 'true' : 'false' ?>"></div>
+                    @if($isDm)
+                        <button id="delete-marker" class="mt-3 btn btn-danger btn-block">Delete Marker</button>
+                    @endif
                 </div>
                 {{-- COMPENDIUM --}}
                 <div class="leaflet-sidebar-pane" id="compendium">

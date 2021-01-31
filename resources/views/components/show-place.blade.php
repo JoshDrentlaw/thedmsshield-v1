@@ -1,7 +1,7 @@
 <div id="place-body" class="card card-body">
     @csrf
     <h1 class="card-title">
-        <span class="show-place-name<?= $isDm ? ' interactive' : '' ?>" contenteditable="true">
+        <span class="show-place-name<?= $isDm ? ' interactive' : '' ?>" contenteditable="<?= $isDm ? 'true' : 'false' ?>">
             {{$place->name}}
         </span>
         @if($place->marker)
@@ -10,7 +10,7 @@
     </h1>
     <div class="row mb-3">
         <div class="col-sm-12">
-            <span class="show-place-description<?= $isDm ? ' interactive' : '' ?>" contenteditable="true">
+            <span class="show-place-description<?= $isDm ? ' interactive' : '' ?>" contenteditable="<?= $isDm ? 'true' : 'false' ?>">
                 {{$place->description}}
             </span>
         </div>
@@ -27,7 +27,7 @@
         <button type="button" class="show-place-change-view-btn btn btn-secondary mt-4">Change view</button>
     </div>
 
-    <div class="show-place-body-display<?= $isDm ? ' interactive' : '' ?>" contenteditable="false">
+    <div class="show-place-body-display<?= $isDm ? ' interactive' : '' ?>" contenteditable="<?= $isDm ? 'true' : 'false' ?>">
         {!!$place->body!!}
     </div>
 </div>
