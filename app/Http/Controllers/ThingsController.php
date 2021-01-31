@@ -8,7 +8,7 @@ use App\Models\Campaign;
 use App\Models\Thing;
 use Illuminate\Http\Request;
 use JD\Cloudder\Facades\Cloudder;
-use App\Models\Debug;
+use App\Debug\Debug;
 use Exception;
 use Illuminate\Support\Facades\Gate;
 

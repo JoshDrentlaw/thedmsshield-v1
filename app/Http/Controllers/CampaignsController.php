@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Campaign;
 use Illuminate\Http\Request;
 use JD\Cloudder\Facades\Cloudder;
-use App\Models\Debug;
+use App\Debug\Debug;
 use Illuminate\Support\Facades\Gate;
 
 class CampaignsController extends Controller
