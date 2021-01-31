@@ -40,7 +40,7 @@
                             <div class="dropdown-menu" aria-labelledby="campaign-link-dropdown">
                                 <a class="dropdown-item" href="/campaigns/{{$campaign->url}}">Campaign Dashboard</a>
                                 <div class="dropdown-divider"></div>
-                                @if($campaign->maps->count() > 1)
+                                @if($campaign->maps->count() >= 1)
                                     <h6 class="dropdown-header dms-navbar-dropdown-header">Campaign Maps</h6>
                                     @foreach($campaign->maps as $map)
                                         <?php
