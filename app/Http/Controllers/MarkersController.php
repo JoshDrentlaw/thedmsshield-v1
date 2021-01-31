@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
-use App\Models\Debug;
+use App\Debug\Debug;
 use App\Models\Map;
 use App\Models\Marker;
 use App\Models\Place;

@@ -32,18 +32,17 @@ $isDm = $isDm ? 1 : 0;
                         <button id="new-marker" class="mt-3 btn btn-success btn-block">New Marker</button>
                     @endif
                     <div id="marker-list" class="list-group list-group-flush">
-                        @if (count($markers) > 0)
-                            @foreach($markers as $i => $marker)
-                                <button
-                                    type="button"
-                                    class="list-group-item list-group-item-action marker-list-button"
-                                    data-place-id="{{$marker->place->id}}"
-                                    data-marker-id="{{$marker->id}}"
-                                >
-                                    {{$marker->place->name}}
-                                </button>
-                            @endforeach
-                        @endif
+                        @forelse($markers as $i => $marker)
+                            <button
+                                type="button"
+                                class="list-group-item list-group-item-action marker-list-button"
+                                data-place-id="{{$marker->place->id}}"
+                                data-marker-id="{{$marker->id}}"
+                            >
+                                {{$marker->place->name}}
+                            </button>
+                        @empty
+                        @endforelse
                     </div>
                 </div>
                 {{-- MARKER --}}

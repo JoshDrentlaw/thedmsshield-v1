@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class Campaign extends Model
 {
@@ -36,6 +37,16 @@ class Campaign extends Model
 
     public function invites() {
         return $this->hasMany('App\Models\Invites');
+    }
+
+    public function getIsDmAttribute()
+    {
+        return (int) $this->dm->id === (int) Auth::user()->id;
+    }
+
+    public function getIsPlayerAttribute()
+    {
+        return  in_array(Auth::user()->id, $this->active_player_ids);
     }
 
     public function getActivePlayersAttribute()

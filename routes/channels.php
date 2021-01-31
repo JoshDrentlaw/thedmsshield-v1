@@ -2,7 +2,7 @@
 
 use App\Models\MapChatMessage;
 use App\Models\Map;
-use App\Models\Debug;
+use App\Debug\Debug;
 use Illuminate\Support\Facades\Broadcast;
 use App\Broadcasting\CampaignMapChannel;
 

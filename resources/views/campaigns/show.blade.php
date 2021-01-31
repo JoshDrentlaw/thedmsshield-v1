@@ -23,7 +23,7 @@ if ($campaign->cover_public_id) {
                         Maps
                     </h3>
                     @if ($isDm)
-                        <button id="add-map" class="btn btn-primary" data-toggle="modal" data-target="#add-map-modal">Add map</button>
+                        <button id="add-map" class="btn btn-success" data-toggle="modal" data-target="#add-map-modal">Add map</button>
                     @endif
                 </div>
                 <div class="card-body">
@@ -48,7 +48,7 @@ if ($campaign->cover_public_id) {
                         Players
                     </h3>
                     @if ($isDm)
-                        <button class="btn btn-primary float-right add-players" data-campaign-id="{{$campaign->id}}" data-campaign-name="{{$campaign->name}}" data-toggle="modal" data-target="#add-players-modal">Add Players</button>
+                        <button class="btn btn-success float-right add-players" data-campaign-id="{{$campaign->id}}" data-campaign-name="{{$campaign->name}}" data-toggle="modal" data-target="#add-players-modal">Add Players</button>
                     @endif
                 </div>
                 <div class="card-body">
