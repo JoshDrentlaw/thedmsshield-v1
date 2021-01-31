@@ -13,7 +13,7 @@
     cursor: text;
 }
 
-[contenteditable] {
+[contenteditable=true] {
     padding: 0 0.2em;
     border: 1px solid #eeeeee;
     border-radius: 6px;
