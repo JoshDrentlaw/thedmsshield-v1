@@ -1,4 +1,12 @@
 $(document).ready(function () {
+    $('.chat-timestamp').each(function () {
+        let iana = luxon.local().toFormat('z'),
+            time = $(this).text()
+        
+        console.log(time)
+        $(this).text(luxon.fromISO(time).setZone(iana).toFormat('FF'))
+    })
+
     $(document).on('click', '#die-roll-btn', rollDie)
 
     $(document).on('submit','#die-roll-btn', rollDie)

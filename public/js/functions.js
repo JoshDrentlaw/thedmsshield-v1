@@ -44,7 +44,7 @@ function tinymceInit(id, path, opts) {
                                     $('.save-time:visible').text(luxon.fromISO(data.updated_at).setZone(iana).toFormat('FF'))
                                 }
                             }) 
-                    }, 1000)
+                    }, 5000)
                 })
             }
         }

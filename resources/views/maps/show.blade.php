@@ -1,4 +1,5 @@
 <?php
+use App\Debug\Debug;
 $isDm = $isDm ? 1 : 0;
 ?>
 @extends('layouts.app')
@@ -10,7 +11,8 @@ $isDm = $isDm ? 1 : 0;
             <!-- Nav tabs -->
             <div class="leaflet-sidebar-tabs">
                 <ul role="tablist"> <!-- top aligned tabs -->
-                    <li><a href="#home" role="tab" class="sidebar-tab-link"><i class="fa fa-bars"></i></a></li>
+                    <li><a href="#the-table" role="tab" class="sidebar-tab-link"><i class="fa fa-users"></i></a></li>
+                    <li><a href="#all-markers" role="tab" class="sidebar-tab-link"><i class="fa fa-map-marked-alt"></i></a></li>
                     <li><a href="#marker" role="tab" class="sidebar-tab-link"><i class="fa fa-map-marker-alt"></i></a></li>
                     <li><a href="#compendium" role="tab" class="sidebar-tab-link"><i class="fa fa-book"></i></a></li>
                     <li><a href="#die-rollers" role="tab" class="sidebar-tab-link"><i class="fa fa-dice-d20"></i></a></li>
@@ -22,8 +24,58 @@ $isDm = $isDm ? 1 : 0;
             </div>
             <!-- Tab panes -->
             <div class="leaflet-sidebar-content">
+                {{-- THE TABLE --}}
+                <div class="leaflet-sidebar-pane" id="the-table">
+                    <h1 class="leaflet-sidebar-header d-flex align-items-center justify-content-between">
+                        The Table
+                        <div class="leaflet-sidebar-close">
+                            <i class="fa fa-caret-left"></i>
+                        </div>
+                    </h1>
+                    <div class="py-3">
+                        <div class="row mb-2">
+                            <div class="col-sm-12">
+                                <div id="logged-in-users-container">
+                                    <div class="media mb-3" id="user-{{$campaign->dm->user->id}}">
+                                        @if($campaign->dm->user->avatar_public_id)
+                                            <img src="{{env('CLOUDINARY_IMG_PATH')}}c_thumb,w_100,h_100/v{{date('z')}}/{{$campaign->dm->user->avatar_public_id}}.jpg" class="mr-3">
+                                        @else
+                                            <div style="width:100px;height:100px;padding:0.25em;" class="img-thumbnail mr-3"><i class="fa fa-user w-100 h-100"></i></div>
+                                        @endif
+                                        <div class="media-body">
+                                            <h3>
+                                                {{$campaign->dm->user->username}}
+                                            </h3>
+                                            <h5>
+                                                <span class="badge badge-danger online-indicator">Offline</span>
+                                            </h5>
+                                        </div>
+                                    </div>
+                                    @forelse($campaign->players as $player)
+                                        <div class="media mb-3" id="user-{{$player->user->id}}">
+                                            @if($player->user->avatar_public_id)
+                                                <img src="{{env('CLOUDINARY_IMG_PATH')}}c_thumb,w_100,h_100/v{{date('z')}}/{{$player->user->avatar_public_id}}.jpg" class="mr-3">
+                                            @else
+                                                <div style="width:100px;height:100px;padding:0.25em;" class="img-thumbnail mr-3"><i class="fa fa-user w-100 h-100"></i></div>
+                                            @endif
+                                            <div class="media-body">
+                                                <h3>
+                                                    {{$player->user->username}}
+                                                </h3>
+                                                <h5>
+                                                    <span class="badge badge-danger online-indicator">Offline</span>
+                                                </h5>
+                                            </div>
+                                        </div>
+                                    @empty
+                                    @endforelse
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 {{-- ALL MARKERS --}}
-                <div class="leaflet-sidebar-pane" id="home">
+                <div class="leaflet-sidebar-pane" id="all-markers">
                     <h1 class="leaflet-sidebar-header d-flex align-items-center justify-content-between">
                         All Markers
                         <div class="leaflet-sidebar-close"><i class="fa fa-caret-left"></i></div>
@@ -78,6 +130,7 @@ $isDm = $isDm ? 1 : 0;
                         <x-compendium :campaign="$campaign" :is-dm="$isDm" path="map" />
                     </div>
                 </div>
+                {{-- DIE ROLLER --}}
                 <div class="leaflet-sidebar-pane" id="die-rollers">
                     <h1 class="leaflet-sidebar-header d-flex align-items-center justify-content-between">
                         Die Rollerz
@@ -136,13 +189,10 @@ $isDm = $isDm ? 1 : 0;
                                     <div class="form-group w-100">
                                         <ul class="list-unstyled" id="chat-message-list">
                                             @forelse($messages->sortByDesc('created_at') as $message)
-                                                <?php
-                                                $timestamp = date('M d, Y, h:i:s A', strtotime($message->created_at));
-                                                ?>
                                                 <li class="media">
                                                     <div class="media-body">
                                                         <h5 class="mt-0 mb-1">{{$message->message}}</h5>
-                                                        <p>{{$message->user->username}} {{$timestamp}}</p>
+                                                        <p>{{$message->user->username}} <span class="chat-timestamp">{{$message->created_at->format('c')}}</span></p>
                                                     </div>
                                                 </li>
                                             @empty
@@ -157,7 +207,6 @@ $isDm = $isDm ? 1 : 0;
                 </div>
             </div>
         </div>
-        <div id="logged-in-users-container"></div>
     </div>
     {{-- <div class="map-container-underlay"></div> --}}
 
@@ -345,53 +394,30 @@ $isDm = $isDm ? 1 : 0;
             }
             res(true)
         }).then(() => {
-            console.log('got socket id')
             campaignMapChannel = Echo.join(`campaign-map-${map_id}`)
             .here(users => {
-                console.log(users)
-                showLoggedInUsers(users)
+                toggleLoggedInUsers(users, 'Online')
             })
             .joining(user => {
-                showLoggedInUser(user)
+                toggleLoggedInUser(user, 'Online')
             })
             .leaving(user => {
-                $(`#user-${user.id}`).remove()
+                toggleLoggedInUser(user, 'Offline')
             })
-
-            console.log({campaignMapChannel})
         })
 
-        function showLoggedInUsers(users) {
-            $('#logged-in-users-container').children().remove()
+        function toggleLoggedInUsers(users, status) {
             users.forEach(u => {
-                showLoggedInUser(u)
+                toggleLoggedInUser(u, status)
             })
         }
 
-        function showLoggedInUser(user) {
-            let content = `
-                <div class="media" id="user-${user.id}">
-            `
-            if (user.avatar) {
-                content += `
-                    <img src="${CLOUDINARY_IMG_PATH}c_thumb,w_25,h_25/v${luxon.local().valueOf()}/${user.avatar}.jpg" class="mr-3">
-                `
-            } else {
-                content += `
-                    <div style="width:25px;height:25px;padding:0.25em;" class="img-thumbnail mr-3" id="edit-avatar"><i class="fa fa-user w-100 h-100"></i></div>
-                `
-            }
-            content += `
-                    <div class="media-body">
-                        <h5>${user.username}</h5>
-                    </div>
-                </div>
-            `
-            if (user.isDm) {
-                $('#logged-in-users-container').prepend(content)
-            } else {
-                $('#logged-in-users-container').append(content)
-            }
+        function toggleLoggedInUser(user, status) {
+            const $ind = $(`#user-${user.id}`).find('.online-indicator')
+            console.log($ind)
+
+            $ind.toggleClass('badge-success badge-danger')
+            $ind.text(status)
         }
     </script>
 

@@ -33,7 +33,7 @@
                     </h4>
                     <div class="btn-group btn-group-sm mb-2 compendium-btn-group {{$btnGrpFloat}}">
                         <button class="btn btn-secondary" data-target="#creatureDescription" data-toggle="collapse" aria-expanded="false" aria-controls="creatureDescription">Description</button>
-                        <a href="/campaigns/{{$campaign->url}}/compendium/creatures" class="btn btn-primary">View all creatures</a>
+                        <a href="/campaigns/{{$campaign->url}}/compendium/creatures" class="btn btn-primary">All creatures</a>
                         @if ($isDm)
                             <button class="btn btn-success btn-sm" id="new-creature-btn">New creature</button>
                         @endif
@@ -66,7 +66,7 @@
                     </h4>
                     <div class="btn-group btn-group-sm mb-2 compendium-btn-group {{$btnGrpFloat}}">
                         <button class="btn btn-secondary" data-target="#placesDescription" data-toggle="collapse" aria-expanded="false" aria-controls="placesDescription">Description</button>
-                        <a href="/campaigns/{{$campaign->url}}/compendium/places" class="btn btn-primary">View all places</a>
+                        <a href="/campaigns/{{$campaign->url}}/compendium/places" class="btn btn-primary">All places</a>
                         @if ($isDm)
                             <button class="btn btn-success" id="new-place-btn">New place</button>
                         @endif
@@ -110,7 +110,7 @@
                     </h4>
                     <div class="btn-group btn-group-sm mb-2 compendium-btn-group {{$btnGrpFloat}}">
                         <button class="btn btn-secondary" data-target="#thingsDescription" data-toggle="collapse" aria-expanded="false" aria-controls="thingsDescription">Description</button>
-                        <a href="/campaigns/{{$campaign->url}}/compendium/things" class="btn btn-primary">View all places</a>
+                        <a href="/campaigns/{{$campaign->url}}/compendium/things" class="btn btn-primary">All places</a>
                         @if ($isDm)
                             <button class="btn btn-success" id="new-thing-btn">New thing</button>
                         @endif
