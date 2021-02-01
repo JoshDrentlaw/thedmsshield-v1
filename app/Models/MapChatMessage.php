@@ -9,6 +9,8 @@ class MapChatMessage extends Model
 {
     use HasFactory;
 
+    protected $dateFormat = 'c';
+
     protected $fillable = [
         'message',
         'map_id',
