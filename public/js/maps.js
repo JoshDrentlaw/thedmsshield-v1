@@ -254,14 +254,17 @@ $(document).ready(function() {
     })
 
     // ANCHOR PING MAP
-    let pingTimeout, pingIcon, pingMarker, isPinging = false
+    let pingTimeout, pingIcon, pingMarker, isPinging = false, eLat, eLng
     map.on('mousedown touchstart', function (e) {
         console.log(e)
         let lat = e.latlng.lat,
             lng = e.latlng.lng,
             zoom = map.getZoom(),
             point = map.latLngToLayerPoint([lat, lng])
-        
+
+        eLat = lat
+        eLng = lng
+
         setTimeout(function () {
             $('#map-container').css('cursor', 'pointer')
         }, 500)
@@ -273,7 +276,23 @@ $(document).ready(function() {
                     showMapPing(res.data.ping)
                 })
         }, 1000)
-    }).on('mouseup mousemove touchend', removeMapPing)
+    }).on('mouseup touchend', removeMapPing)
+    .on('mousemove', function (e) {
+        if (isPinging) {
+            let latDiff = e.latlng.lat - eLat,
+                lngDiff = e.latlng.lng - eLng
+            
+            console.log({latDiff, lngDiff})
+            if ((latDiff > 0 && latDiff > 6) || (latDiff < 0 && latDiff < -6)) {
+                console.log('failed')
+                removeMapPing()
+            }
+            if ((lngDiff > 0 && lngDiff > 6) || (lngDiff < 0 && lngDiff < -6)) {
+                console.log('other failed')
+                removeMapPing()
+            }
+        }
+    })
 
     console.log({campaignMapChannel})
     campaignMapChannel.listen('MapPinged', (e) => {
