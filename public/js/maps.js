@@ -238,9 +238,24 @@ $(document).ready(function() {
             })
     })
 
-    // PING MAP
+    // ANCHOR USER COLOR
+    $(document).on('change', '.user-map-color', function () {
+        let map_color = $(this).val(),
+            id = $(this).data('user-id')
+
+        axios.post('/maps/user_map_color', { map_color, id, map_id })
+    })
+
+    campaignMapChannel.listen('UserMapUpdate', function (e) {
+        console.log(e)
+        if (e.update.hasOwnProperty('map_color')) {
+            $(`.user-map-color[data-user-id="${e.update.user_id}"]`).val(e.update.map_color)
+        }
+    })
+
+    // ANCHOR PING MAP
     let pingTimeout, pingIcon, pingMarker, isPinging = false
-    map.on('mousedown', function (e) {
+    map.on('mousedown touchstart', function (e) {
         console.log(e)
         let lat = e.latlng.lat,
             lng = e.latlng.lng,
@@ -252,18 +267,16 @@ $(document).ready(function() {
         }, 500)
         pingTimeout = setTimeout(function () {
             isPinging = true
-            axios.post('/maps/map_ping', { status: 'show', lat, lng, map_id })
+            axios.post('/maps/map_ping', { status: 'show', lat, lng, map_id, user_id })
                 .then(res => {
                     console.log({res})
                     showMapPing(res.data.ping)
                 })
         }, 1000)
-    }).on('mouseup', removeMapPing)
-    .on('mousemove', removeMapPing)
+    }).on('mouseup mousemove touchend', removeMapPing)
 
     console.log({campaignMapChannel})
     campaignMapChannel.listen('MapPinged', (e) => {
-        console.log(e)
         if (e.ping.status === 'show') {
             showMapPing(e.ping)
         } else if (e.ping.status === 'remove') {
@@ -273,14 +286,15 @@ $(document).ready(function() {
 
     function showMapPing(ping) {
         console.log('show map ping')
+        const userMapColor = $(`.user-map-color[data-user-id="${ping.user_id}"]`).val()
         pingIcon = L.divIcon({
             className: 'outer-ping-container',
             html: `
                 <div class="ping-container">
-                    <div class="ping-circle" style="animation-delay: 0s"></div>
-                    <div class="ping-circle" style="animation-delay: 1s"></div>
-                    <div class="ping-circle" style="animation-delay: 2s"></div>
-                    <div class="ping-circle" style="animation-delay: 3s"></div>
+                    <div class="ping-circle" style="animation-delay:0s;background-color:${userMapColor};"></div>
+                    <div class="ping-circle" style="animation-delay:1s;background-color:${userMapColor};"></div>
+                    <div class="ping-circle" style="animation-delay:2s;background-color:${userMapColor};"></div>
+                    <div class="ping-circle" style="animation-delay:3s;background-color:${userMapColor};"></div>
                 </div>
             `
         })
