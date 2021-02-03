@@ -7,6 +7,7 @@ use Illuminate\Support\Str;
 use App\Models\Campaign;
 use App\Models\Map;
 use App\Models\Marker;
+use App\Models\User;
 use App\Models\MapPing;
 use Cloudinary\Uploader;
 use JD\Cloudder\Facades\Cloudder;
@@ -16,6 +17,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\MapChatMessage;
 
 use App\Events\MapPinged;
+use App\Events\UserMapUpdate;
 
 class MapsController extends Controller
 {
@@ -177,11 +179,21 @@ class MapsController extends Controller
         return ['status' => 200, 'message' => 'Map deleted'];
     }
 
-    public function map_ping(Request $request) {
+    public function user_map_color(Request $request)
+    {
         $post = $request->post();
-        $ping = (object) $post;
-        // $ping = new MapPing($post);
-        // $ping = collect($post);
+        $user = User::find($post['id']);
+        $user->update(['map_color' => $post['map_color']]);
+        $update = collect([
+            'user_id' => $post['id'],
+            'map_color' => $post['map_color'],
+            'map_id' => $post['map_id']
+        ]);
+        broadcast(new UserMapUpdate($update))->toOthers();
+    }
+
+    public function map_ping(Request $request) {
+        $ping = (object) $request->post();
         broadcast(new MapPinged($ping))->toOthers();
         return compact('ping');
     }

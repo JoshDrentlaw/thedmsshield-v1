@@ -13,6 +13,9 @@ use App\Listeners\SendNewMapChatMessage;
 use App\Events\MapPinged;
 use App\Listeners\LogMapPing;
 
+use App\Events\UserMapUpdate;
+use App\Listeners\UserMapUpdated;
+
 class EventServiceProvider extends ServiceProvider
 {
     /**
@@ -29,6 +32,9 @@ class EventServiceProvider extends ServiceProvider
         ],
         MapPinged::class => [
             LogMapPing::class
+        ],
+        UserMapUpdate::class => [
+            UserMapUpdated::class
         ]
     ];
 
