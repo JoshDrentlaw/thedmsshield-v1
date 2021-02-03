@@ -36,6 +36,7 @@ $isDm = $isDm ? 1 : 0;
                         <div class="row mb-2">
                             <div class="col-sm-12">
                                 <div id="logged-in-users-container">
+                                    <h2>DM</h2>
                                     <div class="media mb-3" id="user-{{$campaign->dm->user->id}}">
                                         @if($campaign->dm->user->avatar_public_id)
                                             <img src="{{env('CLOUDINARY_IMG_PATH')}}c_thumb,w_100,h_100/v{{date('z')}}/{{$campaign->dm->user->avatar_public_id}}.jpg" class="mr-3">
@@ -56,6 +57,7 @@ $isDm = $isDm ? 1 : 0;
                                             </div>
                                         </div>
                                     </div>
+                                    <h2>Players</h2>
                                     @forelse($campaign->players as $player)
                                         <div class="media mb-3" id="user-{{$player->user->id}}">
                                             @if($player->user->avatar_public_id)
