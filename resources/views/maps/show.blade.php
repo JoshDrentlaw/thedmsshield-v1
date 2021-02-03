@@ -46,9 +46,14 @@ $isDm = $isDm ? 1 : 0;
                                             <h3>
                                                 {{$campaign->dm->user->username}}
                                             </h3>
-                                            <h5>
+                                            <h6>
                                                 <span class="badge badge-danger online-indicator">Offline</span>
-                                            </h5>
+                                            </h6>
+                                            <div class="row">
+                                                <div class="col-12">
+                                                    <input type="color" data-user-id="{{$campaign->dm->user->id}}" class="user-map-color" value="{{$campaign->dm->user->map_color}}">
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                     @forelse($campaign->players as $player)
@@ -62,9 +67,14 @@ $isDm = $isDm ? 1 : 0;
                                                 <h3>
                                                     {{$player->user->username}}
                                                 </h3>
-                                                <h5>
+                                                <h6>
                                                     <span class="badge badge-danger online-indicator">Offline</span>
-                                                </h5>
+                                                </h6>
+                                                <div class="row">
+                                                    <div class="col-12">
+                                                        <input type="color" data-user-id="{{$player->user->id}}" class="user-map-color" value="{{$player->user->map_color}}">
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     @empty

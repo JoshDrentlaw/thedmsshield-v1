@@ -9,6 +9,13 @@
     overflow-wrap: break-word;
 }
 
+.user-map-color {
+    background-color: white;
+    border-radius: 4px;
+    border-color: #b1b1b1;
+    height: 37px;
+}
+
 #chat-message-list {
     overflow:auto;
     width:100%;
@@ -18,9 +25,6 @@
 .outer-ping-container {
     width: 100px;
     height: 100px;
-    /* position: absolute;
-    top: calc(50vh - 50px);
-    left: calc(50vw - 50px); */
     z-index: 10000;
 }
 
@@ -38,7 +42,7 @@
 
 .ping-circle {
     border-radius: 50%;
-    background-color: deepskyblue;
+    /* background-color: deepskyblue; */
     width: 30px;
     height: 30px;
     position: absolute;

@@ -44,6 +44,7 @@ Route::get('/campaigns/{campaign_id}/compendium/ideas', 'IdeasController@index')
 Route::get('/campaigns/{campaign_id}/compendium/ideas/{idea_id}', 'IdeasController@show');
 
 Route::put('/maps/{id}/{type}', 'MapsController@update');
+Route::post('/maps/user_map_color', 'MapsController@user_map_color');
 Route::post('/maps/map_ping', 'MapsController@map_ping');
 Route::get('/campaigns/{campaign_id}/maps/{map_id}', 'MapsController@show');
 
