@@ -25,9 +25,9 @@ $(document).ready(function () {
                 const dieResult = (Math.floor(Math.random() * die)) + 1
                 result.add(dieResult)
                 if (dieResult == die) {
-                    breakdown += `${i > 0 ? ' + ' : ''}<span class="text-success">${dieResult}</span>`
+                    breakdown += `${i > 0 ? ' + ' : ''}<span class="text-success"><strong>${dieResult}</strong></span>`
                 } else if (dieResult == 1) {
-                    breakdown += `${i > 0 ? ' + ' : ''}<span class="text-danger">${dieResult}</span>`
+                    breakdown += `${i > 0 ? ' + ' : ''}<span class="text-danger"><strong>${dieResult}</strong></span>`
                 } else {
                     breakdown += `${i > 0 ? ' + ' : ''}${dieResult}`
                 }
