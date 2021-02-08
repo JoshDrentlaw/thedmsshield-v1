@@ -12,33 +12,36 @@ $(document).ready(function () {
 
     function rollDie(e) {
         e.preventDefault()
-        let dieAmounts = [], 
-            dice = [],
-            dieResults = []
+        let msgResults = []
 
         $('.die-roll-group:visible').each(function() {
-            let dieAmt = $(this).find('.die-amount').val()
-            let die = $(this).find('.die-select').val()
+            let dieAmt = $(this).find('.die-amount').val(),
+                die = $(this).find('.die-select').val(),
+                mod = $(this).find('.mod-amount').val(),
+                result = numeral(0),
+                resultHtml = '<p>',
+                breakdown = `<small>(${dieAmt}d${die}${mod != 0 ? ` ${mod > 0 ? '+' : '-'} ${mod}` : ''}) ${mod != 0 ? '[' : ''}`
             for (let i = 0; i < dieAmt; i++) {
-                let result = Math.floor(Math.random() * die) + 1
-                dieResults.push(result)
+                const dieResult = (Math.floor(Math.random() * die)) + 1
+                result.add(dieResult)
+                if (dieResult == die) {
+                    breakdown += `${i > 0 ? ' + ' : ''}<span class="text-success">${dieResult}</span>`
+                } else if (dieResult == 1) {
+                    breakdown += `${i > 0 ? ' + ' : ''}<span class="text-danger">${dieResult}</span>`
+                } else {
+                    breakdown += `${i > 0 ? ' + ' : ''}${dieResult}`
+                }
             }
-        });
-
-        /* for (let i = 0; i < dieAmt; i++) {
-            let result = Math.floor(Math.random() * die) + 1
-            dieResults.push(result)
-        } */
-        let resultString = dieResults.join(', ')
-        $('#first-die-results').val(resultString)
-        console.log(dieResults.join(', '))
+            breakdown += `${mod != 0 ? `] ${mod > 0 ? '+' : '-'} ${mod}` : ''}</small>`
+            resultHtml += `${result.add(mod).value()} ${breakdown}</p>`
+            msgResults.push(resultHtml)
+        })
 
         axios.post('/mapChatMessages', {
-            message:resultString, 
-            userId:user_id,
-            mapId:map_id
+            message: msgResults.join(''), 
+            userId: user_id,
+            mapId: map_id
         }).then(res => {
-            console.log(res)
             showMessage(res.data.mapChatMessage)
         })
     }

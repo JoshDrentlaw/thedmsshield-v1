@@ -66,6 +66,11 @@ import { DateTime } from 'luxon'
 window.luxon = DateTime
 
 /**
+ * Numeral
+ */
+window.numeral = require('numeral')
+
+/**
  * tinyMCE
  * */
 import tinymce from 'tinymce'

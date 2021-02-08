@@ -153,34 +153,12 @@ $isDm = $isDm ? 1 : 0;
                     <div class="py-3">
                         <div class="row mb-2">
                             <div class="col-sm-12">
-                                <form id="first-die-form" class="form-inline">
-                                    <div class="form-group mb-3 die-roll-group">
-                                        <input type="number" value="1" min="1" style="width:100px;" class="die-amount form-control mr-2">
-                                        <div class="input-group">
-                                            <div class="input-group-prepend">
-                                                <label class="input-group-text">D</label>
-                                            </div>
-                                            <select class="custom-select die-select">
-                                                <option value="4" selected>4</option>
-                                                <option value="6">6</option>
-                                                <option value="8">8</option>
-                                                <option value="10">10</option>
-                                                <option value="12">12</option>
-                                                <option value="20">20</option>
-                                                <option value="100">100</option>
-                                            </select>
+                                <form>
+                                    <div class="form-row die-roll-group">
+                                        <div class="col-auto my-2">
+                                            <input type="number" value="1" min="1" style="width:55px;" class="die-amount form-control">
                                         </div>
-                                        <button type="button" class="btn btn-primary" id="die-roll-btn">Roll!!</button>
-                                    </div>
-                                    <p>
-                                        
-                                        <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
-                                            <i class="fa fa-angle-double-down"></i>
-                                        </button>
-                                    </p>
-                                    <div class="collapse" id="collapseExample">
-                                        <div class="form-group mb-3 die-roll-group">
-                                            <input type="number" value="1" min="1" style="width:100px;" class="die-amount form-control mr-2">
+                                        <div class="col-auto my-2">
                                             <div class="input-group">
                                                 <div class="input-group-prepend">
                                                     <label class="input-group-text">D</label>
@@ -196,14 +174,60 @@ $isDm = $isDm ? 1 : 0;
                                                 </select>
                                             </div>
                                         </div>
+                                        <div class="col-auto my-2">
+                                            <div class="input-group">
+                                                <div class="input-group-prepend">
+                                                    <label class="input-group-text">+</label>
+                                                </div>
+                                                <input type="number" value="0" min="1" style="width:55px;" class="mod-amount form-control">
+                                            </div>
+                                        </div>
+                                        <div class="col-auto my-2">
+                                            <button type="button" class="btn btn-primary" id="die-roll-btn">Roll!!</button>
+                                        </div>
+                                        <div class="col-auto my-2">
+                                            <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                                                <i class="fa fa-angle-double-down"></i>
+                                            </button>
+                                        </div>
                                     </div>
-                                    
-                                    <div class="form-group w-100">
-                                        <ul class="list-unstyled" id="chat-message-list">
+                                    <div class="collapse" id="collapseExample">
+                                        <div class="form-row die-roll-group">
+                                            <div class="col-auto my-2">
+                                                <input type="number" value="1" min="1" style="width:55px;" class="die-amount form-control">
+                                            </div>
+                                            <div class="col-auto my-2">
+                                                <div class="input-group">
+                                                    <div class="input-group-prepend">
+                                                        <label class="input-group-text">D</label>
+                                                    </div>
+                                                    <select class="custom-select die-select">
+                                                        <option value="4" selected>4</option>
+                                                        <option value="6">6</option>
+                                                        <option value="8">8</option>
+                                                        <option value="10">10</option>
+                                                        <option value="12">12</option>
+                                                        <option value="20">20</option>
+                                                        <option value="100">100</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-auto my-2">
+                                                <div class="input-group">
+                                                    <div class="input-group-prepend">
+                                                        <label class="input-group-text">+</label>
+                                                    </div>
+                                                    <input type="number" value="0" min="1" style="width:55px;" class="mod-amount form-control">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group mt-2 w-100 border border-dark rounded">
+                                        <ul class="list-unstyled mb-0 p-2" id="chat-message-list" style="box-shadow:inset -9px -8px 15px 0px #cacaca;">
                                             @forelse($messages->sortByDesc('created_at') as $message)
                                                 <li class="media">
                                                     <div class="media-body">
-                                                        <h5 class="mt-0 mb-1">{{$message->message}}</h5>
+                                                        <h5 class="mt-0 mb-1">{!!$message->message!!}</h5>
                                                         <p>{{$message->user->username}} <span class="chat-timestamp">{{$message->created_at->format('c')}}</span></p>
                                                     </div>
                                                 </li>

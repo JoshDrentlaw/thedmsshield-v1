@@ -35,6 +35,7 @@
         "leaflet-sidebar-v2": "^3.2.3",
         "leaflet-toolbar": "^0.4.0-alpha.2",
         "luxon": "^1.25.0",
+        "numeral": "^2.0.6",
         "pnotify": "^5.1.2",
         "random-words": "^1.1.1",
         "select2": "^4.0.13",
