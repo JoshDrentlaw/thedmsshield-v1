@@ -35,11 +35,13 @@ Route::put('/campaigns/{id}/{type}', 'CampaignsController@update');
 Route::get('/campaigns/{campaign_id}/compendium', 'CampaignsController@compendium');
 Route::get('/campaigns/{campaign_id}/compendium/creatures', 'CreaturesController@index');
 Route::get('/campaigns/{campaign_id}/compendium/creatures/{creature_id}', 'CreaturesController@show');
+Route::post('/creatures/show_component', 'CreaturesController@show_component');
 Route::get('/campaigns/{campaign_id}/compendium/places', 'PlacesController@index');
 Route::get('/campaigns/{campaign_id}/compendium/places/{place_id}', 'PlacesController@show');
 Route::post('/places/show_component', 'PlacesController@show_component');
 Route::get('/campaigns/{campaign_id}/compendium/things', 'ThingsController@index');
 Route::get('/campaigns/{campaign_id}/compendium/things/{thing_id}', 'ThingsController@show');
+Route::post('/things/show_component', 'ThingsController@show_component');
 Route::get('/campaigns/{campaign_id}/compendium/ideas', 'IdeasController@index');
 Route::get('/campaigns/{campaign_id}/compendium/ideas/{idea_id}', 'IdeasController@show');
 
