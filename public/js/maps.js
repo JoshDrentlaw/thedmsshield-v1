@@ -269,18 +269,16 @@ $(document).ready(function() {
             axios.post('/maps/map_ping', { status: 'show', lat, lng, map_id, user_id })
                 .then(res => {
                     showMapPing(res.data.ping)
+                    removeMapPing()
                 })
         }
-    }).on('mouseup', function (e) {
+    }).on('mouseup', function () {
         setTimeout(function () {
             mapDrag = false
-            removeMapPing(e)
         }, 100)
-        
+    }).on('movestart', function () {
+        mapDrag = true
     })
-        .on('movestart', function () {
-            mapDrag = true
-        })
 
     campaignMapChannel.listen('MapPinged', (e) => {
         if (e.ping.status === 'show') {
@@ -292,6 +290,7 @@ $(document).ready(function() {
     })
 
     function showMapPing(ping) {
+        console.log(ping)
         const userMapColor = $(`.user-map-color[data-user-id="${ping.user_id}"]`).val(),
             pingIcon = L.divIcon({
                 className: 'outer-ping-container',
@@ -306,11 +305,10 @@ $(document).ready(function() {
             })
         const thisPing = L.marker([ping.lat, ping.lng], { icon: pingIcon }).addTo(map)
         pingMarkers.push(thisPing)
-        thisPing.once('mouseup', removeMapPing)
     }
 
     function removeMapPing(e) {
-        if (e.originalEvent.button === 2) {
+        // if (e.originalEvent.button === 2) {
             setTimeout(function () {
                 if (pingMarkers.length > 0) {
                     const thisPing = pingMarkers.shift()
@@ -322,7 +320,7 @@ $(document).ready(function() {
                     axios.post('/maps/map_ping', { status: 'remove', map_id })
                 }
             }, 5000)
-        }
+        // }
     }
 
     // ANCHOR TOOLBAR
