@@ -1,3 +1,9 @@
+.die-roll-group input::-webkit-outer-spin-button,
+.die-roll-group input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
 #map-container {
     height: calc(100vh - 55px);
     width: 100vw;

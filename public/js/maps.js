@@ -247,7 +247,6 @@ $(document).ready(function() {
     })
 
     campaignMapChannel.listen('UserMapUpdate', function (e) {
-        console.log(e)
         if (e.update.hasOwnProperty('map_color')) {
             $(`.user-map-color[data-user-id="${e.update.user_id}"]`).val(e.update.map_color)
         }
@@ -259,7 +258,6 @@ $(document).ready(function() {
         pingMarkers = [],
         isPinging = false
     map.on('contextmenu', function (e) {
-        console.log('contextmenu:', {mapDrag})
         if (!mapDrag) {
             let lat = e.latlng.lat,
                 lng = e.latlng.lng
@@ -276,14 +274,12 @@ $(document).ready(function() {
     }).on('mouseup', function (e) {
         setTimeout(function () {
             mapDrag = false
-            console.log('mouseup:', {mapDrag})
             removeMapPing(e)
         }, 100)
         
     })
         .on('movestart', function () {
             mapDrag = true
-            console.log({mapDrag})
         })
 
     campaignMapChannel.listen('MapPinged', (e) => {
