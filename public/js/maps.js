@@ -254,82 +254,110 @@ $(document).ready(function() {
     })
 
     // ANCHOR PING MAP
-    let pingTimeout, pingIcon, pingMarker, isPinging = false, eLat, eLng
-    map.on('mousedown touchstart', function (e) {
-        console.log(e)
-        let lat = e.latlng.lat,
-            lng = e.latlng.lng,
-            zoom = map.getZoom(),
-            point = map.latLngToLayerPoint([lat, lng])
+    let eLat, eLng,
+        mapDrag = false,
+        pingMarkers = [],
+        isPinging = false
+    map.on('contextmenu', function (e) {
+        console.log('contextmenu:', {mapDrag})
+        if (!mapDrag) {
+            let lat = e.latlng.lat,
+                lng = e.latlng.lng
 
-        eLat = lat
-        eLng = lng
+            eLat = lat
+            eLng = lng
 
-        setTimeout(function () {
-            $('#map-container').css('cursor', 'pointer')
-        }, 500)
-        pingTimeout = setTimeout(function () {
             isPinging = true
+            axios.post('/maps/map_ping', { status: 'show', lat, lng, map_id, user_id })
+                .then(res => {
+                    showMapPing(res.data.ping)
+                })
+        }
+    }).on('mouseup', function (e) {
+        setTimeout(function () {
+            mapDrag = false
+            console.log('mouseup:', {mapDrag})
+            removeMapPing(e)
+        }, 100)
+        
+    })
+        .on('movestart', function () {
+            mapDrag = true
+            console.log({mapDrag})
+        })
+
+    campaignMapChannel.listen('MapPinged', (e) => {
+        if (e.ping.status === 'show') {
+            showMapPing(e.ping)
+        } else if (e.ping.status === 'remove') {
+            const thisPing = pingMarkers.shift()
+            thisPing.remove(map)
+        }
+    })
+
+    function showMapPing(ping) {
+        const userMapColor = $(`.user-map-color[data-user-id="${ping.user_id}"]`).val(),
+            pingIcon = L.divIcon({
+                className: 'outer-ping-container',
+                html: `
+                    <div class="ping-container">
+                        <div class="ping-circle" style="animation-delay:0s;background-color:${userMapColor};"></div>
+                        <div class="ping-circle" style="animation-delay:1s;background-color:${userMapColor};"></div>
+                        <div class="ping-circle" style="animation-delay:2s;background-color:${userMapColor};"></div>
+                        <div class="ping-circle" style="animation-delay:3s;background-color:${userMapColor};"></div>
+                    </div>
+                `
+            })
+        const thisPing = L.marker([ping.lat, ping.lng], { icon: pingIcon }).addTo(map)
+        pingMarkers.push(thisPing)
+        thisPing.once('mouseup', removeMapPing)
+    }
+
+    function removeMapPing(e) {
+        if (e.originalEvent.button === 2) {
+            setTimeout(function () {
+                if (pingMarkers.length > 0) {
+                    const thisPing = pingMarkers.shift()
+                    thisPing.remove(map)
+                }
+                if (isPinging) {
+                    isPinging = false
+                    $('#map-container').css('cursor', 'grab')
+                    axios.post('/maps/map_ping', { status: 'remove', map_id })
+                }
+            }, 5000)
+        }
+    }
+
+    // ANCHOR TOOLBAR
+    /* const mapPingAction = L.Toolbar2.Action.extend({
+        options: {
+            toolbarIcon: {
+                html: '<i></i>',
+                className: 'fa fa-bullseye',
+                tooltip: 'Ping the map.'
+            }
+        },
+        addHooks: function (e) {
+            console.log(e)
+            let lat = e.latlng.lat,
+            lng = e.latlng.lng
+
+            eLat = lat
+            eLng = lng
             axios.post('/maps/map_ping', { status: 'show', lat, lng, map_id, user_id })
                 .then(res => {
                     console.log({res})
                     showMapPing(res.data.ping)
                 })
-        }, 1000)
-    }).on('mouseup touchend', removeMapPing)
-    .on('mousemove', function (e) {
-        if (isPinging) {
-            let latDiff = e.latlng.lat - eLat,
-                lngDiff = e.latlng.lng - eLng
-            
-            console.log({latDiff, lngDiff})
-            if ((latDiff > 0 && latDiff > 6) || (latDiff < 0 && latDiff < -6)) {
-                console.log('failed')
-                removeMapPing()
-            }
-            if ((lngDiff > 0 && lngDiff > 6) || (lngDiff < 0 && lngDiff < -6)) {
-                console.log('other failed')
-                removeMapPing()
-            }
         }
     })
-
-    console.log({campaignMapChannel})
-    campaignMapChannel.listen('MapPinged', (e) => {
-        if (e.ping.status === 'show') {
-            showMapPing(e.ping)
-        } else if (e.ping.status === 'remove') {
-            pingMarker.remove(map)
-        }
-    })
-
-    function showMapPing(ping) {
-        console.log('show map ping')
-        const userMapColor = $(`.user-map-color[data-user-id="${ping.user_id}"]`).val()
-        pingIcon = L.divIcon({
-            className: 'outer-ping-container',
-            html: `
-                <div class="ping-container">
-                    <div class="ping-circle" style="animation-delay:0s;background-color:${userMapColor};"></div>
-                    <div class="ping-circle" style="animation-delay:1s;background-color:${userMapColor};"></div>
-                    <div class="ping-circle" style="animation-delay:2s;background-color:${userMapColor};"></div>
-                    <div class="ping-circle" style="animation-delay:3s;background-color:${userMapColor};"></div>
-                </div>
-            `
-        })
-        pingMarker = L.marker([ping.lat, ping.lng], { icon: pingIcon }).addTo(map)
-        pingMarker.once('mouseup', removeMapPing)
-    }
-
-    function removeMapPing() {
-        clearTimeout(pingTimeout)
-        if (pingMarker) {
-            pingMarker.remove(map)
-        }
-        if (isPinging) {
-            isPinging = false
-            $('#map-container').css('cursor', 'grab')
-            axios.post('/maps/map_ping', { status: 'remove', map_id })
-        }
-    }
+    const toolbar = new L.Toolbar2.EditToolbar.popup({
+        position: 'topright'
+    }).addTo(map, drawnItems)
+    new L.Toolbar2.Control({
+        position: 'topright',
+        actions: [mapPingAction]
+    }).addTo(map)
+    console.log(toolbar) */
 })
