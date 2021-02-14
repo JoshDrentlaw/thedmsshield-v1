@@ -3,8 +3,5 @@
     "/css/app.css": "/css/app.css",
     "/css/skin.min.css": "/css/skin.min.css",
     "/css/content.min.css": "/css/content.min.css",
-    "/css/content.css": "/css/content.css",
-    "/js/leaflet.draw.js": "/js/leaflet.draw.js",
-    "/js/leaflet.toolbar.js": "/js/leaflet.toolbar.js",
-    "/js/leaflet.draw-toolbar.js": "/js/leaflet.draw-toolbar.js"
+    "/css/content.css": "/css/content.css"
 }

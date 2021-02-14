@@ -47,12 +47,12 @@ window.pnotify.defaultModules.set(window.pnotifyFontAwesome5, {})
 /**
  * Leaflet
  * Leaflet Sidebar
- * Leaflet Toolbar
+ * Leaflet Draw
  */
 window.L = require('leaflet/dist/leaflet.js')
 require('leaflet-sidebar-v2/js/leaflet-sidebar.js')
-// require('leaflet-toolbar/dist/leaflet.toolbar-src.js')
-// require('leaflet-draw-toolbar/dist/leaflet.draw-toolbar.js')
+require('leaflet-draw/dist/leaflet.draw.js')
+require('leaflet-measure/dist/leaflet-measure.js')
 
 /**
  * Select2
