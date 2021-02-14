@@ -457,6 +457,9 @@ $isDm = $isDm ? 1 : 0;
         }
     </script>
 
+    <script type="module" src="{{ asset('js/leaflet.draw.js') . '?' . time() }}"></script>
+    {{-- <script type="module" src="{{ asset('js/leaflet.toolbar.js') . '?' . time() }}"></script>
+    <script type="module" src="{{ asset('js/leaflet.draw-toolbar.js') . '?' . time() }}"></script> --}}
     <script type="module" src="{{ asset('js/compendium.js') . '?' . time() }}"></script>
     <script type="module" src="{{ asset('js/maps.js') . '?' . time() }}"></script>
     <script type="module" src="{{ asset('js/show-place.js') . '?' . time() }}"></script>
