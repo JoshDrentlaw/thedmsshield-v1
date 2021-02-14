@@ -6,7 +6,8 @@ $(document).ready(function () {
             crs: L.CRS.Simple,
             minZoom: -10,
             keepInView: true,
-            zoomSnap: 0.1,
+            zoomSnap: 0.05,
+            zoomDelta: 0.5,
             // drawControl: true
         }),
         image = L.imageOverlay(mapUrl, bounds).addTo(map),
@@ -149,17 +150,17 @@ $(document).ready(function () {
         // 2^1  = 2
         let i = numeral(0),
             spacer = 94 * 2
-        if ((mapWidth * Math.pow(2, i.subtract(0.1).value()) + spacer) > screenWidth) {
+        if ((mapWidth * Math.pow(2, i.subtract(0.05).value()) + spacer) > screenWidth) {
             // ZOOM OUT
             do {
                 map.setView([maxLatBound / 2, maxLngBound / 2], i.value())
-                i.subtract(0.1)
+                i.subtract(0.05)
             } while (((mapWidth * Math.pow(2, i.value())) + spacer) > screenWidth)
-        } else if ((mapWidth * Math.pow(2, i.add(0.1).value()) + spacer) < screenWidth) {
+        } else if ((mapWidth * Math.pow(2, i.add(0.05).value()) + spacer) < screenWidth) {
             // ZOOM IN
             do {
                 map.setView([maxLatBound / 2, maxLngBound / 2], i.value())
-                i.add(0.1)
+                i.add(0.05)
             } while (((mapWidth * Math.pow(2, i.value())) + spacer) < screenWidth)
         }
     }
