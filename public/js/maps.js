@@ -80,11 +80,17 @@ $(document).ready(function () {
             shadowSize: [41, 41]
         }),
         black = 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-black.png',
+        measureOptions = {
+            activeColor: $(`.user-map-color[data-user-id="${user_id}"]`).val(),
+            completedColor: $(`.user-map-color[data-user-id="${user_id}"]`).val()
+        },
+        measureControl = L.control.measure(measureOptions),
         mapMarkers = []
 
     map.setView([maxLatBound / 2, maxLngBound / 2], 0)
     map.addLayer(drawnItems)
     map.addControl(drawControl)
+    map.addControl(measureControl)
 
     sidebar.on('closing', function(e) {
         this.disablePanel('marker')
@@ -163,6 +169,16 @@ $(document).ready(function () {
                 i.add(0.05)
             } while (((mapWidth * Math.pow(2, i.value())) + spacer) < screenWidth)
         }
+    }
+
+    function setMeasureOptions(adding = {}, deleting = false) {
+        measureOptions = $.extend(true, {}, measureOptions, adding)
+        if (deleting) {
+            deleting.forEach(d => delete measureOptions[d])
+        }
+        measureControl.remove()
+        measureControl = L.control.measure(measureOptions)
+        map.addControl(measureControl)
     }
 
     function addMarker(marker) {
@@ -357,6 +373,9 @@ $(document).ready(function () {
             id = $(this).data('user-id')
 
         axios.post('/maps/user_map_color', { map_color, id, map_id })
+            .then(() => {
+                updateColor()
+            })
     })
 
     campaignMapChannel.listen('UserMapUpdate', function (e) {
@@ -364,6 +383,13 @@ $(document).ready(function () {
             $(`.user-map-color[data-user-id="${e.update.user_id}"]`).val(e.update.map_color)
         }
     })
+
+    function updateColor() {
+        setMeasureOptions({
+            activeColor: $(`.user-map-color[data-user-id="${user_id}"]`).val(),
+            completedColor: $(`.user-map-color[data-user-id="${user_id}"]`).val()
+        })
+    }
 
     // ANCHOR PING MAP
     let eLat, eLng,
