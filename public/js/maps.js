@@ -81,7 +81,7 @@ $(document).ready(function () {
         black = 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-black.png',
         mapMarkers = []
 
-    map.setView([screenHeight / 2, maxLngBound / 2], 0)
+    map.setView([maxLatBound / 2, maxLngBound / 2], 0)
     map.addLayer(drawnItems)
     map.addControl(drawControl)
 
@@ -152,13 +152,13 @@ $(document).ready(function () {
         if ((mapWidth * Math.pow(2, i.subtract(0.1).value()) + spacer) > screenWidth) {
             // ZOOM OUT
             do {
-                map.setView([screenHeight / 2, maxLngBound / 2], i.value())
+                map.setView([maxLatBound / 2, maxLngBound / 2], i.value())
                 i.subtract(0.1)
             } while (((mapWidth * Math.pow(2, i.value())) + spacer) > screenWidth)
         } else if ((mapWidth * Math.pow(2, i.add(0.1).value()) + spacer) < screenWidth) {
             // ZOOM IN
             do {
-                map.setView([screenHeight / 2, maxLngBound / 2], i.value())
+                map.setView([maxLatBound / 2, maxLngBound / 2], i.value())
                 i.add(0.1)
             } while (((mapWidth * Math.pow(2, i.value())) + spacer) < screenWidth)
         }
