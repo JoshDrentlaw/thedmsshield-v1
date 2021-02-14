@@ -1,41 +1,90 @@
-$(document).ready(function() {
-    const bounds = [[0,0], [mapHeight, mapWidth]]
-    const map = L.map('map-container', {
-        crs: L.CRS.Simple,
-        minZoom: -3,
-        keepInView: true
-    })
-    map.setZoom(5)
-    const image = L.imageOverlay(mapUrl, bounds).addTo(map)
-    map.fitBounds(bounds).setZoom(-1)
-    let blue = 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png'
-    let blueIcon = new L.Icon({
-        iconUrl: blue,
-        shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-        iconSize: [25, 41],
-        iconAnchor: [12, 41],
-        popupAnchor: [1, -34],
-        shadowSize: [41, 41]
-    })
-    let green = 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png'
-    let greenIcon = new L.Icon({
-        iconUrl: green,
-        shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-        iconSize: [25, 41],
-        iconAnchor: [12, 41],
-        popupAnchor: [1, -34],
-        shadowSize: [41, 41]
-    })
-    let black = 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-black.png'
-
-    let mapMarkers = []
-
-    sidebar = L.control.sidebar({
+$(document).ready(function () {
+    const maxLatBound = mapHeight,
+        maxLngBound = mapWidth,
+        bounds = [[0,0], [maxLatBound, maxLngBound]],
+        map = L.map('map-container', {
+            crs: L.CRS.Simple,
+            minZoom: -10,
+            keepInView: true,
+            zoomSnap: 0.1,
+            // drawControl: true
+        }),
+        image = L.imageOverlay(mapUrl, bounds).addTo(map),
+        sidebar = L.control.sidebar({
             autopan: true,
             closeButton: true,
             container: 'map-sidebar',
             position: 'left'
-        }).addTo(map)
+        }).addTo(map),
+        drawnItems = new L.FeatureGroup(),
+        drawControl = new L.Control.Draw({
+            edit: {
+                featureGroup: drawnItems
+            },
+            draw: {
+                marker: false,
+                circle: {
+                    metric: false
+                },
+                rectangle: {
+                    showArea: false,
+                    metric: false
+                },
+                polygon: {
+                    metric: false
+                },
+                polyline: {
+                    metric: false
+                },
+                circlemarker: false
+            }
+        }),
+        screenWidth = window.innerWidth,
+        screenHeight = window.innerHeight - 55
+
+    map.on('load', function (e) {
+        console.log('loaded')
+        setStartingZoom()
+        console.log({
+            mapWidth,
+            mapHeight,
+            zoom: map.getZoom(),
+            worldBounds: map.getPixelWorldBounds(),
+            size: map.getSize(),
+            pixelBounds: map.getPixelBounds(),
+            bounds: map.getBounds(),
+            /* zoom: map.getZoom(),
+            zoomScale: map.getZoomScale(),
+            scaleZoom: map.getScaleZoom(),
+            boundsZoom: map.getBoundsZoom() */
+        })
+    })
+
+    let blue = 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png',
+        blueIcon = new L.Icon({
+            iconUrl: blue,
+            shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+            iconSize: [25, 41],
+            iconAnchor: [12, 41],
+            popupAnchor: [1, -34],
+            shadowSize: [41, 41]
+        }),
+        green = 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
+        greenIcon = new L.Icon({
+            iconUrl: green,
+            shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+            iconSize: [25, 41],
+            iconAnchor: [12, 41],
+            popupAnchor: [1, -34],
+            shadowSize: [41, 41]
+        }),
+        black = 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-black.png',
+        mapMarkers = []
+
+    map.setView([screenHeight / 2, maxLngBound / 2], 0)
+    map.addLayer(drawnItems)
+    map.addControl(drawControl)
+
     sidebar.on('closing', function(e) {
         this.disablePanel('marker')
         $(`[src="${green}"]`).attr('src', blue)
@@ -51,6 +100,69 @@ $(document).ready(function() {
         }
     })
     sidebar.disablePanel('marker')
+
+    L.Edit.Circle = L.Edit.CircleMarker.extend({
+        _createResizeMarker: function () {
+            const center = this._shape.getLatLng(),
+                resizemarkerPoint = this._getResizeMarkerPoint(center)
+
+            this._resizeMarkers = []
+            this._resizeMarkers.push(this._createMarker(resizemarkerPoint, this.options.resizeIcon))
+        },
+
+        _getResizeMarkerPoint: function (latlng) {
+            const delta = this._shape._radius * Math.cos(Math.PI / 4),
+                point = this._map.project(latlng)
+            return this._map.unproject([point.x + delta, point.y - delta])
+        },
+
+        _resize: function (latlng) {
+            const moveLatLng = this._moveMarker.getLatLng()
+            let radius
+        
+            if (L.GeometryUtil.isVersion07x()) {
+                radius = moveLatLng.distanceTo(latlng)
+            }
+            else {
+                radius = this._map.distance(moveLatLng, latlng)
+            }
+        
+            // **** This fixes the cicle resizing ****
+            this._shape.setRadius(radius)
+        
+            this._map.fire(L.Draw.Event.EDITRESIZE, { layer: this._shape })
+        }
+    })    
+
+    map.on('draw:created', function (e) {
+        console.log(e)
+        const type = e.layerType,
+            layer = e.layer
+
+        drawnItems.addLayer(layer)
+    })
+
+    function setStartingZoom() {
+        // the width and height of the world is width or height * 2^zoomlevel pixels
+        // 2^-1 = 0.5
+        // 2^0  = 1
+        // 2^1  = 2
+        let i = numeral(0),
+            spacer = 94 * 2
+        if ((mapWidth * Math.pow(2, i.subtract(0.1).value()) + spacer) > screenWidth) {
+            // ZOOM OUT
+            do {
+                map.setView([screenHeight / 2, maxLngBound / 2], i.value())
+                i.subtract(0.1)
+            } while (((mapWidth * Math.pow(2, i.value())) + spacer) > screenWidth)
+        } else if ((mapWidth * Math.pow(2, i.add(0.1).value()) + spacer) < screenWidth) {
+            // ZOOM IN
+            do {
+                map.setView([screenHeight / 2, maxLngBound / 2], i.value())
+                i.add(0.1)
+            } while (((mapWidth * Math.pow(2, i.value())) + spacer) < screenWidth)
+        }
+    }
 
     function addMarker(marker) {
         return L
@@ -257,6 +369,7 @@ $(document).ready(function() {
         mapDrag = false,
         pingMarkers = [],
         isPinging = false
+
     map.on('contextmenu', function (e) {
         if (!mapDrag) {
             let lat = e.latlng.lat,
@@ -346,12 +459,8 @@ $(document).ready(function() {
                 })
         }
     })
-    const toolbar = new L.Toolbar2.EditToolbar.popup({
-        position: 'topright'
-    }).addTo(map, drawnItems)
     new L.Toolbar2.Control({
         position: 'topright',
         actions: [mapPingAction]
-    }).addTo(map)
-    console.log(toolbar) */
+    }).addTo(map) */
 })
