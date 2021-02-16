@@ -222,13 +222,24 @@ $isDm = $isDm ? 1 : 0;
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="form-group mt-2 w-100 border border-dark rounded">
-                                        <ul class="list-unstyled mb-0 p-2" id="chat-message-list" style="box-shadow:inset -9px -8px 15px 0px #cacaca;">
+                                    <div class="form-group mt-2 w-100 border rounded">
+                                        <ul class="list-unstyled mb-0 p-2" id="chat-message-list" style="box-shadow:inset -3px -11px 15px 0px #e2e2e2;">
                                             @forelse($messages->sortByDesc('created_at') as $message)
-                                                <li class="media">
+                                                <li class="media border rounded mb-4">
                                                     <div class="media-body">
-                                                        <h5 class="mt-0 mb-1">{!!$message->message!!}</h5>
-                                                        <p>{{$message->user->username}} <span class="chat-timestamp">{{$message->created_at->format('c')}}</span></p>
+                                                        <h5 class="my-0 p-2">{!!$message->message!!}</h5>
+                                                        <div class="media p-2 border-top" style="background:#e9ecef;">
+                                                            <div class="mr-2">
+                                                                @if($message->user->avatar_public_id)
+                                                                    <img src="{{env('CLOUDINARY_IMG_PATH')}}c_thumb,w_25,h_25/v{{date('z')}}/{{$message->user->avatar_public_id}}.jpg" alt="User avatar" class="rounded">
+                                                                @else
+                                                                    <div style="width:25px;height:25px;padding:0.25em;" class="rounded border"><i class="fa fa-user w-100 h-100"></i></div>
+                                                                @endif
+                                                            </div>
+                                                            <div class="media-body d-flex align-items-center" style="height:25px;">
+                                                                <span>{{$message->user->username}} <span class="chat-timestamp">{{$message->created_at->format('c')}}</span>
+                                                            </div>
+                                                        </div>
                                                     </div>
                                                 </li>
                                             @empty
@@ -455,6 +466,18 @@ $isDm = $isDm ? 1 : 0;
             $ind.toggleClass('badge-success badge-danger')
             $ind.text(status)
         }
+
+        /* $('.breakdown').each(function () {
+            let breakdown = $(this).children().html()
+            $(this).parent().find('[data-toggle="popover"]').popover({
+                html: true,
+                trigger: 'hover',
+                placement: 'top',
+                container: 'body',
+                title: 'Breakdown',
+                content: breakdown
+            })
+        }) */
     </script>
 
     <script type="module" src="{{ asset('js/compendium.js') . '?' . time() }}"></script>
