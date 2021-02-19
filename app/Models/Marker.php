@@ -17,4 +17,38 @@ class Marker extends Model
     public function place() {
         return $this->belongsTo('App\Models\Place');
     }
+
+    public function getAllIconsAttribute() {
+        return [
+            'building',
+            'warehouse',
+            'tori-gate',
+            'synagogue',
+            'store',
+            'store-alt',
+            'school',
+            'place-of-worship',
+            'mosque',
+            'monument',
+            'landmark',
+            'kaaba',
+            'industry',
+            'house-damage',
+            'hotel',
+            'hospital',
+            'hospital-alt',
+            'gopuram',
+            'city',
+            'church',
+            'university',
+            'home',
+            'dungeon',
+            'vihara',
+            'igloo',
+            'hospital-user',
+            'clinic-medical',
+            'campground',
+            'archway'
+        ];
+    }
 }

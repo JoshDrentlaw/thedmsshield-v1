@@ -61,12 +61,7 @@ $(document).ready(function () {
         })
     })
 
-    let blueIcon = new L.ExtraMarkers.icon({
-            icon: 'fa-landmark',
-            markerColor: 'blue',
-            // shape: 'square',
-            prefix: 'fa'
-        }),
+    let blueIcon,
         greenIcon = new L.ExtraMarkers.icon({
             icon: 'fa-landmark',
             markerColor: 'green',
@@ -178,6 +173,13 @@ $(document).ready(function () {
     }
 
     function addMarker(marker) {
+        console.log(marker)
+        blueIcon = new L.ExtraMarkers.icon({
+            icon: `fa-${marker.icon}`,
+            markerColor: 'blue',
+            // shape: 'square',
+            prefix: 'fa'
+        })
         return L
             .marker([marker.top, marker.left], {
                 draggable: true,

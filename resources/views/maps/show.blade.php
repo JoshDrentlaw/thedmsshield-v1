@@ -127,6 +127,12 @@ $isDm = $isDm ? 1 : 0;
                 
                     <div class="show-place-body-display<?= $isDm ? ' interactive' : '' ?>" contenteditable="<?= $isDm ? 'true' : 'false' ?>"></div>
                     @if($isDm)
+                        <div class="card mt-3">
+                            <div class="card-body">
+                                <label>Marker Icon</label>
+                                <select class="marker-icon-select"></select>
+                            </div>
+                        </div>
                         <button id="delete-marker" class="mt-3 btn btn-danger btn-block">Delete Marker</button>
                     @endif
                 </div>
