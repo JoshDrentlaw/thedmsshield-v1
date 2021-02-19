@@ -61,25 +61,19 @@ $(document).ready(function () {
         })
     })
 
-    let blue = 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png',
-        blueIcon = new L.Icon({
-            iconUrl: blue,
-            shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-            iconSize: [25, 41],
-            iconAnchor: [12, 41],
-            popupAnchor: [1, -34],
-            shadowSize: [41, 41]
+    let blueIcon = new L.ExtraMarkers.icon({
+            icon: 'fa-landmark',
+            markerColor: 'blue',
+            // shape: 'square',
+            prefix: 'fa'
         }),
-        green = 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
-        greenIcon = new L.Icon({
-            iconUrl: green,
-            shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-            iconSize: [25, 41],
-            iconAnchor: [12, 41],
-            popupAnchor: [1, -34],
-            shadowSize: [41, 41]
+        greenIcon = new L.ExtraMarkers.icon({
+            icon: 'fa-landmark',
+            markerColor: 'green',
+            shape: 'square',
+            prefix: 'fa'
         }),
-        black = 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-black.png',
+        black = '/images/marker-icon-black.png',
         measureOptions = {
             activeColor: $(`.user-map-color[data-user-id="${user_id}"]`).val(),
             completedColor: $(`.user-map-color[data-user-id="${user_id}"]`).val()
@@ -94,10 +88,12 @@ $(document).ready(function () {
 
     sidebar.on('closing', function(e) {
         this.disablePanel('marker')
-        $(`[src="${green}"]`).attr('src', blue)
         if ($('.show-place-change-view-btn').is(':visible')) {
             $('.show-place-change-view-btn').trigger('click')
         }
+        mapMarkers.forEach(mapMarker => {
+            mapMarker.setIcon(blueIcon)
+        })
     })
     sidebar.on('content', function (e) {
         if (e.id !== 'marker') {
@@ -198,7 +194,6 @@ $(document).ready(function () {
                     })
             })
             .on('click', function() {
-                $(`[src="${green}"]`).attr('src', blue)
                 this.setIcon(greenIcon)
                 sidebar.enablePanel('marker')
                 sidebar.open('marker')
@@ -218,7 +213,7 @@ $(document).ready(function () {
                 let marker = res.data
                 sidebar.enablePanel('marker')
                 sidebar.open('marker')
-                mapMarkers.map(mapMarker => {
+                mapMarkers.forEach(mapMarker => {
                     if (mapMarker.options.id == marker.id) {
                         mapMarker.setIcon(greenIcon)
                         setMarkerSidebar(marker, mapMarker)
