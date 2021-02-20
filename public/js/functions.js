@@ -27,6 +27,9 @@ function tinymceInit(id, path, opts) {
         init_instance_callback: function (editor) {
             console.log(id)
             if (id !== 'new') {
+                editor.focus()
+                editor.selection.select(editor.getBody(), true)
+                editor.selection.collapse(false)
                 editor.on('input', function () {
                     if (saveTimeout) {
                         clearTimeout(saveTimeout)
@@ -44,7 +47,7 @@ function tinymceInit(id, path, opts) {
                                     $('.save-time:visible').text(luxon.fromISO(data.updated_at).setZone(iana).toFormat('FF'))
                                 }
                             }) 
-                    }, 5000)
+                    }, 1000)
                 })
             }
         }
