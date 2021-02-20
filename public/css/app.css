@@ -16176,6 +16176,10 @@ a.text-dark:focus {
   border-radius: 6px;
 }
 
+[contenteditable=true].show-place-body-display {
+  padding: 1em;
+}
+
 .leaflet-sidebar-header > [contenteditable=true] {
   border: 1px solid #1861ab;
 }

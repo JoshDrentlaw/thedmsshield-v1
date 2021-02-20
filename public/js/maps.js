@@ -61,14 +61,7 @@ $(document).ready(function () {
         })
     })
 
-    let blueIcon,
-        greenIcon = new L.ExtraMarkers.icon({
-            icon: 'fa-landmark',
-            markerColor: 'green',
-            shape: 'square',
-            prefix: 'fa'
-        }),
-        black = '/images/marker-icon-black.png',
+    let black = '/images/marker-icon-black.png',
         measureOptions = {
             activeColor: $(`.user-map-color[data-user-id="${user_id}"]`).val(),
             completedColor: $(`.user-map-color[data-user-id="${user_id}"]`).val()
@@ -87,7 +80,7 @@ $(document).ready(function () {
             $('.show-place-change-view-btn').trigger('click')
         }
         mapMarkers.forEach(mapMarker => {
-            mapMarker.setIcon(blueIcon)
+            mapMarker.setIcon(mapMarker.options.blueIcon)
         })
     })
     sidebar.on('content', function (e) {
@@ -173,18 +166,25 @@ $(document).ready(function () {
     }
 
     function addMarker(marker) {
-        console.log(marker)
-        blueIcon = new L.ExtraMarkers.icon({
+        let blueIcon = new L.ExtraMarkers.icon({
             icon: `fa-${marker.icon}`,
             markerColor: 'blue',
             // shape: 'square',
+            prefix: 'fa'
+        }),
+        greenIcon = new L.ExtraMarkers.icon({
+            icon: `fa-${marker.icon}`,
+            markerColor: 'green',
+            shape: 'square',
             prefix: 'fa'
         })
         return L
             .marker([marker.top, marker.left], {
                 draggable: true,
                 icon: blueIcon,
-                id: marker.id
+                id: marker.id,
+                blueIcon: blueIcon,
+                greenIcon: greenIcon
             })
             .addTo(map)
             .on('dragend', function(e) {
@@ -195,38 +195,49 @@ $(document).ready(function () {
                         }
                     })
             })
-            .on('click', function() {
-                this.setIcon(greenIcon)
-                sidebar.enablePanel('marker')
-                sidebar.open('marker')
-                setMarkerSidebar(marker)
+            .on('click', function () {
+                if ($('.show-place-change-view-btn').is(':visible')) {
+                    $('.show-place-change-view-btn').trigger('click')
+                }
+                getSelectedMarker(marker.id)
             })
     }
 
-    // ADD MARKERS
+    function setSelectedMarker(marker, setMapMarker = false) {
+        mapMarkers.forEach(mapMarker => {
+            if (mapMarker.options.id == marker.id) {
+                mapMarker.setIcon(mapMarker.options.greenIcon)
+                if (setMapMarker) {
+                    setMapMarker = mapMarker
+                }
+                setMarkerSidebar(marker, setMapMarker)
+            } else {
+                mapMarker.setIcon(mapMarker.options.blueIcon)
+            }
+        })
+        sidebar.enablePanel('marker')
+        sidebar.open('marker')
+    }
+
+    function getSelectedMarker(markerId, mapMarker = false) {
+        axios.get(`/markers/${markerId}`)
+            .then(res => {
+                let marker = res.data
+                setSelectedMarker(marker, mapMarker)
+            })
+    }
+
+    // ANCHOR ADD MARKERS
     markers.map(marker => {
         mapMarkers.push(addMarker(marker))
     })
 
     $(document).on('click', '.marker-list-button', function() {
-        let markerId = $(this).data('marker-id')
-        axios.get(`/markers/${markerId}`)
-            .then(res => {
-                let marker = res.data
-                sidebar.enablePanel('marker')
-                sidebar.open('marker')
-                mapMarkers.forEach(mapMarker => {
-                    if (mapMarker.options.id == marker.id) {
-                        mapMarker.setIcon(greenIcon)
-                        setMarkerSidebar(marker, mapMarker)
-                    } else {
-                        mapMarker.setIcon(blueIcon)
-                    }
-                })
-            })
+        getSelectedMarker($(this).data('marker-id'), true)
     })
 
-    function setMarkerSidebar(marker, mapMarker=false) {
+    function setMarkerSidebar(marker, mapMarker = false) {
+        let icon = marker.icon
         if (mapMarker) {
             let markerLatLng = mapMarker.getLatLng()
             markerLatLng = {
@@ -240,7 +251,64 @@ $(document).ready(function () {
         $('.save-time').text(marker.place.updated_at)
         $('.show-place-name').text(marker.place.name)
         $('.show-place-body-editor, .show-place-body-display').html(marker.place.body)
+
+        $('.marker-icon-select').select2({
+            width: '100%',
+            templateResult: customIconResult,
+            templateSelection: customIconSelection,
+            sorter: function (icons) {
+                icons.sort((a, b) => a.text > b.text ? 1 : -1)
+                return icons
+            }
+        }).val(icon).trigger('change')
     }
+
+    // ANCHOR ICON
+    function customIconSelection(icon) {
+        console.log(icon)
+        if (!icon.id) {
+            return icon.text
+        }
+        return $(`<i class="fa fa-${icon.id} mr-1"></i> <span>${icon.text}</span>`)
+    }
+
+    function customIconResult(icon) {
+        if (!icon.id) {
+            return icon.text
+        }
+        return $(`<i class="fa fa-${icon.id} mr-1"></i> <span>${icon.text}</span>`)
+    }
+
+    $(document).on('select2:select', '.marker-icon-select', function () {
+        let id = $('#marker-id').val(),
+            icon = $(this).val()
+
+        axios.put(`/markers/${id}`, {type: 'icon', icon})
+            .then(res => {
+                if (res.status === 200) {
+                    pnotify.success({ title: 'Map marker icon updated!' })
+                    mapMarkers.forEach(marker => {
+                        if (marker.options.id == id) {
+                            let blueIcon = new L.ExtraMarkers.icon({
+                                icon: `fa-${icon}`,
+                                markerColor: 'blue',
+                                // shape: 'square',
+                                prefix: 'fa'
+                            }),
+                            greenIcon = new L.ExtraMarkers.icon({
+                                icon: `fa-${icon}`,
+                                markerColor: 'green',
+                                shape: 'square',
+                                prefix: 'fa'
+                            })
+                            marker.options.blueIcon = blueIcon
+                            marker.options.greenIcon = greenIcon
+                        }
+                    })
+                    getSelectedMarker(id)
+                }
+            })
+    })
 
     /* $('.show-place-body-display').on('click', function () {
         let marker = markers[$('#marker-index').val()]

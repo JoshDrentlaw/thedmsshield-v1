@@ -107,6 +107,10 @@ class MarkersController extends Controller
                     'body' => $request['body'],
                     'name' => $request['name']
                 ]);
+            case 'icon':
+                return Marker::where('id', $marker->id)->update([
+                    'icon' => $request['icon']
+                ]);
         }
     }
 

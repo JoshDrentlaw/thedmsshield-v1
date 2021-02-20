@@ -1,5 +1,6 @@
 <?php
 use App\Debug\Debug;
+use App\Models\Marker;
 $isDm = $isDm ? 1 : 0;
 ?>
 @extends('layouts.app')
@@ -130,7 +131,17 @@ $isDm = $isDm ? 1 : 0;
                         <div class="card mt-3">
                             <div class="card-body">
                                 <label>Marker Icon</label>
-                                <select class="marker-icon-select"></select>
+                                <select class="marker-icon-select">
+                                    <?php
+                                        $marker = new Marker;
+                                    ?>
+                                    @foreach($marker->all_icons as $icon)
+                                        <?php
+                                            $text = Str::title(str_replace('-', ' ', $icon));
+                                        ?>
+                                        <option value="{{$icon}}">{{$text}}</option>
+                                    @endforeach
+                                </select>
                             </div>
                         </div>
                         <button id="delete-marker" class="mt-3 btn btn-danger btn-block">Delete Marker</button>

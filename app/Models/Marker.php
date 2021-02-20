@@ -22,7 +22,7 @@ class Marker extends Model
         return [
             'building',
             'warehouse',
-            'tori-gate',
+            'torii-gate',
             'synagogue',
             'store',
             'store-alt',
