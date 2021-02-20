@@ -61,25 +61,7 @@ $(document).ready(function () {
         })
     })
 
-    let blue = 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png',
-        blueIcon = new L.Icon({
-            iconUrl: blue,
-            shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-            iconSize: [25, 41],
-            iconAnchor: [12, 41],
-            popupAnchor: [1, -34],
-            shadowSize: [41, 41]
-        }),
-        green = 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
-        greenIcon = new L.Icon({
-            iconUrl: green,
-            shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-            iconSize: [25, 41],
-            iconAnchor: [12, 41],
-            popupAnchor: [1, -34],
-            shadowSize: [41, 41]
-        }),
-        black = 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-black.png',
+    let black = '/images/marker-icon-black.png',
         measureOptions = {
             activeColor: $(`.user-map-color[data-user-id="${user_id}"]`).val(),
             completedColor: $(`.user-map-color[data-user-id="${user_id}"]`).val()
@@ -94,10 +76,12 @@ $(document).ready(function () {
 
     sidebar.on('closing', function(e) {
         this.disablePanel('marker')
-        $(`[src="${green}"]`).attr('src', blue)
         if ($('.show-place-change-view-btn').is(':visible')) {
             $('.show-place-change-view-btn').trigger('click')
         }
+        mapMarkers.forEach(mapMarker => {
+            mapMarker.setIcon(mapMarker.options.mainIcon)
+        })
     })
     sidebar.on('content', function (e) {
         if (e.id !== 'marker') {
@@ -182,54 +166,95 @@ $(document).ready(function () {
     }
 
     function addMarker(marker) {
+        let mainIcon = new L.ExtraMarkers.icon({
+            icon: `fa-${marker.icon}`,
+            markerColor: marker.color,
+            shape: marker.shape,
+            prefix: 'fa',
+            svg: true
+        }),
+        selectedIcon = new L.ExtraMarkers.icon({
+            icon: `fa-${marker.icon}`,
+            markerColor: marker.selected_color,
+            shape: marker.selected_shape,
+            prefix: 'fa',
+            svg: true
+        })
         return L
-            .marker([marker.top, marker.left], {
+            .marker([marker.lat, marker.lng], {
                 draggable: true,
-                icon: blueIcon,
-                id: marker.id
+                icon: mainIcon,
+                id: marker.id,
+                mainIcon: mainIcon,
+                selectedIcon: selectedIcon
             })
             .addTo(map)
-            .on('dragend', function(e) {
-                axios.put(`/markers/${marker.id}`, {type: 'movement', top: e.target._latlng.lat, left: e.target._latlng.lng})
+            .on('dragend', function (e) {
+                const controller = Object.prototype.hasOwnProperty.call(marker, 'controller') ? marker.controller : `/markers/${marker.id}`
+                axios.put(controller, {type: 'movement', lat: e.target._latlng.lat, lng: e.target._latlng.lng, map_id})
                     .then(res => {
                         if (res.status === 200) {
                             pnotify.success({title: 'Map marker position updated!'})
                         }
                     })
             })
-            .on('click', function() {
-                $(`[src="${green}"]`).attr('src', blue)
-                this.setIcon(greenIcon)
-                sidebar.enablePanel('marker')
-                sidebar.open('marker')
-                setMarkerSidebar(marker)
+            .on('click', function () {
+                if ($('.show-place-change-view-btn').is(':visible')) {
+                    $('.show-place-change-view-btn').trigger('click')
+                }
+                getSelectedMarker(marker.id)
             })
     }
 
-    // ADD MARKERS
+    function setSelectedMarker(marker, setMapMarker = false) {
+        mapMarkers.forEach(mapMarker => {
+            if (mapMarker.options.id == marker.id) {
+                mapMarker.setIcon(mapMarker.options.selectedIcon)
+                if (setMapMarker) {
+                    setMapMarker = mapMarker
+                }
+                setMarkerSidebar(marker, setMapMarker)
+            } else {
+                mapMarker.setIcon(mapMarker.options.mainIcon)
+            }
+        })
+        sidebar.enablePanel('marker')
+        sidebar.open('marker')
+    }
+
+    function getSelectedMarker(markerId, mapMarker = false) {
+        axios.get(`/markers/${markerId}`)
+            .then(res => {
+                let marker = res.data
+                setSelectedMarker(marker, mapMarker)
+            })
+    }
+
+    // ANCHOR ADD MARKERS
+    let playerMarker = addMarker({
+        id: mapModel.id,
+        icon: mapModel.player_marker_icon,
+        shape: mapModel.player_marker_shape,
+        selected_shape: mapModel.player_marker_selected_shape,
+        color: mapModel.player_marker_color,
+        selected_color: mapModel.player_marker_selected_color,
+        lat: mapModel.player_marker_lat,
+        lng: mapModel.player_marker_lng,
+        controller: `/maps/${mapModel.id}/movement`
+    })
+
+    playerMarker.off('click')
+
     markers.map(marker => {
         mapMarkers.push(addMarker(marker))
     })
 
     $(document).on('click', '.marker-list-button', function() {
-        let markerId = $(this).data('marker-id')
-        axios.get(`/markers/${markerId}`)
-            .then(res => {
-                let marker = res.data
-                sidebar.enablePanel('marker')
-                sidebar.open('marker')
-                mapMarkers.map(mapMarker => {
-                    if (mapMarker.options.id == marker.id) {
-                        mapMarker.setIcon(greenIcon)
-                        setMarkerSidebar(marker, mapMarker)
-                    } else {
-                        mapMarker.setIcon(blueIcon)
-                    }
-                })
-            })
+        getSelectedMarker($(this).data('marker-id'), true)
     })
 
-    function setMarkerSidebar(marker, mapMarker=false) {
+    function setMarkerSidebar(marker, mapMarker = false) {
+        let icon = marker.icon
         if (mapMarker) {
             let markerLatLng = mapMarker.getLatLng()
             markerLatLng = {
@@ -243,7 +268,117 @@ $(document).ready(function () {
         $('.save-time').text(marker.place.updated_at)
         $('.show-place-name').text(marker.place.name)
         $('.show-place-body-editor, .show-place-body-display').html(marker.place.body)
+
+        $('#marker-icon-select').select2({
+            width: '100%',
+            templateResult: customIconResult,
+            templateSelection: customIconSelection,
+            sorter: function (icons) {
+                icons.sort((a, b) => a.text > b.text ? 1 : -1)
+                return icons
+            }
+        }).val(icon).trigger('change')
     }
+
+    // ANCHOR ICON
+    $('#player-marker-icon-select').select2({
+        width: '100%',
+        templateResult: customIconResult,
+        templateSelection: customIconSelection,
+        sorter: function (icons) {
+            icons.sort((a, b) => a.text > b.text ? 1 : -1)
+            return icons
+        }
+    }).val(mapModel.player_marker_icon).trigger('change')
+
+    $(document).on('select2:select', '#player-marker-icon-select', function () {
+        updatePlayerMarkerIcon()
+    })
+
+    $(document).on('change', '#player-marker-color', function () {
+        updatePlayerMarkerIcon()
+    })
+
+    $(document).on('change', '#player-marker-selected_color', function () {
+        updatePlayerMarkerIcon()
+    })
+
+    function customIconSelection(icon) {
+        if (!icon.id) {
+            return icon.text
+        }
+        return $(`<i class="fa fa-${icon.id} mr-1"></i> <span>${icon.text}</span>`)
+    }
+
+    function customIconResult(icon) {
+        if (!icon.id) {
+            return icon.text
+        }
+        return $(`<i class="fa fa-${icon.id} mr-1"></i> <span>${icon.text}</span>`)
+    }
+
+    function updatePlayerMarkerIcon() {
+        const id = mapModel.id,
+            icon = $('#player-marker-icon-select').val(),
+            color = $('#player-marker-color').val()/* ,
+            selected_color = $('#player-marker-selected_color').val() */
+
+        axios.put(`/maps/${id}/player_marker`, { icon, color, selected_color: color, map_id })
+            .then(res => {
+                let mainIcon = new L.ExtraMarkers.icon({
+                        icon: `fa-${icon}`,
+                        markerColor: color,
+                        shape: 'star',
+                        prefix: 'fa',
+                        svg: true
+                    })/* ,
+                    selectedIcon = new L.ExtraMarkers.icon({
+                        icon: `fa-${icon}`,
+                        markerColor: color,
+                        shape: 'star',
+                        prefix: 'fa',
+                        svg: true
+                    }) */
+                playerMarker.options.mainIcon = mainIcon
+                // playerMarker.options.selectedIcon = selec                           tedIcon
+                playerMarker.setIcon(playerMarker.options.mainIcon)
+            })
+    }
+
+    function updateMarkerIcon(id, icon) {
+        mapMarkers.forEach(marker => {
+            if (marker.options.id == id) {
+                let mainIcon = new L.ExtraMarkers.icon({
+                        icon: `fa-${icon}`,
+                        markerColor: 'blue',
+                        shape: 'circle',
+                        prefix: 'fa'
+                    }),
+                    selectedIcon = new L.ExtraMarkers.icon({
+                        icon: `fa-${icon}`,
+                        markerColor: 'green',
+                        shape: 'square',
+                        prefix: 'fa'
+                    })
+                marker.options.mainIcon = mainIcon
+                marker.options.selectedIcon = selectedIcon
+            }
+        })
+    }
+
+    $(document).on('select2:select', '#marker-icon-select', function () {
+        let id = $('#marker-id').val(),
+            icon = $(this).val()
+
+        axios.put(`/markers/${id}`, {type: 'icon', icon, map_id})
+            .then(res => {
+                if (res.status === 200) {
+                    pnotify.success({ title: 'Map marker icon updated!' })
+                    updateMarkerIcon(id, icon)
+                    getSelectedMarker(id)
+                }
+            })
+    })
 
     /* $('.show-place-body-display').on('click', function () {
         let marker = markers[$('#marker-index').val()]
@@ -339,6 +474,33 @@ $(document).ready(function () {
         map.off('contextmenu', newMarkerCancel)
         map.off('mousemove', newMarkerMouseMove)
     }
+
+    campaignMapChannel.listen('MarkerUpdate', (e) => {
+        if (e.markerUpdate.marker_type === 'map') {
+            let marker = mapMarkers.filter(m => m.options.id == e.markerUpdate.id)[0]
+            if (e.markerUpdate.update_type === 'movement') {
+                marker.setLatLng(L.latLng(e.markerUpdate.lat, e.markerUpdate.lng))
+            } else if (e.markerUpdate.update_type === 'icon') {
+                updateMarkerIcon(e.markerUpdate.id, e.markerUpdate.icon)
+                marker = mapMarkers.filter(m => m.options.id == e.markerUpdate.id)[0]
+                marker.setIcon(marker.options.mainIcon)
+            }
+        } else if (e.markerUpdate.marker_type === 'player') {
+            if (e.markerUpdate.update_type === 'movement') {
+                playerMarker.setLatLng(L.latLng(e.markerUpdate.lat, e.markerUpdate.lng))
+            } else if (e.markerUpdate.update_type === 'player_marker') {
+                let mainIcon = new L.ExtraMarkers.icon({
+                        icon: `fa-${e.markerUpdate.icon}`,
+                        markerColor: e.markerUpdate.color,
+                        shape: 'star',
+                        prefix: 'fa',
+                        svg: true
+                    })
+                playerMarker.options.mainIcon = mainIcon
+                playerMarker.setIcon(playerMarker.options.mainIcon)
+            }
+        }
+    })
 
     $('#new-marker').on('click', function(e) {
         addMapMarker(e)
