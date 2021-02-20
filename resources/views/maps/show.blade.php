@@ -544,18 +544,6 @@ $isDm = $isDm ? 1 : 0;
             $ind.toggleClass('badge-success badge-danger')
             $ind.text(status)
         }
-
-        /* $('.breakdown').each(function () {
-            let breakdown = $(this).children().html()
-            $(this).parent().find('[data-toggle="popover"]').popover({
-                html: true,
-                trigger: 'hover',
-                placement: 'top',
-                container: 'body',
-                title: 'Breakdown',
-                content: breakdown
-            })
-        }) */
     </script>
 
     <script type="module" src="{{ asset('js/compendium.js') . '?' . time() }}"></script>

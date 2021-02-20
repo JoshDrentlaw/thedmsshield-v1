@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use App\Debug\Debug;
+use App\Events\MarkerUpdate;
 use App\Models\Map;
 use App\Models\Marker;
 use App\Models\Place;
@@ -96,21 +97,38 @@ class MarkersController extends Controller
      */
     public function update(Request $request, Marker $marker)
     {
+        $markerUpdate = collect([
+            'map_id' => $request['map_id'],
+            'id' => $marker->id,
+            'update_type' => $request['type'],
+            'marker_type' => 'map'
+        ]);
         switch ($request['type']) {
             case 'movement':
-                return Marker::where('id', $marker->id)->update([
+                Marker::where('id', $marker->id)->update([
                     'lat' => $request['lat'],
                     'lng' => $request['lng']
                 ]);
+                $markerUpdate->put('lat', $request['lat']);
+                $markerUpdate->put('lng', $request['lng']);
+                broadcast(new MarkerUpdate($markerUpdate))->toOthers();
+                return true;
             case 'note':
-                return Place::where('id', $marker->id)->update([
+                Place::where('id', $marker->id)->update([
                     'body' => $request['body'],
                     'name' => $request['name']
                 ]);
+                $markerUpdate->put('body', $request['body']);
+                $markerUpdate->put('name', $request['name']);
+                // broadcast(new MarkerUpdate($markerUpdate))->toOthers();
+                return true;
             case 'icon':
-                return Marker::where('id', $marker->id)->update([
+                Marker::where('id', $marker->id)->update([
                     'icon' => $request['icon']
                 ]);
+                $markerUpdate->put('icon', $request['icon']);
+                broadcast(new MarkerUpdate($markerUpdate))->toOthers();
+                return true;
         }
     }
 

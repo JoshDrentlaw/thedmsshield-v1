@@ -18,6 +18,7 @@ use App\Models\MapChatMessage;
 
 use App\Events\MapPinged;
 use App\Events\UserMapUpdate;
+use App\Events\MarkerUpdate;
 
 class MapsController extends Controller
 {
@@ -135,6 +136,12 @@ class MapsController extends Controller
      */
     public function update(Request $request, $id, $type)
     {
+        $markerUpdate = collect([
+            'map_id' => $request['map_id'],
+            'id' => $request['map_id'],
+            'update_type' => $type,
+            'marker_type' => 'player'
+        ]);
         switch ($type) {
             case 'image':
                 if ($request->hasFile('new-map-image')) {
@@ -165,22 +172,25 @@ class MapsController extends Controller
                 Map::where('id', $id)->update(['map_name' => $request->map_name, 'map_url' => $map_url]);
                 return ['status' => 200, 'message' => 'Map name updated', 'map_url' => $map_url];
             case 'movement':
-                return Map::where('id', $id)->update([
+                Map::where('id', $id)->update([
                     'player_marker_lat' => $request['lat'],
                     'player_marker_lng' => $request['lng']
                 ]);
-            case 'icon':
-                return Map::where('id', $id)->update([
-                    'player_marker_icon' => $request['icon']
-                ]);
-            case 'color':
-                return Map::where('id', $id)->update([
-                    'player_marker_color' => $request['color']
-                ]);
-            case 'selected_color':
-                return Map::where('id', $id)->update([
+                $markerUpdate->put('lat', $request['lat']);
+                $markerUpdate->put('lng', $request['lng']);
+                broadcast(new MarkerUpdate($markerUpdate))->toOthers();
+                return true;
+            case 'player_marker':
+                Map::where('id', $id)->update([
+                    'player_marker_icon' => $request['icon'],
+                    'player_marker_color' => $request['color'],
                     'player_marker_selected_color' => $request['selected_color']
                 ]);
+                $markerUpdate->put('icon', $request['icon']);
+                $markerUpdate->put('color', $request['color']);
+                $markerUpdate->put('selected_color', $request['selected_color']);
+                broadcast(new MarkerUpdate($markerUpdate))->toOthers();
+                return true;
         }
     }
 

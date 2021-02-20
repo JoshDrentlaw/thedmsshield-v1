@@ -191,7 +191,7 @@ $(document).ready(function () {
             .addTo(map)
             .on('dragend', function (e) {
                 const controller = Object.prototype.hasOwnProperty.call(marker, 'controller') ? marker.controller : `/markers/${marker.id}`
-                axios.put(controller, {type: 'movement', lat: e.target._latlng.lat, lng: e.target._latlng.lng})
+                axios.put(controller, {type: 'movement', lat: e.target._latlng.lat, lng: e.target._latlng.lng, map_id})
                     .then(res => {
                         if (res.status === 200) {
                             pnotify.success({title: 'Map marker position updated!'})
@@ -292,15 +292,15 @@ $(document).ready(function () {
     }).val(mapModel.player_marker_icon).trigger('change')
 
     $(document).on('select2:select', '#player-marker-icon-select', function () {
-        updatePlayerMarkerIcon('icon', $(this).val())
+        updatePlayerMarkerIcon()
     })
 
     $(document).on('change', '#player-marker-color', function () {
-        updatePlayerMarkerIcon('color', $(this).val())
+        updatePlayerMarkerIcon()
     })
 
     $(document).on('change', '#player-marker-selected_color', function () {
-        updatePlayerMarkerIcon('selected_color', $(this).val())
+        updatePlayerMarkerIcon()
     })
 
     function customIconSelection(icon) {
@@ -317,27 +317,30 @@ $(document).ready(function () {
         return $(`<i class="fa fa-${icon.id} mr-1"></i> <span>${icon.text}</span>`)
     }
 
-    function updatePlayerMarkerIcon(type, value) {
-        const id = mapModel.id
+    function updatePlayerMarkerIcon() {
+        const id = mapModel.id,
+            icon = $('#player-marker-icon-select').val(),
+            color = $('#player-marker-color').val()/* ,
+            selected_color = $('#player-marker-selected_color').val() */
 
-        axios.put(`/maps/${id}/${type}`, { [type]: value })
+        axios.put(`/maps/${id}/player_marker`, { icon, color, selected_color: color, map_id })
             .then(res => {
                 let mainIcon = new L.ExtraMarkers.icon({
-                    icon: `fa-${$('#player-marker-icon-select').val()}`,
-                    markerColor: $('#player-marker-color').val(),
-                    shape: 'star',
-                    prefix: 'fa',
-                    svg: true
-                }),
-                selectedIcon = new L.ExtraMarkers.icon({
-                    icon: `fa-${$('#player-marker-icon-select').val()}`,
-                    markerColor: $('#player-marker-selected-color').val(),
-                    shape: 'star',
-                    prefix: 'fa',
-                    svg: true
-                })
+                        icon: `fa-${icon}`,
+                        markerColor: color,
+                        shape: 'star',
+                        prefix: 'fa',
+                        svg: true
+                    })/* ,
+                    selectedIcon = new L.ExtraMarkers.icon({
+                        icon: `fa-${icon}`,
+                        markerColor: color,
+                        shape: 'star',
+                        prefix: 'fa',
+                        svg: true
+                    }) */
                 playerMarker.options.mainIcon = mainIcon
-                playerMarker.options.selectedIcon = selectedIcon
+                // playerMarker.options.selectedIcon = selec                           tedIcon
                 playerMarker.setIcon(playerMarker.options.mainIcon)
             })
     }
@@ -346,28 +349,28 @@ $(document).ready(function () {
         mapMarkers.forEach(marker => {
             if (marker.options.id == id) {
                 let mainIcon = new L.ExtraMarkers.icon({
-                    icon: `fa-${icon}`,
-                    markerColor: marker.color,
-                    shape: marker.shape,
-                    prefix: 'fa'
-                }),
-                selectedIcon = new L.ExtraMarkers.icon({
-                    icon: `fa-${icon}`,
-                    markerColor: marker.selected_color,
-                    shape: marker.selected_shape,
-                    prefix: 'fa'
-                })
+                        icon: `fa-${icon}`,
+                        markerColor: 'blue',
+                        shape: 'circle',
+                        prefix: 'fa'
+                    }),
+                    selectedIcon = new L.ExtraMarkers.icon({
+                        icon: `fa-${icon}`,
+                        markerColor: 'green',
+                        shape: 'square',
+                        prefix: 'fa'
+                    })
                 marker.options.mainIcon = mainIcon
                 marker.options.selectedIcon = selectedIcon
             }
         })
     }
 
-    $(document).on('select2:select', '.marker-icon-select', function () {
+    $(document).on('select2:select', '#marker-icon-select', function () {
         let id = $('#marker-id').val(),
             icon = $(this).val()
 
-        axios.put(`/markers/${id}`, {type: 'icon', icon})
+        axios.put(`/markers/${id}`, {type: 'icon', icon, map_id})
             .then(res => {
                 if (res.status === 200) {
                     pnotify.success({ title: 'Map marker icon updated!' })
@@ -471,6 +474,33 @@ $(document).ready(function () {
         map.off('contextmenu', newMarkerCancel)
         map.off('mousemove', newMarkerMouseMove)
     }
+
+    campaignMapChannel.listen('MarkerUpdate', (e) => {
+        if (e.markerUpdate.marker_type === 'map') {
+            let marker = mapMarkers.filter(m => m.options.id == e.markerUpdate.id)[0]
+            if (e.markerUpdate.update_type === 'movement') {
+                marker.setLatLng(L.latLng(e.markerUpdate.lat, e.markerUpdate.lng))
+            } else if (e.markerUpdate.update_type === 'icon') {
+                updateMarkerIcon(e.markerUpdate.id, e.markerUpdate.icon)
+                marker = mapMarkers.filter(m => m.options.id == e.markerUpdate.id)[0]
+                marker.setIcon(marker.options.mainIcon)
+            }
+        } else if (e.markerUpdate.marker_type === 'player') {
+            if (e.markerUpdate.update_type === 'movement') {
+                playerMarker.setLatLng(L.latLng(e.markerUpdate.lat, e.markerUpdate.lng))
+            } else if (e.markerUpdate.update_type === 'player_marker') {
+                let mainIcon = new L.ExtraMarkers.icon({
+                        icon: `fa-${e.markerUpdate.icon}`,
+                        markerColor: e.markerUpdate.color,
+                        shape: 'star',
+                        prefix: 'fa',
+                        svg: true
+                    })
+                playerMarker.options.mainIcon = mainIcon
+                playerMarker.setIcon(playerMarker.options.mainIcon)
+            }
+        }
+    })
 
     $('#new-marker').on('click', function(e) {
         addMapMarker(e)
