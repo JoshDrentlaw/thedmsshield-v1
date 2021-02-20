@@ -156,7 +156,7 @@ $(document).ready(function () {
                 } while (((mapWidth * Math.pow(2, i.value())) + spacer) < screenWidth)
             }
         } else {
-            if ((mapWidth * Math.pow(2, i.subtract(0.05).value()) + spacer) < screenWidth) {
+            if ((mapWidth * Math.pow(2, i.add(0.05).value()) + spacer) < screenWidth) {
                 // ZOOM IN
                 do {
                     map.setView([maxLatBound / 2, maxLngBound / 2], i.value())
@@ -581,29 +581,36 @@ $(document).ready(function () {
             isPinging = true
             axios.post('/maps/map_ping', { status: 'show', lat, lng, map_id, user_id })
                 .then(res => {
-                    showMapPing(res.data.ping)
-                    removeMapPing()
+                    let pingPromise = new Promise((resolve, rej) => {
+                        resolve(showMapPing(res.data.ping))
+                    })
+                    pingPromise.then(res => {
+                        removeMapPing()
+                    })
                 })
         }
-    }).on('mouseup', function () {
+    })/* .on('mouseup', function () {
         setTimeout(function () {
             mapDrag = false
         }, 100)
     }).on('movestart', function () {
         mapDrag = true
-    })
+    }) */
 
     campaignMapChannel.listen('MapPinged', (e) => {
         if (e.ping.status === 'show') {
             showMapPing(e.ping)
         } else if (e.ping.status === 'remove') {
-            const thisPing = pingMarkers.shift()
-            thisPing.remove(map)
+            console.log(pingMarkers)
+            if (pingMarkers.length > 0) {
+                const thisPing = pingMarkers.shift()
+                thisPing.remove(map)
+                console.log(pingMarkers)
+            }
         }
     })
 
     function showMapPing(ping) {
-        console.log(ping)
         const userMapColor = $(`.user-map-color[data-user-id="${ping.user_id}"]`).val(),
             pingIcon = L.divIcon({
                 className: 'outer-ping-container',
@@ -621,19 +628,20 @@ $(document).ready(function () {
     }
 
     function removeMapPing(e) {
-        // if (e.originalEvent.button === 2) {
-            setTimeout(function () {
-                if (pingMarkers.length > 0) {
-                    const thisPing = pingMarkers.shift()
-                    thisPing.remove(map)
-                }
-                if (isPinging) {
-                    isPinging = false
-                    $('#map-container').css('cursor', 'grab')
-                    axios.post('/maps/map_ping', { status: 'remove', map_id })
-                }
-            }, 5000)
-        // }
+        console.log(pingMarkers)
+        setTimeout(function () {
+            if (pingMarkers.length > 0) {
+                $('#map-container').css('cursor', 'grab')
+                axios.post('/maps/map_ping', { status: 'remove', map_id })
+                    .then(res => {
+                        const thisPing = pingMarkers.shift()
+                        thisPing.remove(map)
+                    })
+            }
+            if (isPinging) {
+                isPinging = false
+            }
+        }, 5000)
     }
 
     // ANCHOR TOOLBAR
