@@ -72,6 +72,8 @@ class MapsController extends Controller
         list($width, $height) = getimagesize($image);
         $map->width = $width;
         $map->height = $height;
+        $map->player_marker_lat = $height / 2;
+        $map->player_marker_lng = $width / 2;
         $map->save();
         $isDm = true;
         $html = view('components.map-list', compact('map', 'isDm'))->render();
@@ -162,6 +164,23 @@ class MapsController extends Controller
                 Cloudder::rename($map->public_id, $public_id);
                 Map::where('id', $id)->update(['map_name' => $request->map_name, 'map_url' => $map_url]);
                 return ['status' => 200, 'message' => 'Map name updated', 'map_url' => $map_url];
+            case 'movement':
+                return Map::where('id', $id)->update([
+                    'player_marker_lat' => $request['lat'],
+                    'player_marker_lng' => $request['lng']
+                ]);
+            case 'icon':
+                return Map::where('id', $id)->update([
+                    'player_marker_icon' => $request['icon']
+                ]);
+            case 'color':
+                return Map::where('id', $id)->update([
+                    'player_marker_color' => $request['color']
+                ]);
+            case 'selected_color':
+                return Map::where('id', $id)->update([
+                    'player_marker_selected_color' => $request['selected_color']
+                ]);
         }
     }
 

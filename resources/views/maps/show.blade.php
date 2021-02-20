@@ -17,6 +17,7 @@ $isDm = $isDm ? 1 : 0;
                     <li><a href="#marker" role="tab" class="sidebar-tab-link"><i class="fa fa-map-marker-alt"></i></a></li>
                     <li><a href="#compendium" role="tab" class="sidebar-tab-link"><i class="fa fa-book"></i></a></li>
                     <li><a href="#die-rollers" role="tab" class="sidebar-tab-link"><i class="fa fa-dice-d20"></i></a></li>
+                    <li><a href="#map-settings" role="tab" class="sidebar-tab-link"><i class="fa fa-cog"></i></a></li>
                 </ul>
                 <!-- bottom aligned tabs
                 <ul role="tablist">
@@ -53,7 +54,7 @@ $isDm = $isDm ? 1 : 0;
                                             </h6>
                                             <div class="row">
                                                 <div class="col-12">
-                                                    <input type="color" data-user-id="{{$campaign->dm->user->id}}" class="user-map-color" value="{{$campaign->dm->user->map_color}}">
+                                                    <input type="color" data-user-id="{{$campaign->dm->user->id}}" class="user-map-color map-color-picker" value="{{$campaign->dm->user->map_color}}">
                                                 </div>
                                             </div>
                                         </div>
@@ -75,7 +76,7 @@ $isDm = $isDm ? 1 : 0;
                                                 </h6>
                                                 <div class="row">
                                                     <div class="col-12">
-                                                        <input type="color" data-user-id="{{$player->user->id}}" class="user-map-color" value="{{$player->user->map_color}}">
+                                                        <input type="color" data-user-id="{{$player->user->id}}" class="user-map-color map-color-picker" value="{{$player->user->map_color}}">
                                                     </div>
                                                 </div>
                                             </div>
@@ -131,11 +132,11 @@ $isDm = $isDm ? 1 : 0;
                         <div class="card mt-3">
                             <div class="card-body">
                                 <label>Marker Icon</label>
-                                <select class="marker-icon-select">
+                                <select id="marker-icon-select">
                                     <?php
                                         $marker = new Marker;
                                     ?>
-                                    @foreach($marker->all_icons as $icon)
+                                    @foreach($marker->place_icons as $icon)
                                         <?php
                                             $text = Str::title(str_replace('-', ' ', $icon));
                                         ?>
@@ -269,6 +270,66 @@ $isDm = $isDm ? 1 : 0;
                         </div>
                     </div>
                 </div>
+                {{-- MAP SETTINGS --}}
+                @if($isDm)
+                    <div class="leaflet-sidebar-pane" id="map-settings">
+                        <h1 class="leaflet-sidebar-header d-flex align-items-center justify-content-between">
+                            Map Settings
+                            <div class="leaflet-sidebar-close">
+                                <i class="fa fa-caret-left"></i>
+                            </div>
+                        </h1>
+                        <div class="py-3">
+                            <div class="row mb-2">
+                                <div class="col-sm-12">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <h5 class="card-title">Map Bound Options</h5>
+                                            <form id="bounds-form">
+                                                <div class="form-group">
+                                                    <label for="lat-bound">Lat bound</label>
+                                                    <input type="text" class="form-control" id="lat-bound" name="latBound" value="{{$map->height}}">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="lng-bound">Lng bound</label>
+                                                    <input type="text" class="form-control" id="lng-bound" name="lngBound" value="{{$map->width}}">
+                                                </div>
+                                                <button type="submit" class="btn btn-primary">Submit</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                    <div class="card mt-3">
+                                        <div class="card-body">
+                                            <h5 class="card-title">Player Marker Options</h5>
+                                            <div class="form-group">
+                                                <label>Player Marker Icon</label>
+                                                <select id="player-marker-icon-select">
+                                                    <?php
+                                                        $marker = new Marker;
+                                                    ?>
+                                                    @foreach($marker->player_icons as $icon)
+                                                        <?php
+                                                            $text = Str::title(str_replace('-', ' ', $icon));
+                                                        ?>
+                                                        <option value="{{$icon}}">{{$text}}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Player Marker Color</label>
+                                                <input type="color" class="map-color-picker" id="player-marker-color" value="{{$map->player_marker_color}}">
+                                            </div>
+                                            <div class="form-group" style="display:none;">
+                                                <label>Player Marker Selected Color</label>
+                                                <input type="color" class="map-color-picker" id="player-marker-selected-color" value="{{$map->player_marker_selected_color}}">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                @endif
             </div>
         </div>
     </div>

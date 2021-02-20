@@ -99,8 +99,8 @@ class MarkersController extends Controller
         switch ($request['type']) {
             case 'movement':
                 return Marker::where('id', $marker->id)->update([
-                    'top' => $request['top'],
-                    'left' => $request['left']
+                    'lat' => $request['lat'],
+                    'lng' => $request['lng']
                 ]);
             case 'note':
                 return Place::where('id', $marker->id)->update([

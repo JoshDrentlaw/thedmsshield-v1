@@ -16447,7 +16447,8 @@ a.text-dark:focus {
   overflow-wrap: break-word;
 }
 
-.user-map-color {
+.map-color-picker {
+  display: block;
   background-color: white;
   border-radius: 4px;
   border-color: #b1b1b1;
