@@ -139,19 +139,30 @@ $(document).ready(function () {
         // 2^0  = 1
         // 2^1  = 2
         let i = numeral(0),
-            spacer = 94 * 2
-        if ((mapWidth * Math.pow(2, i.subtract(0.05).value()) + spacer) > screenWidth) {
-            // ZOOM OUT
-            do {
-                map.setView([maxLatBound / 2, maxLngBound / 2], i.value())
-                i.subtract(0.05)
-            } while (((mapWidth * Math.pow(2, i.value())) + spacer) > screenWidth)
-        } else if ((mapWidth * Math.pow(2, i.add(0.05).value()) + spacer) < screenWidth) {
-            // ZOOM IN
-            do {
-                map.setView([maxLatBound / 2, maxLngBound / 2], i.value())
-                i.add(0.05)
-            } while (((mapWidth * Math.pow(2, i.value())) + spacer) < screenWidth)
+            spacer = 94 * 0
+        
+        if (screenWidth > 750) {
+            if ((mapWidth * Math.pow(2, i.subtract(0.05).value()) + spacer) > screenWidth) {
+                // ZOOM OUT
+                do {
+                    map.setView([maxLatBound / 2, maxLngBound / 2], i.value())
+                    i.subtract(0.05)
+                } while (((mapWidth * Math.pow(2, i.value())) + spacer) > screenWidth)
+            } else if ((mapWidth * Math.pow(2, i.add(0.05).value()) + spacer) < screenWidth) {
+                // ZOOM IN
+                do {
+                    map.setView([maxLatBound / 2, maxLngBound / 2], i.value())
+                    i.add(0.05)
+                } while (((mapWidth * Math.pow(2, i.value())) + spacer) < screenWidth)
+            }
+        } else {
+            if ((mapWidth * Math.pow(2, i.subtract(0.05).value()) + spacer) < screenWidth) {
+                // ZOOM IN
+                do {
+                    map.setView([maxLatBound / 2, maxLngBound / 2], i.value())
+                    i.add(0.05)
+                } while (((mapWidth * Math.pow(2, i.value())) + spacer) < screenWidth)
+            }
         }
     }
 

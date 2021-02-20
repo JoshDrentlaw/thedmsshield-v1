@@ -17,7 +17,9 @@ $isDm = $isDm ? 1 : 0;
                     <li><a href="#marker" role="tab" class="sidebar-tab-link"><i class="fa fa-map-marker-alt"></i></a></li>
                     <li><a href="#compendium" role="tab" class="sidebar-tab-link"><i class="fa fa-book"></i></a></li>
                     <li><a href="#die-rollers" role="tab" class="sidebar-tab-link"><i class="fa fa-dice-d20"></i></a></li>
+                    @if($isDm)
                     <li><a href="#map-settings" role="tab" class="sidebar-tab-link"><i class="fa fa-cog"></i></a></li>
+                    @endif
                 </ul>
                 <!-- bottom aligned tabs
                 <ul role="tablist">
