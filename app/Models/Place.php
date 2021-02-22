@@ -8,6 +8,10 @@ class Place extends Model
 {
     protected $dateFormat = 'c';
 
+    protected $fillable = [
+        'name'
+    ];
+
     public function campaign() {
         return $this->belongsTo('App\Models\Campaign');
     }

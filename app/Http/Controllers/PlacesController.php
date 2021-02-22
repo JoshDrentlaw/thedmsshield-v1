@@ -143,7 +143,7 @@ class PlacesController extends Controller
         $post = $request->post();
         if (isset($post['body'])) {
             $valid = $request->validate([
-                'body' => 'max:2000'
+                'body' => 'max:65535'
             ]);
             $updated = Place::where('id', $id)->first()->updated_at;
             $res['updated_at'] = $updated;
@@ -153,11 +153,14 @@ class PlacesController extends Controller
             $valid = $request->validate([
                 'name' => 'max:50'
             ]);
-            $url = strtolower(str_replace(' ', '_', $valid['name']));
-            $http = explode('/', $_SERVER['HTTP_REFERER']);
-            array_splice($http, -1, 1, $url);
-            $res['redirect'] = implode('/', $http);
-            Place::where('id', $id)->update(['name' => $valid['name'], 'url' => $url]);
+            $place = Place::find($id);
+            $url = Str::slug($valid['name'], '_');
+            if ($url !== $place->url) {
+                $http = explode('/', $_SERVER['HTTP_REFERER']);
+                array_splice($http, -1, 1, $url);
+                $res['redirect'] = implode('/', $http);
+                $place->update(['name' => $valid['name'], 'url' => $url]);
+            }
         }
         if (isset($post['description'])) {
             $valid = $request->validate([

@@ -46,7 +46,7 @@ $(document).ready(function () {
     // SHOW PLACE
     $('.compendium-place.show').on('click', function (e) {
         if (!($(e.target).hasClass('to-marker-btn') || $(e.target).parents('.to-marker-btn').length > 0)) {
-            if ($(this).has('[data-marker-id]').length) {
+            if ($(this).data('marker-id')) {
                 getSelectedMarker($(this).data('marker-id'), true)
             } else {
                 place_id = $(this).data('place-id')
