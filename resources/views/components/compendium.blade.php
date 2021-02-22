@@ -4,14 +4,17 @@
         case 'map':
             $btnGrpFloat = '';
             $titleInline = '';
+            $show = ' show';
             break;
         case 'campaign':
             $btnGrpFloat = 'float-right';
             $titleInline = 'd-inline-block';
+            $show = '';
             break;
         default:
             $btnGrpFloat = 'float-right';
             $titleInline = 'd-inline-block';
+            $show = '';
             break;
     }
 ?>
@@ -49,7 +52,7 @@
                         $lastFiveCreatures = $campaign->creatures->sortBy(['created_at', 'desc'])->take(5);
                     ?>
                     @forelse ($lastFiveCreatures as $creature)
-                        <a class="list-group-item list-group-item-action interactive dmshield-link compendium-creature compendium-item" data-creature-id="{{$creature->id}}" {{$path === 'map' ? '' : 'href=/campaigns/' . $campaign->url . '/compendium/creatures/' . $creature->url}}>
+                        <a class="list-group-item list-group-item-action interactive dmshield-link compendium-creature compendium-item{{$show}}" data-creature-id="{{$creature->id}}" {{$path === 'map' ? '' : 'href=/campaigns/' . $campaign->url . '/compendium/creatures/' . $creature->url}}>
                             {{$creature->name}}
                         </a>
                     @empty
@@ -61,7 +64,7 @@
             <li class="list-group-item">
                 <div class="mb-2">
                     <h4 class="mb-2 {{$titleInline}}">
-                        <i class="fa fa-landmark"></i>
+                        <i class="fa fa-map-marked-alt"></i>
                         Places
                     </h4>
                     <div class="btn-group btn-group-sm mb-2 compendium-btn-group {{$btnGrpFloat}}">
@@ -85,7 +88,13 @@
                         $lastFivePlaces = $campaign->places->sortBy(['created_at', 'desc'])->take(5);
                     ?>
                     @forelse ($lastFivePlaces as $place)
-                        <a class="list-group-item list-group-item-action interactive dmshield-link compendium-place compendium-item" data-place-id="{{$place->id}}" {{$path === 'map' ? '' : 'href=/campaigns/' . $campaign->url . '/compendium/places/' . $place->url}}>
+                        <?php
+                            $markerId = '';
+                            if ($place->marker) {
+                                $markerId = ' data-marker-id=' . $place->marker->id . '';
+                            }
+                        ?>
+                        <a class="list-group-item list-group-item-action interactive dmshield-link compendium-place compendium-item{{$show}}"{{$markerId}} data-place-id="{{$place->id}}" {{$path === 'map' ? '' : 'href=/campaigns/' . $campaign->url . '/compendium/places/' . $place->url}}>
                             {{$place->name}}
                             @if($place->marker)
                                 <i class="fa fa-map-marker-alt"></i>
@@ -126,7 +135,7 @@
                         $lastFiveThings = $campaign->things->sortBy(['created_at', 'desc'])->take(5);
                     ?>
                     @forelse ($lastFiveThings as $thing)
-                        <a class="list-group-item list-group-item-action interactive dmshield-link compendium-thing compendium-item" data-thing-id="{{$thing->id}}" {{$path === 'map' ? '' : 'href=/campaigns/' . $campaign->url . '/compendium/things/' . $thing->url}}>
+                        <a class="list-group-item list-group-item-action interactive dmshield-link compendium-thing compendium-item{{$show}}" data-thing-id="{{$thing->id}}" {{$path === 'map' ? '' : 'href=/campaigns/' . $campaign->url . '/compendium/things/' . $thing->url}}>
                             {{$thing->name}}
                         </a>
                     @empty

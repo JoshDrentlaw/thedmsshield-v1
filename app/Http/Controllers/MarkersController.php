@@ -10,6 +10,7 @@ use App\Models\Map;
 use App\Models\Marker;
 use App\Models\Place;
 use Notify;
+use Illuminate\Support\Facades\Auth;
 
 class MarkersController extends Controller
 {
@@ -73,7 +74,14 @@ class MarkersController extends Controller
      */
     public function show(Marker $marker)
     {
-        return $marker;
+        $place = Place::find($marker->place_id);
+        $lastUpdated = $place->updated_at;
+        $isDm = $marker->map->campaign->dm->id === Auth::user()->id;
+        $showComponent = view('components.show-place', compact('place', 'isDm', 'lastUpdated'))->render();
+        return [
+            'marker' => $marker,
+            'showComponent' => $showComponent
+        ];
         // return Marker::find($marker);
     }
 

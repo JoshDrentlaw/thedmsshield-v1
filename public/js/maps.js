@@ -11,12 +11,6 @@ $(document).ready(function () {
             // drawControl: true
         }),
         image = L.imageOverlay(mapUrl, bounds).addTo(map),
-        sidebar = L.control.sidebar({
-            autopan: true,
-            closeButton: true,
-            container: 'map-sidebar',
-            position: 'left'
-        }).addTo(map),
         drawnItems = new L.FeatureGroup(),
         drawControl = new L.Control.Draw({
             edit: {
@@ -44,21 +38,7 @@ $(document).ready(function () {
         screenHeight = window.innerHeight - 55
 
     map.on('load', function (e) {
-        console.log('loaded')
         setStartingZoom()
-        console.log({
-            mapWidth,
-            mapHeight,
-            zoom: map.getZoom(),
-            worldBounds: map.getPixelWorldBounds(),
-            size: map.getSize(),
-            pixelBounds: map.getPixelBounds(),
-            bounds: map.getBounds(),
-            /* zoom: map.getZoom(),
-            zoomScale: map.getZoomScale(),
-            scaleZoom: map.getScaleZoom(),
-            boundsZoom: map.getBoundsZoom() */
-        })
     })
 
     let black = '/images/marker-icon-black.png',
@@ -66,16 +46,21 @@ $(document).ready(function () {
             activeColor: $(`.user-map-color[data-user-id="${user_id}"]`).val(),
             completedColor: $(`.user-map-color[data-user-id="${user_id}"]`).val()
         },
-        measureControl = L.control.measure(measureOptions),
-        mapMarkers = []
+        measureControl = L.control.measure(measureOptions)
 
     map.setView([maxLatBound / 2, maxLngBound / 2], 0)
     map.addLayer(drawnItems)
     map.addControl(drawControl)
     map.addControl(measureControl)
 
+    
+    sidebar = L.control.sidebar({
+        autopan: true,
+        closeButton: true,
+        container: 'map-sidebar',
+        position: 'left'
+    }).addTo(map)
     sidebar.on('closing', function(e) {
-        this.disablePanel('marker')
         if ($('.show-place-change-view-btn').is(':visible')) {
             $('.show-place-change-view-btn').trigger('click')
         }
@@ -90,7 +75,6 @@ $(document).ready(function () {
             }
         }
     })
-    sidebar.disablePanel('marker')
 
     L.Edit.Circle = L.Edit.CircleMarker.extend({
         _createResizeMarker: function () {
@@ -141,6 +125,7 @@ $(document).ready(function () {
         let i = numeral(0),
             spacer = 94 * 0
         
+        // DESKTOP
         if (screenWidth > 750) {
             if ((mapWidth * Math.pow(2, i.subtract(0.05).value()) + spacer) > screenWidth) {
                 // ZOOM OUT
@@ -156,12 +141,13 @@ $(document).ready(function () {
                 } while (((mapWidth * Math.pow(2, i.value())) + spacer) < screenWidth)
             }
         } else {
+            // MOBILE
             if ((mapWidth * Math.pow(2, i.add(0.05).value()) + spacer) < screenWidth) {
                 // ZOOM IN
                 do {
                     map.setView([maxLatBound / 2, maxLngBound / 2], i.value())
                     i.add(0.05)
-                } while (((mapWidth * Math.pow(2, i.value())) + spacer) < screenWidth)
+                } while (i.value() <= 0.5 && ((mapWidth * Math.pow(2, i.value())) + spacer) < screenWidth)
             }
         }
     }
@@ -213,11 +199,11 @@ $(document).ready(function () {
                 if ($('.show-place-change-view-btn').is(':visible')) {
                     $('.show-place-change-view-btn').trigger('click')
                 }
-                getSelectedMarker(marker.id)
+                getSelectedMarker(marker.id, true)
             })
     }
 
-    function setSelectedMarker(marker, setMapMarker = false) {
+    setSelectedMarker = function(marker, setMapMarker = false) {
         mapMarkers.forEach(mapMarker => {
             if (mapMarker.options.id == marker.id) {
                 mapMarker.setIcon(mapMarker.options.selectedIcon)
@@ -229,14 +215,14 @@ $(document).ready(function () {
                 mapMarker.setIcon(mapMarker.options.mainIcon)
             }
         })
-        sidebar.enablePanel('marker')
-        sidebar.open('marker')
+        sidebar.open('place-marker')
     }
 
-    function getSelectedMarker(markerId, mapMarker = false) {
+    getSelectedMarker = function(markerId, mapMarker = false) {
         axios.get(`/markers/${markerId}`)
             .then(res => {
-                let marker = res.data
+                let marker = res.data.marker
+                $('#place-marker-container').html(res.data.showComponent)
                 setSelectedMarker(marker, mapMarker)
             })
     }
@@ -276,9 +262,9 @@ $(document).ready(function () {
         }
         $('#marker-id').val(marker.id)
         $('#place-id').val(marker.place.id)
-        $('.save-time').text(marker.place.updated_at)
+        /* $('.save-time').text(marker.place.updated_at)
         $('.show-place-name').text(marker.place.name)
-        $('.show-place-body-editor, .show-place-body-display').html(marker.place.body)
+        $('.show-place-body-editor, .show-place-body-display').html(marker.place.body) */
 
         $('#marker-icon-select').select2({
             width: '100%',
@@ -391,23 +377,6 @@ $(document).ready(function () {
             })
     })
 
-    /* $('.show-place-body-display').on('click', function () {
-        let marker = markers[$('#marker-index').val()]
-        $(this).addClass('d-none')
-        $('#editor-container').removeClass('d-none')
-        editor = tinymceInit(marker.place.id, 'places', {selector: '.show-place-body-editor'})
-        let iana = luxon.local().toFormat('z')
-        $('#save-time').text(luxon.fromISO(marker.place.updated_at).setZone(iana).toFormat('FF'))
-    })
-
-    $('.show-place-change-view-btn').on('click', function () {
-        let body = tinymce.activeEditor.getContent()
-        tinymce.activeEditor.destroy()
-        $('#editor-container').addClass('d-none')
-        $('.show-place-body-display').removeClass('d-none')
-        $('.show-place-body-display').html(body)
-    }) */
-
     function addMapMarker(e, placeId = false) {
         sidebar.close()
         $('#map-container').append(`<img id="new-map-marker" data-place-id="${placeId}" src="${black}" alt="Black map marker icon">`)
@@ -467,8 +436,7 @@ $(document).ready(function () {
                 }
                 let mapMarker = addMarker(marker)
                 mapMarkers.push(mapMarker)
-                sidebar.enablePanel('marker')
-                sidebar.open('marker')
+                sidebar.open('place-marker')
                 setMarkerSidebar(marker, mapMarker)
             })
     }
@@ -565,8 +533,7 @@ $(document).ready(function () {
     }
 
     // ANCHOR PING MAP
-    let eLat, eLng,
-        mapDrag = false,
+    let mapDrag = false,
         pingMarkers = [],
         isPinging = false
 
@@ -589,13 +556,7 @@ $(document).ready(function () {
                     })
                 })
         }
-    })/* .on('mouseup', function () {
-        setTimeout(function () {
-            mapDrag = false
-        }, 100)
-    }).on('movestart', function () {
-        mapDrag = true
-    }) */
+    })
 
     campaignMapChannel.listen('MapPinged', (e) => {
         if (e.ping.status === 'show') {
