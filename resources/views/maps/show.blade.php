@@ -13,21 +13,19 @@ $isDm = $isDm ? 1 : 0;
             <div class="leaflet-sidebar-tabs">
                 <ul role="tablist"> <!-- top aligned tabs -->
                     <li><a href="#the-table" role="tab" class="sidebar-tab-link"><i class="fa fa-users"></i></a></li>
-                    <li><a href="#all-markers" role="tab" class="sidebar-tab-link"><i class="fa fa-map-marked-alt"></i></a></li>
-                    <li><a href="#marker" role="tab" class="sidebar-tab-link"><i class="fa fa-map-marker-alt"></i></a></li>
-                    <li><a href="#compendium" role="tab" class="sidebar-tab-link"><i class="fa fa-book"></i></a></li>
                     <li><a href="#die-rollers" role="tab" class="sidebar-tab-link"><i class="fa fa-dice-d20"></i></a></li>
-                    @if($isDm)
-                    <li><a href="#map-settings" role="tab" class="sidebar-tab-link"><i class="fa fa-cog"></i></a></li>
-                    @endif
+                    <li><a href="#compendium" role="tab" class="sidebar-tab-link"><i class="fa fa-book"></i></a></li>
+                    <li class="d-none"><a href="#place-marker" role="tab" class="sidebar-tab-link"><i class="fa fa-map-marker-alt"></i></a></li>
                 </ul>
-                <!-- bottom aligned tabs
-                <ul role="tablist">
-                    <li><a href="#settings" role="tab"><i class="fa fa-gear"></i></a></li>
-                </ul> -->
+                <!-- bottom aligned tabs -->
+                @if($isDm)
+                    <ul role="tablist">
+                        <li><a href="#map-settings" role="tab" class="sidebar-tab-link"><i class="fa fa-cog"></i></a></li>
+                    </ul>
+                @endif
             </div>
             <!-- Tab panes -->
-            <div class="leaflet-sidebar-content">
+            <div class="leaflet-sidebar-content" style="background:#fff;">
                 {{-- THE TABLE --}}
                 <div class="leaflet-sidebar-pane" id="the-table">
                     <h1 class="leaflet-sidebar-header d-flex align-items-center justify-content-between">
@@ -88,78 +86,6 @@ $isDm = $isDm ? 1 : 0;
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </div>
-                {{-- ALL MARKERS --}}
-                <div class="leaflet-sidebar-pane" id="all-markers">
-                    <h1 class="leaflet-sidebar-header d-flex align-items-center justify-content-between">
-                        All Markers
-                        <div class="leaflet-sidebar-close"><i class="fa fa-caret-left"></i></div>
-                    </h1>
-                    @if($isDm)
-                        <button id="new-marker" class="mt-3 btn btn-success btn-block">New Marker</button>
-                    @endif
-                    <div id="marker-list" class="list-group list-group-flush">
-                        @forelse($markers as $i => $marker)
-                            <button
-                                type="button"
-                                class="list-group-item list-group-item-action marker-list-button"
-                                data-place-id="{{$marker->place->id}}"
-                                data-marker-id="{{$marker->id}}"
-                            >
-                                {{$marker->place->name}}
-                            </button>
-                        @empty
-                        @endforelse
-                    </div>
-                </div>
-                {{-- MARKER --}}
-                <div class="leaflet-sidebar-pane" id="marker">
-                    <h1 class="leaflet-sidebar-header mb-4 d-flex align-items-center justify-content-between">
-                        <span class="show-place-name<?= $isDm ? ' interactive' : '' ?>" contenteditable="<?= $isDm ? 'true' : 'false' ?>"></span>
-                        <div class="leaflet-sidebar-close d-block">
-                            <i class="fa fa-caret-left"></i>
-                        </div>
-                    </h1>
-                    <input id="marker-id" type="hidden">
-                    <input id="place-id" type="hidden">
-                    <div class="show-place-editor-container d-none">
-                        <span>Last updated: <em class="save-time"></em></span>
-                        <div class="show-place-body-editor"></div>
-                        <button type="button" class="show-place-change-view-btn btn btn-secondary btn-block mt-4">Change view</button>
-                    </div>
-                
-                    <div class="show-place-body-display<?= $isDm ? ' interactive' : '' ?>" contenteditable="<?= $isDm ? 'true' : 'false' ?>"></div>
-                    @if($isDm)
-                        <div class="card mt-3">
-                            <div class="card-body">
-                                <label>Marker Icon</label>
-                                <select id="marker-icon-select">
-                                    <?php
-                                        $marker = new Marker;
-                                    ?>
-                                    @foreach($marker->place_icons as $icon)
-                                        <?php
-                                            $text = Str::title(str_replace('-', ' ', $icon));
-                                        ?>
-                                        <option value="{{$icon}}">{{$text}}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
-                        <button id="delete-marker" class="mt-3 btn btn-danger btn-block">Delete Marker</button>
-                    @endif
-                </div>
-                {{-- COMPENDIUM --}}
-                <div class="leaflet-sidebar-pane" id="compendium">
-                    <h1 class="leaflet-sidebar-header d-flex align-items-center justify-content-between">
-                        Compendium
-                        <div class="leaflet-sidebar-close">
-                            <i class="fa fa-caret-left"></i>
-                        </div>
-                    </h1>
-                    <div class="container-fluid py-3">
-                        <x-compendium :campaign="$campaign" :is-dm="$isDm" path="map" />
                     </div>
                 </div>
                 {{-- DIE ROLLER --}}
@@ -271,6 +197,57 @@ $isDm = $isDm ? 1 : 0;
                             </div>
                         </div>
                     </div>
+                </div>
+                {{-- COMPENDIUM --}}
+                <div class="leaflet-sidebar-pane px-0" id="compendium">
+                    <h1 class="leaflet-sidebar-header d-flex align-items-center justify-content-between" style="padding:0 40px;">
+                        Compendium
+                        <div class="leaflet-sidebar-close">
+                            <i class="fa fa-caret-left"></i>
+                        </div>
+                    </h1>
+                    <div style="overflow-y:auto;overflow-x:hidden;">
+                        <x-compendium :campaign="$campaign" :is-dm="$isDm" path="map" />
+                    </div>
+                </div>
+                {{-- PLACE MARKER --}}
+                <div class="leaflet-sidebar-pane" id="place-marker">
+                    <h1 class="leaflet-sidebar-header mb-4 d-flex align-items-center justify-content-between">
+                        Place Marker
+                        {{-- <span class="show-place-name<?= $isDm ? ' interactive' : '' ?>" contenteditable="<?= $isDm ? 'true' : 'false' ?>"></span> --}}
+                        <div class="leaflet-sidebar-close d-block">
+                            <i class="fa fa-caret-left"></i>
+                        </div>
+                    </h1>
+                    <div id="place-marker-container"></div>
+                    {{-- <input id="marker-id" type="hidden">
+                    <input id="place-id" type="hidden">
+                    <div class="show-place-editor-container d-none">
+                        <span>Last updated: <em class="save-time"></em></span>
+                        <div class="show-place-body-editor"></div>
+                        <button type="button" class="show-place-change-view-btn btn btn-secondary btn-block mt-4">Change view</button>
+                    </div>
+                
+                    <div class="show-place-body-display<?= $isDm ? ' interactive' : '' ?>" contenteditable="<?= $isDm ? 'true' : 'false' ?>"></div>
+                    @if($isDm)
+                        <div class="card mt-3">
+                            <div class="card-body">
+                                <label>Marker Icon</label>
+                                <select id="marker-icon-select">
+                                    <?php
+                                        $marker = new Marker;
+                                    ?>
+                                    @foreach($marker->place_icons as $icon)
+                                        <?php
+                                            $text = Str::title(str_replace('-', ' ', $icon));
+                                        ?>
+                                        <option value="{{$icon}}">{{$text}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <button id="delete-marker" class="mt-3 btn btn-danger btn-block">Delete Marker</button>
+                    @endif --}}
                 </div>
                 {{-- MAP SETTINGS --}}
                 @if($isDm)
@@ -514,6 +491,9 @@ $isDm = $isDm ? 1 : 0;
         let sidebar
         let showMessage
         let campaignMapChannel
+        let mapMarkers = []
+        let setSelectedMarker
+        let getSelectedMarker
 
         new Promise((res, rej) => {
             while (!Echo.socketId) {
@@ -548,12 +528,12 @@ $isDm = $isDm ? 1 : 0;
         }
     </script>
 
-    <script type="module" src="{{ asset('js/compendium.js') . '?' . time() }}"></script>
-    <script type="module" src="{{ asset('js/maps.js') . '?' . time() }}"></script>
-    <script type="module" src="{{ asset('js/show-place.js') . '?' . time() }}"></script>
-    <script type="module" src="{{ asset('js/show-thing.js') . '?' . time() }}"></script>
-    <script type="module" src="{{ asset('js/show-idea.js') . '?' . time() }}"></script>
-    <script type="module" src="{{ asset('js/show-creature.js') . '?' . time() }}"></script>
-    <script type="module" src="{{ asset('js/die-roller.js') . '?' . time() }}"></script>
-    <script type="module" src="{{ asset('js/mapChatMessages.js') . '?' . time() }}"></script>
+    <script src="{{ asset('js/maps.js') . '?' . time() }}"></script>
+    <script src="{{ asset('js/compendium.js') . '?' . time() }}"></script>
+    <script src="{{ asset('js/show-place.js') . '?' . time() }}"></script>
+    <script src="{{ asset('js/show-thing.js') . '?' . time() }}"></script>
+    <script src="{{ asset('js/show-idea.js') . '?' . time() }}"></script>
+    <script src="{{ asset('js/show-creature.js') . '?' . time() }}"></script>
+    <script src="{{ asset('js/die-roller.js') . '?' . time() }}"></script>
+    <script src="{{ asset('js/mapChatMessages.js') . '?' . time() }}"></script>
 @endsection

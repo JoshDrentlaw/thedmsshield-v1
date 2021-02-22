@@ -2,7 +2,7 @@ $(document).ready(function () {
     let placeEditor, thingEditor, ideaEditor, creatureEditor
 
     // SHOW CREATURE
-    $('.compendium-creature').on('click', function () {
+    $('.compendium-creature.show').on('click', function () {
         creature_id = $(this).data('creature-id')
         axios.post('/creatures/show_component', {id: creature_id, isDm})
             .then(({ data }) => {
@@ -44,18 +44,19 @@ $(document).ready(function () {
     })
 
     // SHOW PLACE
-    $('.compendium-place').on('click', function (e) {
+    $('.compendium-place.show').on('click', function (e) {
         if (!($(e.target).hasClass('to-marker-btn') || $(e.target).parents('.to-marker-btn').length > 0)) {
-            place_id = $(this).data('place-id')
-            axios.post('/places/show_component', {id: place_id, isDm})
-                .then(({ data }) => {
-                    if (data.status === 200) {
-                        $('#show-place-modal').modal('show')
-                        $('#show-place-modal').find('.modal-body').html(data.showComponent)
-                    }
-                })
-            if (typeof sidebar !== 'undefined') {
-                sidebar.close()
+            if ($(this).has('[data-marker-id]').length) {
+                getSelectedMarker($(this).data('marker-id'), true)
+            } else {
+                place_id = $(this).data('place-id')
+                axios.post('/places/show_component', {id: place_id, isDm})
+                    .then(({ data }) => {
+                        if (data.status === 200) {
+                            sidebar.open('place-marker')
+                            $('#place-marker-container').html(data.showComponent)
+                        }
+                    })
             }
         }
     })
@@ -88,7 +89,7 @@ $(document).ready(function () {
     })
 
     // SHOW THING
-    $('.compendium-thing').on('click', function () {
+    $('.compendium-thing.show').on('click', function () {
         thing_id = $(this).data('thing-id')
         axios.post('/things/show_component', {id: thing_id, isDm})
             .then(({ data }) => {
