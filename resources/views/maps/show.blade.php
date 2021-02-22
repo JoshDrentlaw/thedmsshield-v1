@@ -15,7 +15,7 @@ $isDm = $isDm ? 1 : 0;
                     <li><a href="#the-table" role="tab" class="sidebar-tab-link"><i class="fa fa-users"></i></a></li>
                     <li><a href="#die-rollers" role="tab" class="sidebar-tab-link"><i class="fa fa-dice-d20"></i></a></li>
                     <li><a href="#compendium" role="tab" class="sidebar-tab-link"><i class="fa fa-book"></i></a></li>
-                    <li class="d-none"><a href="#marker" role="tab" class="sidebar-tab-link"><i class="fa fa-map-marker-alt"></i></a></li>
+                    <li class="d-none"><a href="#place-marker" role="tab" class="sidebar-tab-link"><i class="fa fa-map-marker-alt"></i></a></li>
                 </ul>
                 <!-- bottom aligned tabs -->
                 @if($isDm)
@@ -210,15 +210,17 @@ $isDm = $isDm ? 1 : 0;
                         <x-compendium :campaign="$campaign" :is-dm="$isDm" path="map" />
                     </div>
                 </div>
-                {{-- MARKER --}}
-                <div class="leaflet-sidebar-pane" id="marker">
+                {{-- PLACE MARKER --}}
+                <div class="leaflet-sidebar-pane" id="place-marker">
                     <h1 class="leaflet-sidebar-header mb-4 d-flex align-items-center justify-content-between">
-                        <span class="show-place-name<?= $isDm ? ' interactive' : '' ?>" contenteditable="<?= $isDm ? 'true' : 'false' ?>"></span>
+                        Place Marker
+                        {{-- <span class="show-place-name<?= $isDm ? ' interactive' : '' ?>" contenteditable="<?= $isDm ? 'true' : 'false' ?>"></span> --}}
                         <div class="leaflet-sidebar-close d-block">
                             <i class="fa fa-caret-left"></i>
                         </div>
                     </h1>
-                    <input id="marker-id" type="hidden">
+                    <div id="place-marker-container"></div>
+                    {{-- <input id="marker-id" type="hidden">
                     <input id="place-id" type="hidden">
                     <div class="show-place-editor-container d-none">
                         <span>Last updated: <em class="save-time"></em></span>
@@ -245,7 +247,7 @@ $isDm = $isDm ? 1 : 0;
                             </div>
                         </div>
                         <button id="delete-marker" class="mt-3 btn btn-danger btn-block">Delete Marker</button>
-                    @endif
+                    @endif --}}
                 </div>
                 {{-- MAP SETTINGS --}}
                 @if($isDm)
@@ -489,6 +491,9 @@ $isDm = $isDm ? 1 : 0;
         let sidebar
         let showMessage
         let campaignMapChannel
+        let mapMarkers = []
+        let setSelectedMarker
+        let getSelectedMarker
 
         new Promise((res, rej) => {
             while (!Echo.socketId) {
@@ -523,12 +528,12 @@ $isDm = $isDm ? 1 : 0;
         }
     </script>
 
-    <script type="module" src="{{ asset('js/compendium.js') . '?' . time() }}"></script>
-    <script type="module" src="{{ asset('js/maps.js') . '?' . time() }}"></script>
-    <script type="module" src="{{ asset('js/show-place.js') . '?' . time() }}"></script>
-    <script type="module" src="{{ asset('js/show-thing.js') . '?' . time() }}"></script>
-    <script type="module" src="{{ asset('js/show-idea.js') . '?' . time() }}"></script>
-    <script type="module" src="{{ asset('js/show-creature.js') . '?' . time() }}"></script>
-    <script type="module" src="{{ asset('js/die-roller.js') . '?' . time() }}"></script>
-    <script type="module" src="{{ asset('js/mapChatMessages.js') . '?' . time() }}"></script>
+    <script src="{{ asset('js/maps.js') . '?' . time() }}"></script>
+    <script src="{{ asset('js/compendium.js') . '?' . time() }}"></script>
+    <script src="{{ asset('js/show-place.js') . '?' . time() }}"></script>
+    <script src="{{ asset('js/show-thing.js') . '?' . time() }}"></script>
+    <script src="{{ asset('js/show-idea.js') . '?' . time() }}"></script>
+    <script src="{{ asset('js/show-creature.js') . '?' . time() }}"></script>
+    <script src="{{ asset('js/die-roller.js') . '?' . time() }}"></script>
+    <script src="{{ asset('js/mapChatMessages.js') . '?' . time() }}"></script>
 @endsection
