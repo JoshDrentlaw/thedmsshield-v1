@@ -61,7 +61,7 @@
             <li class="list-group-item">
                 <div class="mb-2">
                     <h4 class="mb-2 {{$titleInline}}">
-                        <i class="fa fa-landmark"></i>
+                        <i class="fa fa-map-marked-alt"></i>
                         Places
                     </h4>
                     <div class="btn-group btn-group-sm mb-2 compendium-btn-group {{$btnGrpFloat}}">

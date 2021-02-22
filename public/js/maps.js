@@ -44,21 +44,7 @@ $(document).ready(function () {
         screenHeight = window.innerHeight - 55
 
     map.on('load', function (e) {
-        console.log('loaded')
-        setStartingZoom()
-        console.log({
-            mapWidth,
-            mapHeight,
-            zoom: map.getZoom(),
-            worldBounds: map.getPixelWorldBounds(),
-            size: map.getSize(),
-            pixelBounds: map.getPixelBounds(),
-            bounds: map.getBounds(),
-            /* zoom: map.getZoom(),
-            zoomScale: map.getZoomScale(),
-            scaleZoom: map.getScaleZoom(),
-            boundsZoom: map.getBoundsZoom() */
-        })
+        // setStartingZoom()
     })
 
     let black = '/images/marker-icon-black.png',
@@ -91,6 +77,10 @@ $(document).ready(function () {
         }
     })
     sidebar.disablePanel('marker')
+
+    /* if (screenWidth <= 575) {
+        $('#compendium').find('.row').addClass('no-gutter')
+    } */
 
     L.Edit.Circle = L.Edit.CircleMarker.extend({
         _createResizeMarker: function () {
@@ -141,6 +131,7 @@ $(document).ready(function () {
         let i = numeral(0),
             spacer = 94 * 0
         
+        // DESKTOP
         if (screenWidth > 750) {
             if ((mapWidth * Math.pow(2, i.subtract(0.05).value()) + spacer) > screenWidth) {
                 // ZOOM OUT
@@ -156,12 +147,13 @@ $(document).ready(function () {
                 } while (((mapWidth * Math.pow(2, i.value())) + spacer) < screenWidth)
             }
         } else {
+            // MOBILE
             if ((mapWidth * Math.pow(2, i.add(0.05).value()) + spacer) < screenWidth) {
                 // ZOOM IN
                 do {
                     map.setView([maxLatBound / 2, maxLngBound / 2], i.value())
                     i.add(0.05)
-                } while (((mapWidth * Math.pow(2, i.value())) + spacer) < screenWidth)
+                } while (i.value() <= 0.5 && ((mapWidth * Math.pow(2, i.value())) + spacer) < screenWidth)
             }
         }
     }
@@ -391,23 +383,6 @@ $(document).ready(function () {
             })
     })
 
-    /* $('.show-place-body-display').on('click', function () {
-        let marker = markers[$('#marker-index').val()]
-        $(this).addClass('d-none')
-        $('#editor-container').removeClass('d-none')
-        editor = tinymceInit(marker.place.id, 'places', {selector: '.show-place-body-editor'})
-        let iana = luxon.local().toFormat('z')
-        $('#save-time').text(luxon.fromISO(marker.place.updated_at).setZone(iana).toFormat('FF'))
-    })
-
-    $('.show-place-change-view-btn').on('click', function () {
-        let body = tinymce.activeEditor.getContent()
-        tinymce.activeEditor.destroy()
-        $('#editor-container').addClass('d-none')
-        $('.show-place-body-display').removeClass('d-none')
-        $('.show-place-body-display').html(body)
-    }) */
-
     function addMapMarker(e, placeId = false) {
         sidebar.close()
         $('#map-container').append(`<img id="new-map-marker" data-place-id="${placeId}" src="${black}" alt="Black map marker icon">`)
@@ -565,8 +540,7 @@ $(document).ready(function () {
     }
 
     // ANCHOR PING MAP
-    let eLat, eLng,
-        mapDrag = false,
+    let mapDrag = false,
         pingMarkers = [],
         isPinging = false
 
@@ -589,13 +563,7 @@ $(document).ready(function () {
                     })
                 })
         }
-    })/* .on('mouseup', function () {
-        setTimeout(function () {
-            mapDrag = false
-        }, 100)
-    }).on('movestart', function () {
-        mapDrag = true
-    }) */
+    })
 
     campaignMapChannel.listen('MapPinged', (e) => {
         if (e.ping.status === 'show') {
