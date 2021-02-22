@@ -268,12 +268,13 @@ $(document).ready(function () {
 
         $('#marker-icon-select').select2({
             width: '100%',
-            templateResult: customIconResult,
-            templateSelection: customIconSelection,
+            minimumResultsForSearch: Infinity,
             sorter: function (icons) {
                 icons.sort((a, b) => a.text > b.text ? 1 : -1)
                 return icons
-            }
+            },
+            templateResult: customIconResult,
+            templateSelection: customIconSelection
         }).val(icon).trigger('change')
     }
 

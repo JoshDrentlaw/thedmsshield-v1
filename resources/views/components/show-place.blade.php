@@ -5,7 +5,7 @@
             {{$place->name}}
         </span>
         @if($place->marker)
-            <br><small class="text-muted"><i class="fa fa-map-marker-alt mr-2"></i>{{$place->marker->map->name}}</small>
+            <br><small class="text-muted d-inline-block mt-3"><i class="fa fa-map-marker-alt mr-2"></i>{{$place->marker->map->name}}</small>
         @endif
     </h1>
     {{-- <div class="form-group mb-3">
