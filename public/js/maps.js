@@ -179,7 +179,7 @@ $(document).ready(function () {
         })
         return L
             .marker([marker.lat, marker.lng], {
-                draggable: true,
+                draggable: isDm,
                 icon: mainIcon,
                 id: marker.id,
                 mainIcon: mainIcon,
@@ -413,7 +413,7 @@ $(document).ready(function () {
                 return word.slice(0, 1).toUpperCase() + word.slice(1)
             }
         })
-        axios.post('/markers', {map_id, top: e.latlng.lat, left: e.latlng.lng, campaign_id, name, placeId })
+        axios.post('/markers', {map_id, lat: e.latlng.lat, lng: e.latlng.lng, campaign_id, name, placeId })
             .then(res => {
                 let marker = res.data.marker
                 $('#marker-list').append(`

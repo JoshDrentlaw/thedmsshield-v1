@@ -16,12 +16,18 @@ $(document).ready(function () {
                         const state = {campaign_id, place_id}
                         window.history.pushState(state, '', data.redirect)
                     } else if (pathname === 'maps') {
-                        $(`.marker-list-button[data-place-id="${place_id}"]`).text(name)
-                        $(`.compendium-place[data-place-id="${place_id}"]`).html(`
-                            ${name}
-                            <i class="fa fa-map-marker-alt"></i>
-                            <small class="text-muted">${mapModel.name}</small>
-                        `)
+                        let html = name
+                        if ($('#marker-id').length) {
+                            html += `
+                                <i class="fa fa-map-marker-alt"></i>
+                                <small class="text-muted">${mapModel.name}</small>
+                            `
+                        } else {
+                            html += `
+                                <button class="btn btn-success btn-sm float-right to-marker-btn" data-place-id="${place_id}"><i class="fa fa-map-marker-alt"></i></button>
+                            `
+                        }
+                        $(`.compendium-place[data-place-id="${place_id}"]`).html(html)
                     }
                 }
             })

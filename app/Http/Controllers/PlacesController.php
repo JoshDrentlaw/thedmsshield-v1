@@ -13,6 +13,9 @@ use Exception;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Redirect;
 
+use App\Broadcasting\CompendiumChannel;
+use App\Events\PlaceUpdate;
+
 class PlacesController extends Controller
 {
     /**
@@ -63,7 +66,7 @@ class PlacesController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'name' => 'required|unique:places,name|max:50',
+            'name' => 'required|max:50',
             'body' => 'max:2000'
         ]);
         try {
@@ -134,10 +137,10 @@ class PlacesController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  App\Models\Place $place
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Place $place)
     {
         $res = ['status' => 200];
         $post = $request->post();
@@ -145,29 +148,38 @@ class PlacesController extends Controller
             $valid = $request->validate([
                 'body' => 'max:65535'
             ]);
-            $updated = Place::where('id', $id)->first()->updated_at;
+            $updated = $place->first()->updated_at;
             $res['updated_at'] = $updated;
-            Place::where('id', $id)->update(['body' => $valid['body']]);
+            $place->update(['body' => $valid['body']]);
         }
         if (isset($post['name'])) {
             $valid = $request->validate([
                 'name' => 'max:50'
             ]);
-            $place = Place::find($id);
+            $valid['name'] = trim($valid['name']);
             $url = Str::slug($valid['name'], '_');
             if ($url !== $place->url) {
                 $http = explode('/', $_SERVER['HTTP_REFERER']);
                 array_splice($http, -1, 1, $url);
                 $res['redirect'] = implode('/', $http);
-                $place->update(['name' => $valid['name'], 'url' => $url]);
             }
+            $place->update(['name' => $valid['name'], 'url' => $url]);
         }
         if (isset($post['description'])) {
             $valid = $request->validate([
                 'description' => 'max:65535'
             ]);
-            Place::where('id', $id)->update(['description' => $valid['description']]);
+            $place->update(['description' => $valid['description']]);
         }
+        $place->refresh();
+        $placeUpdate = collect([
+            'campaign_id' => $place->campaign_id,
+            'id' => $place->id,
+            'name' => $place->name,
+            'body' => $place->body
+        ]);
+        Debug::log($placeUpdate['campaign_id']);
+        broadcast(new PlaceUpdate($placeUpdate))->toOthers();
         return $res;
     }
 

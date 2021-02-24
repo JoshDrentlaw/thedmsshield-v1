@@ -174,6 +174,7 @@ $(document).ready(function () {
 
     function addNewCompendiumItem(item, itemKey, marker = false) {
         campaign[`${itemKey}s`].push(item)
+        $(`#compendium-${itemKey}s-list`).find('.first-item').remove()
         $(`#compendium-${itemKey}s-list`).append(`
             <a class="list-group-item list-group-item-action dmshield-link interactive compendium-${itemKey}" data-${itemKey}-id="${item.id}">
                 ${item.name}

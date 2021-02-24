@@ -15,7 +15,7 @@
         </span>
     </div> --}}
     <div class="form-group mb-4">
-        <h4>Notes</h4>
+        {{-- <h4>Notes</h4> --}}
         @if(!$place->markerless)
             <input id="marker-id" value="{{$place->marker->id}}" type="hidden">
         @endif
