@@ -5,6 +5,7 @@ use App\Models\Map;
 use App\Debug\Debug;
 use Illuminate\Support\Facades\Broadcast;
 use App\Broadcasting\CampaignMapChannel;
+use App\Broadcasting\CompendiumChannel;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,3 +23,4 @@ Broadcast::channel('App.User.{id}', function ($user, $id) {
 });
 
 Broadcast::channel('campaign-map-{mapId}', CampaignMapChannel::class);
+Broadcast::channel('compendium-{compendiumId}', CompendiumChannel::class);

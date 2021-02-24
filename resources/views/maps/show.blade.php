@@ -220,34 +220,6 @@ $isDm = $isDm ? 1 : 0;
                         </div>
                     </h1>
                     <div id="place-marker-container"></div>
-                    {{-- <input id="marker-id" type="hidden">
-                    <input id="place-id" type="hidden">
-                    <div class="show-place-editor-container d-none">
-                        <span>Last updated: <em class="save-time"></em></span>
-                        <div class="show-place-body-editor"></div>
-                        <button type="button" class="show-place-change-view-btn btn btn-secondary btn-block mt-4">Change view</button>
-                    </div>
-                
-                    <div class="show-place-body-display<?= $isDm ? ' interactive' : '' ?>" contenteditable="<?= $isDm ? 'true' : 'false' ?>"></div>
-                    @if($isDm)
-                        <div class="card mt-3">
-                            <div class="card-body">
-                                <label>Marker Icon</label>
-                                <select id="marker-icon-select">
-                                    <?php
-                                        $marker = new Marker;
-                                    ?>
-                                    @foreach($marker->place_icons as $icon)
-                                        <?php
-                                            $text = Str::title(str_replace('-', ' ', $icon));
-                                        ?>
-                                        <option value="{{$icon}}">{{$text}}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
-                        <button id="delete-marker" class="mt-3 btn btn-danger btn-block">Delete Marker</button>
-                    @endif --}}
                 </div>
                 {{-- MAP SETTINGS --}}
                 @if($isDm)
@@ -491,6 +463,7 @@ $isDm = $isDm ? 1 : 0;
         let sidebar
         let showMessage
         let campaignMapChannel
+        let compendiumChannel
         let mapMarkers = []
         let setSelectedMarker
         let getSelectedMarker
@@ -510,6 +483,24 @@ $isDm = $isDm ? 1 : 0;
             })
             .leaving(user => {
                 toggleLoggedInUser(user, 'Offline')
+            })
+
+            compendiumChannel = Echo.private(`compendium-${campaign_id}`)
+            console.log(compendiumChannel)
+            compendiumChannel.listen('PlaceUpdate', e => {
+                console.log(e, $('#place-id').val())
+                if ($('#place-id').val() == e.placeUpdate.id) {
+                    $('.show-place-name').text(e.placeUpdate.name)
+                    let html = e.placeUpdate.name
+                    if ($('#marker-id').length) {
+                        html += `
+                            <i class="fa fa-map-marker-alt"></i>
+                            <small class="text-muted">${mapModel.name}</small>
+                        `
+                    }
+                    $(`.compendium-place[data-place-id="${place_id}"]`).html(html)
+                    $('.show-place-body-display').html(e.placeUpdate.body)
+                }
             })
         })
 

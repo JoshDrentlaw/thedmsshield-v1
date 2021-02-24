@@ -19,6 +19,9 @@ use App\Listeners\UserMapUpdated;
 use App\Events\MarkerUpdate;
 use App\Listeners\LogMarkerUpdate;
 
+use App\Events\PlaceUpdate;
+use App\Listeners\LogPlaceUpdate;
+
 class EventServiceProvider extends ServiceProvider
 {
     /**
@@ -41,6 +44,9 @@ class EventServiceProvider extends ServiceProvider
         ],
         MarkerUpdate::class => [
             LogMarkerUpdate::class
+        ],
+        PlaceUpdate::class => [
+            LogPlaceUpdate::class
         ]
     ];
 

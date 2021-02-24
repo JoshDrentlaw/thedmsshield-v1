@@ -56,7 +56,7 @@
                             {{$creature->name}}
                         </a>
                     @empty
-                        <p class="mb-0">Add your first creature!</p>
+                        <p class="mb-0 first-item">Add your first creature!</p>
                     @endforelse
                 </div>
             </li>
@@ -106,11 +106,11 @@
                             @endif
                         </a>
                     @empty
-                        <p class="mb-0">Add your first place!</p>
+                        <p class="mb-0 first-item">Add your first place!</p>
                     @endforelse
                 </div>
             </li>
-            {{-- THINGS --}}
+            {{-- THINGS
             <li class="list-group-item">
                 <div class="mb-2">
                     <h4 class="mb-2 {{$titleInline}}">
@@ -143,8 +143,8 @@
                     @endforelse
                 </div>
             </li>
-            {{-- IDEAS --}}
-            {{-- <li class="list-group-item">
+            IDEAS
+            <li class="list-group-item">
                 <h4 class="mb-2 {{$titleInline}}">
                     <i class="fa fa-lightbulb"></i>
                     Ideas

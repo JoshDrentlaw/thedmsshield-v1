@@ -9,7 +9,9 @@ class Place extends Model
     protected $dateFormat = 'c';
 
     protected $fillable = [
-        'name'
+        'name',
+        'url',
+        'body'
     ];
 
     public function campaign() {

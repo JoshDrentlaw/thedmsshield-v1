@@ -57,8 +57,8 @@ class MarkersController extends Controller
             $place->save();
             $place_id = $place->id;
         }
-        $marker->top = $request->post('top');
-        $marker->left = $request->post('left');
+        $marker->lat = $request->post('lat');
+        $marker->lng = $request->post('lng');
         $marker->map_id = $request->post('map_id');
         $marker->place_id = $place_id;
         $marker->save();
