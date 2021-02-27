@@ -8,14 +8,7 @@
             <br><small class="text-muted d-inline-block mt-3"><i class="fa fa-map-marker-alt mr-2"></i>{{$place->marker->map->name}}</small>
         @endif
     </h1>
-    {{-- <div class="form-group mb-3">
-        <label>Short Description</label>
-        <span class="show-place-description<?= $isDm ? ' interactive' : '' ?>" contenteditable="<?= $isDm ? 'true' : 'false' ?>">
-            {{$place->description}}
-        </span>
-    </div> --}}
     <div class="form-group mb-4">
-        {{-- <h4>Notes</h4> --}}
         @if(!$place->markerless)
             <input id="marker-id" value="{{$place->marker->id}}" type="hidden">
         @endif
@@ -52,11 +45,16 @@
         </div>
         <button id="delete-marker" class="mt-3 btn btn-danger btn-block">Delete Marker</button>
     @endif
+    @if($isDm && $onMap)
+        <button id="show-to-players" class="mt-3 btn btn-info btn-block" data-id="{{$place->id}}" data-type="places">Show to Players</button>
+    @endif
 </div>
 
 @section('component-scripts')
-    <script>
-        const isDm = {!!$isDm!!}
-    </script>
-    <script type="module" src="{{ asset('js/show-place.js') . '?' . time() }}"></script>
+    @if(!$onMap)
+        <script>
+            const isDm = {!!$isDm!!}
+        </script>
+        <script type="module" src="{{ asset('js/show-place.js') . '?' . time() }}"></script>
+    @endif
 @endsection

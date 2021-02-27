@@ -278,6 +278,12 @@ $(document).ready(function () {
         }).val(icon).trigger('change')
     }
 
+    $(document).on('click', '#show-to-players', function () {
+        const id = $(this).data('id'),
+            type = $(this).data('type')
+        axios.post(`/${type}/show_to_players/${id}`)
+    })
+
     // ANCHOR ICON
     $('#player-marker-icon-select').select2({
         width: '100%',
@@ -405,41 +411,24 @@ $(document).ready(function () {
         let placeId = $('#new-map-marker').data('place-id')
         $('#new-map-marker').remove()
         $('#map-container').css('cursor', `grab`)
-        let name = randomWords({
-            exactly: 1,
-            wordsPerString: 2,
-            join: ' ',
-            formatter: function (word) {
-                return word.slice(0, 1).toUpperCase() + word.slice(1)
-            }
-        })
-        axios.post('/markers', {map_id, lat: e.latlng.lat, lng: e.latlng.lng, campaign_id, name, placeId })
+        $place = $(`.compendium-place[data-place-id="${placeId}"]`)
+        $place.find('.to-marker-btn').remove()
+        $place.html(`
+            ${$place.text()}
+            <i class="fa fa-map-marker-alt"></i>
+            <small class="text-muted">${mapModel.name}</small>
+        `)
+        axios.post('/markers', { map_id, lat: e.latlng.lat, lng: e.latlng.lng, placeId })
             .then(res => {
-                let marker = res.data.marker
-                $('#marker-list').append(`
-                    <button
-                        type="button"
-                        class="list-group-item list-group-item-action marker-list-button"
-                        data-marker-id="${marker.id}"
-                        data-place-id="${marker.place.id}"
-                    >
-                        ${marker.place.name}
-                    </button>
-                `)
-                if (placeId) {
-                    let $place = $(`.compendium-place[data-place-id="${placeId}"]`)
-                    $place.find('.to-marker-btn').remove()
-                    $place.html(`
-                        ${$place.text()}
-                        <i class="fa fa-map-marker-alt"></i>
-                        <small class="text-muted">${mapModel.name}</small>
-                    `)
-                }
-                let mapMarker = addMarker(marker)
-                mapMarkers.push(mapMarker)
-                sidebar.open('place-marker')
-                setMarkerSidebar(marker, mapMarker)
+                showNewMarker(res.data.marker)
+                getSelectedMarker(res.data.marker.id, true)
             })
+    }
+
+    function showNewMarker(marker) {
+        $(`.compendium-place[data-place-id="${marker.place.id}"]`).attr('data-marker-id', marker.id)
+        let mapMarker = addMarker(marker)
+        mapMarkers.push(mapMarker)
     }
 
     function newMarkerCancel() {
@@ -464,6 +453,12 @@ $(document).ready(function () {
                 updateMarkerIcon(e.markerUpdate.id, e.markerUpdate.icon)
                 marker = mapMarkers.filter(m => m.options.id == e.markerUpdate.id)[0]
                 marker.setIcon(marker.options.mainIcon)
+            } else if (e.markerUpdate.update_type === 'marker') {
+                showNewMarker(e.markerUpdate.marker)
+                getSelectedMarker(e.markerUpdate.marker.id, true)
+            } else if (e.markerUpdate.update_type === 'delete') {
+                let thisMapMarker = mapMarkers.filter(marker => marker.options.id == e.markerUpdate.marker.id)[0]
+                deleteMapMarker(thisMapMarker, e.markerUpdate.placeId, 'place')
             }
         } else if (e.markerUpdate.marker_type === 'player') {
             if (e.markerUpdate.update_type === 'movement') {
@@ -490,24 +485,28 @@ $(document).ready(function () {
         addMapMarker(e, $(this).data('place-id'))
     })
 
-    $('#delete-marker').on('click', function() {
+    $(document).on('click', '#delete-marker', function() {
         const markerId = $('#marker-id').val()
         const placeId = $('#place-id').val()
         let thisMapMarker = mapMarkers.filter(marker => marker.options.id == markerId)[0]
         axios.delete(`/markers/${markerId}`)
             .then(res => {
                 if (res.status === 200) {
-                    thisMapMarker.removeFrom(map)
-                    $(`.marker-list-button[data-place-id="${placeId}"]`).remove()
-                    $(`.compendium-place[data-place-id="${placeId}"]`).children().remove()
-                    $(`.compendium-place[data-place-id="${placeId}"]`).append(`
-                        <button class="btn btn-success btn-sm float-right to-marker-btn" data-place-id="${placeId}"><i class="fa fa-map-marker-alt"></i></button>
-                    `)
-                    sidebar.close()
-                    pnotify.success({title: res.data.message})
+                    deleteMapMarker(thisMapMarker, placeId, 'place')
+                    sidebar.open('compendium')
                 }
             })
     })
+
+    function deleteMapMarker(marker, id, type) {
+        marker.removeFrom(map)
+        $(`.marker-list-button[data-${type}-id="${id}"]`).remove()
+        $(`.compendium-${type}[data-${type}-id="${id}"]`).children().remove()
+        $(`.compendium-${type}[data-${type}-id="${id}"]`).append(`
+            <button class="btn btn-success btn-sm float-right to-marker-btn" data-${type}-id="${id}"><i class="fa fa-map-marker-alt"></i></button>
+        `)
+        pnotify.success({title: 'Marker deleted'})
+    }
 
     // ANCHOR USER COLOR
     $(document).on('change', '.user-map-color', function () {

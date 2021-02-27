@@ -45,24 +45,20 @@ class MarkersController extends Controller
     {
         $name = $request->post('name');
         $marker = new Marker;
-        if ($request->post('placeId')) {
-            $place_id = $request->post('placeId');
-            $place = Place::find($place_id);
-        } else {
-            $place = new Place;
-            $place->campaign_id = $request->post('campaign_id');
-            $place->url = Str::slug($name, '_');
-            $place->name = $name;
-            $place->body = "<p>Tell everyone about {$name}</p>";
-            $place->save();
-            $place_id = $place->id;
-        }
         $marker->lat = $request->post('lat');
         $marker->lng = $request->post('lng');
         $marker->map_id = $request->post('map_id');
-        $marker->place_id = $place_id;
+        $marker->place_id = $request->post('placeId');
         $marker->save();
         $marker = Marker::where('id', $marker->id)->with('place')->get()[0];
+        $markerUpdate = collect([
+            'map_id' => $request->post('map_id'),
+            'id' => $marker->id,
+            'update_type' => 'marker',
+            'marker_type' => 'map',
+            'marker' => $marker
+        ]);
+        broadcast(new MarkerUpdate($markerUpdate))->toOthers();
         return compact('marker');
     }
 
@@ -77,7 +73,8 @@ class MarkersController extends Controller
         $place = Place::find($marker->place_id);
         $lastUpdated = $place->updated_at;
         $isDm = $marker->map->campaign->dm->id === Auth::user()->id;
-        $showComponent = view('components.show-place', compact('place', 'isDm', 'lastUpdated'))->render();
+        $onMap = Str::contains($_SERVER['HTTP_REFERER'], 'maps');
+        $showComponent = view('components.show-place', compact('place', 'isDm', 'lastUpdated', 'onMap'))->render();
         return [
             'marker' => $marker,
             'showComponent' => $showComponent
@@ -149,7 +146,16 @@ class MarkersController extends Controller
     public function destroy($id)
     {
         $marker = Marker::find($id);
+        $markerUpdate = collect([
+            'map_id' => $marker->map->id,
+            'id' => $marker->id,
+            'update_type' => 'delete',
+            'marker_type' => 'map',
+            'marker' => $marker,
+            'placeId' => $marker->place->id
+        ]);
         $marker->delete();
-        return ['status' => 200, 'message' => 'Marker deleted', 'class' => 'alert-success'];
+        broadcast(new MarkerUpdate($markerUpdate))->toOthers();
+        return ['status' => 200];
     }
 }

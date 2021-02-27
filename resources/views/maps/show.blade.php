@@ -488,18 +488,32 @@ $isDm = $isDm ? 1 : 0;
             compendiumChannel = Echo.private(`compendium-${campaign_id}`)
             console.log(compendiumChannel)
             compendiumChannel.listen('PlaceUpdate', e => {
-                console.log(e, $('#place-id').val())
-                if ($('#place-id').val() == e.placeUpdate.id) {
-                    $('.show-place-name').text(e.placeUpdate.name)
-                    let html = e.placeUpdate.name
-                    if ($('#marker-id').length) {
-                        html += `
-                            <i class="fa fa-map-marker-alt"></i>
-                            <small class="text-muted">${mapModel.name}</small>
-                        `
+                console.log(e)
+                if (e.placeUpdate.type === 'edit') {
+                    if (e.placeUpdate.id == $('#place-id').val()) {
+                        $('.show-place-name').text(e.placeUpdate.name)
+                        let html = e.placeUpdate.name
+                        if ($('#marker-id').length) {
+                            html += `
+                                <i class="fa fa-map-marker-alt"></i>
+                                <small class="text-muted">${mapModel.name}</small>
+                            `
+                        }
+                        $(`.compendium-place[data-place-id="${place_id}"]`).html(html)
+                        $('.show-place-body-display').html(e.placeUpdate.body)
                     }
-                    $(`.compendium-place[data-place-id="${place_id}"]`).html(html)
-                    $('.show-place-body-display').html(e.placeUpdate.body)
+                } else if (e.placeUpdate.type === 'showToPlayers') {
+                    if (e.placeUpdate.markerless) {
+                        axios.post('/places/show_component', {id: e.placeUpdate.id, isDm: false})
+                        .then(({ data }) => {
+                            if (data.status === 200) {
+                                sidebar.open('place-marker')
+                                $('#place-marker-container').html(data.showComponent)
+                            }
+                        })
+                    } else {
+                        getSelectedMarker(e.placeUpdate.markerId, true)
+                    }
                 }
             })
         })

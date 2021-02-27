@@ -9,17 +9,19 @@ class ShowPlace extends Component
     public $place;
     public $isDm;
     public $lastUpdated;
+    public $onMap;
 
     /**
      * Create a new component instance.
      *
      * @return void
      */
-    public function __construct($place, $isDm, $lastUpdated)
+    public function __construct($place, $isDm, $lastUpdated, $onMap)
     {
         $this->place = $place;
         $this->isDm = $isDm;
         $this->lastUpdated = $lastUpdated;
+        $this->onMap = $onMap;
     }
 
     /**
