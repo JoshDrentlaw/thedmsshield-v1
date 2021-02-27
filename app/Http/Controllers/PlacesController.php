@@ -118,8 +118,23 @@ class PlacesController extends Controller
         extract($request->post());
         $place = Place::find($id);
         $lastUpdated = $place->updated_at;
-        $showComponent = view('components.show-place', compact('place', 'isDm', 'lastUpdated'))->render();
+        $onMap = Str::contains($_SERVER['HTTP_REFERER'], 'maps');
+        $showComponent = view('components.show-place', compact('place', 'isDm', 'lastUpdated', 'onMap'))->render();
         return ['status' => 200, 'showComponent' => $showComponent];
+    }
+
+    public function show_to_players($id)
+    {
+        $place = Place::find($id);
+        $placeUpdate = collect([
+            'campaign_id' => $place->campaign_id,
+            'id' => $place->id,
+            'type' => 'showToPlayers',
+            'markerless' => $place->markerless,
+            'markerId' => !$place->markerless ? $place->marker->id : false
+        ]);
+        broadcast(new PlaceUpdate($placeUpdate))->toOthers();
+        return ['status' => 200];
     }
 
     /**
@@ -175,10 +190,10 @@ class PlacesController extends Controller
         $placeUpdate = collect([
             'campaign_id' => $place->campaign_id,
             'id' => $place->id,
+            'type' => 'edit',
             'name' => $place->name,
             'body' => $place->body
         ]);
-        Debug::log($placeUpdate['campaign_id']);
         broadcast(new PlaceUpdate($placeUpdate))->toOthers();
         return $res;
     }
