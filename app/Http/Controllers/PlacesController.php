@@ -76,6 +76,13 @@ class PlacesController extends Controller
             $place->body = $validated['body'];
             $place->campaign_id = $request->post('campaign_id');
             $place->save();
+            $placeUpdate = collect([
+                'campaign_id' => $place->campaign_id,
+                'id' => $place->id,
+                'type' => 'newPlace',
+                'place' => $place
+            ]);
+            broadcast(new PlaceUpdate($placeUpdate))->toOthers();
             return ['status' => 200, 'place' => $place];
         } catch (Exception $e) {
             return ['status' => 500, 'message' => $e->getMessage()];
@@ -179,12 +186,6 @@ class PlacesController extends Controller
                 $res['redirect'] = implode('/', $http);
             }
             $place->update(['name' => $valid['name'], 'url' => $url]);
-        }
-        if (isset($post['description'])) {
-            $valid = $request->validate([
-                'description' => 'max:65535'
-            ]);
-            $place->update(['description' => $valid['description']]);
         }
         $place->refresh();
         $placeUpdate = collect([

@@ -19,14 +19,14 @@
     }
 ?>
 <div class="row justify-content-center">
-    <div class="col-md-12">
+    <div class="col-12">
         @if($path === 'campaign')
             <h3 class="card-title">
                 <i class="fa fa-book"></i>
                 Compendium
             </h3>
         @endif
-        <ul class="list-group list-group-flush">
+        <ul class="list-group list-group-flush mx-n3">
             {{-- CREATURES --}}
             <li class="list-group-item">
                 <div class="mb-2">
@@ -52,8 +52,22 @@
                         $creatures = $campaign->creatures->sortBy(['name', 'asc']);
                     ?>
                     @forelse ($creatures as $creature)
-                        <a class="list-group-item list-group-item-action interactive dmshield-link compendium-creature compendium-item{{$show}}" data-creature-id="{{$creature->id}}" {{$path === 'map' ? '' : 'href=/campaigns/' . $campaign->url . '/compendium/creatures/' . $creature->url}}>
+                        <?php
+                            $markerId = '';
+                            if ($creature->marker) {
+                                $markerId = ' data-marker-id=' . $creature->marker->id . '';
+                            }
+                        ?>
+                        <a class="list-group-item list-group-item-action interactive dmshield-link compendium-creature compendium-item{{$show}}"{{$markerId}} data-creature-id="{{$creature->id}}" {{$path === 'map' ? '' : 'href=/campaigns/' . $campaign->url . '/compendium/creatures/' . $creature->url}}>
                             {{$creature->name}}
+                            @if($creature->marker)
+                                <i class="fa fa-map-marker-alt"></i>
+                                <small class="text-muted">{{$creature->marker->map->name}}</small>
+                            @else
+                                @if($path === 'map' && $isDm)
+                                    <button class="btn btn-success btn-sm float-right to-marker-btn" data-creature-id="{{$creature->id}}"><i class="fa fa-map-marker-alt"></i></button>
+                                @endif
+                            @endif
                         </a>
                     @empty
                         <p class="mb-0 first-item">Add your first creature!</p>

@@ -99,7 +99,7 @@ class MapsController extends Controller
 
         $user = Auth::user();
 
-        $markers = Marker::where('map_id', $map->id)->with('place')->get();
+        $markers = Marker::where('map_id', $map->id)->with(['place', 'creature'])->get();
 
         $messages = MapChatMessage::where('map_id', $map->id)->with('user')->get();
 

@@ -22,8 +22,6 @@ Route::resources([
     'campaigns' => 'CampaignsController',
     'creatures' => 'CreaturesController',
     'places' => 'PlacesController',
-    'things' => 'ThingsController',
-    'ideas' => 'IdeasController',
     'mapChatMessages' => 'MapChatMessagesController'
 ]);
 
@@ -37,15 +35,11 @@ Route::get('/campaigns/{campaign_id}/compendium', 'CampaignsController@compendiu
 Route::get('/campaigns/{campaign_id}/compendium/creatures', 'CreaturesController@index');
 Route::get('/campaigns/{campaign_id}/compendium/creatures/{creature_id}', 'CreaturesController@show');
 Route::post('/creatures/show_component', 'CreaturesController@show_component');
+Route::post('/creatures/show_to_players/{id}', 'CreaturesController@show_to_players');
 Route::get('/campaigns/{campaign_id}/compendium/places', 'PlacesController@index');
 Route::get('/campaigns/{campaign_id}/compendium/places/{place_id}', 'PlacesController@show');
 Route::post('/places/show_component', 'PlacesController@show_component');
 Route::post('/places/show_to_players/{id}', 'PlacesController@show_to_players');
-Route::get('/campaigns/{campaign_id}/compendium/things', 'ThingsController@index');
-Route::get('/campaigns/{campaign_id}/compendium/things/{thing_id}', 'ThingsController@show');
-Route::post('/things/show_component', 'ThingsController@show_component');
-Route::get('/campaigns/{campaign_id}/compendium/ideas', 'IdeasController@index');
-Route::get('/campaigns/{campaign_id}/compendium/ideas/{idea_id}', 'IdeasController@show');
 Route::get('/campaigns/{campaign_id}/maps/{map_id}', 'MapsController@show');
 
 Route::put('/maps/{id}/{type}', 'MapsController@update');

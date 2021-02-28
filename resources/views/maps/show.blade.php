@@ -15,7 +15,8 @@ $isDm = $isDm ? 1 : 0;
                     <li><a href="#the-table" role="tab" class="sidebar-tab-link"><i class="fa fa-users"></i></a></li>
                     <li><a href="#die-rollers" role="tab" class="sidebar-tab-link"><i class="fa fa-dice-d20"></i></a></li>
                     <li><a href="#compendium" role="tab" class="sidebar-tab-link"><i class="fa fa-book"></i></a></li>
-                    <li class="d-none"><a href="#place-marker" role="tab" class="sidebar-tab-link"><i class="fa fa-map-marker-alt"></i></a></li>
+                    <li class="d-none"><a href="#place-marker" role="tab" class="sidebar-tab-link"></a></li>
+                    <li class="d-none"><a href="#creature-marker" role="tab" class="sidebar-tab-link"></a></li>
                 </ul>
                 <!-- bottom aligned tabs -->
                 @if($isDm)
@@ -199,8 +200,8 @@ $isDm = $isDm ? 1 : 0;
                     </div>
                 </div>
                 {{-- COMPENDIUM --}}
-                <div class="leaflet-sidebar-pane px-0" id="compendium">
-                    <h1 class="leaflet-sidebar-header d-flex align-items-center justify-content-between" style="padding:0 40px;">
+                <div class="leaflet-sidebar-pane" id="compendium">
+                    <h1 class="leaflet-sidebar-header d-flex align-items-center justify-content-between">
                         Compendium
                         <div class="leaflet-sidebar-close">
                             <i class="fa fa-caret-left"></i>
@@ -210,16 +211,25 @@ $isDm = $isDm ? 1 : 0;
                         <x-compendium :campaign="$campaign" :is-dm="$isDm" path="map" />
                     </div>
                 </div>
-                {{-- PLACE MARKER --}}
+                {{-- PLACE --}}
                 <div class="leaflet-sidebar-pane" id="place-marker">
                     <h1 class="leaflet-sidebar-header mb-4 d-flex align-items-center justify-content-between">
-                        Place Marker
-                        {{-- <span class="show-place-name<?= $isDm ? ' interactive' : '' ?>" contenteditable="<?= $isDm ? 'true' : 'false' ?>"></span> --}}
+                        Place
                         <div class="leaflet-sidebar-close d-block">
                             <i class="fa fa-caret-left"></i>
                         </div>
                     </h1>
                     <div id="place-marker-container"></div>
+                </div>
+                {{-- CREATURE --}}
+                <div class="leaflet-sidebar-pane" id="creature-marker">
+                    <h1 class="leaflet-sidebar-header mb-4 d-flex align-items-center justify-content-between">
+                        Creature
+                        <div class="leaflet-sidebar-close d-block">
+                            <i class="fa fa-caret-left"></i>
+                        </div>
+                    </h1>
+                    <div id="creature-marker-container"></div>
                 </div>
                 {{-- MAP SETTINGS --}}
                 @if($isDm)
@@ -284,79 +294,6 @@ $isDm = $isDm ? 1 : 0;
             </div>
         </div>
     </div>
-    {{-- <div class="map-container-underlay"></div> --}}
-
-    {{-- SHOW CREATURE MODAL --}}
-    <div class="modal" id="show-creature-modal" tabindex="-1" role="dialog">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Creature</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body"></div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    {{-- SHOW PLACE MODAL --}}
-    <div class="modal" id="show-place-modal" tabindex="-1" role="dialog">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Place</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body"></div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    {{-- SHOW THING MODAL --}}
-    <div class="modal" id="show-thing-modal" tabindex="-1" role="dialog">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Thing</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body"></div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    {{-- SHOW IDEA MODAL --}}
-    <div class="modal" id="show-idea-modal" tabindex="-1" role="dialog">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Idea</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body"></div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                </div>
-            </div>
-        </div>
-    </div>
 
     {{-- NEW CREATURE MODAL --}}
     <div class="modal" id="new-creature-modal" tabindex="-1" role="dialog">
@@ -395,48 +332,6 @@ $isDm = $isDm ? 1 : 0;
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                     <button type="button" class="btn btn-primary" id="new-place-submit">Submit</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    {{-- NEW THING MODAL --}}
-    <div class="modal" id="new-thing-modal" tabindex="-1" role="dialog">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">New Thing</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <x-create-thing />
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" id="new-thing-submit">Submit</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    {{-- NEW IDEA MODAL --}}
-    <div class="modal" id="new-idea-modal" tabindex="-1" role="dialog">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">New Idea</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <x-create-idea />
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" id="new-idea-submit">Submit</button>
                 </div>
             </div>
         </div>
@@ -486,7 +381,6 @@ $isDm = $isDm ? 1 : 0;
             })
 
             compendiumChannel = Echo.private(`compendium-${campaign_id}`)
-            console.log(compendiumChannel)
             compendiumChannel.listen('PlaceUpdate', e => {
                 console.log(e)
                 if (e.placeUpdate.type === 'edit') {
@@ -514,6 +408,47 @@ $isDm = $isDm ? 1 : 0;
                     } else {
                         getSelectedMarker(e.placeUpdate.markerId, true)
                     }
+                } else if (e.placeUpdate.type === 'newPlace') {
+                    $(`#compendium-places-list`).find('.first-item').remove()
+                    $(`#compendium-places-list`).append(`
+                        <a class="list-group-item list-group-item-action interactive dmshield-link compendium-place compendium-item show" data-place-id="${e.placeUpdate.place.id}">
+                            ${e.placeUpdate.place.name}
+                        </a>
+                    `)
+                }
+            }).listen('CreatureUpdate', e => {
+                if (e.creatureUpdate.type === 'edit') {
+                    if (e.creatureUpdate.id == $('#creature-id').val()) {
+                        $('.show-creature-name').text(e.creatureUpdate.name)
+                        let html = e.creatureUpdate.name
+                        if ($('#marker-id').length) {
+                            html += `
+                                <i class="fa fa-map-marker-alt"></i>
+                                <small class="text-muted">${mapModel.name}</small>
+                            `
+                        }
+                        $(`.compendium-creature[data-creature-id="${creature_id}"]`).html(html)
+                        $('.show-creature-body-display').html(e.creatureUpdate.body)
+                    }
+                } else if (e.creatureUpdate.type === 'showToPlayers') {
+                    if (e.creatureUpdate.markerless) {
+                        axios.post('/creatures/show_component', {id: e.creatureUpdate.id, isDm: false})
+                        .then(({ data }) => {
+                            if (data.status === 200) {
+                                sidebar.open('creature-marker')
+                                $('#creature-marker-container').html(data.showComponent)
+                            }
+                        })
+                    } else {
+                        getSelectedMarker(e.creatureUpdate.markerId, true)
+                    }
+                } else if (e.creatureUpdate.type === 'newCreature') {
+                    $(`#compendium-creatures-list`).find('.first-item').remove()
+                    $(`#compendium-creatures-list`).append(`
+                        <a class="list-group-item list-group-item-action interactive dmshield-link compendium-creature compendium-item show" data-creature-id="${e.creatureUpdate.creature.id}">
+                            ${e.creatureUpdate.creature.name}
+                        </a>
+                    `)
                 }
             })
         })
@@ -536,8 +471,6 @@ $isDm = $isDm ? 1 : 0;
     <script src="{{ asset('js/maps.js') . '?' . time() }}"></script>
     <script src="{{ asset('js/compendium.js') . '?' . time() }}"></script>
     <script src="{{ asset('js/show-place.js') . '?' . time() }}"></script>
-    <script src="{{ asset('js/show-thing.js') . '?' . time() }}"></script>
-    <script src="{{ asset('js/show-idea.js') . '?' . time() }}"></script>
     <script src="{{ asset('js/show-creature.js') . '?' . time() }}"></script>
     <script src="{{ asset('js/die-roller.js') . '?' . time() }}"></script>
     <script src="{{ asset('js/mapChatMessages.js') . '?' . time() }}"></script>
