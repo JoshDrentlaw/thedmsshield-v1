@@ -163,27 +163,38 @@ $(document).ready(function () {
     }
 
     function addMarker(marker) {
-        let mainIcon = new L.ExtraMarkers.icon({
-            icon: `fa-${marker.icon}`,
-            markerColor: marker.color,
-            shape: marker.shape,
-            prefix: 'fa',
-            svg: true
-        }),
-        selectedIcon = new L.ExtraMarkers.icon({
-            icon: `fa-${marker.icon}`,
-            markerColor: marker.selected_color,
-            shape: marker.selected_shape,
-            prefix: 'fa',
-            svg: true
-        })
+        const mainIcon = new L.ExtraMarkers.icon({
+                icon: `fa-${marker.icon}`,
+                markerColor: marker.color,
+                shape: marker.shape,
+                prefix: 'fa',
+                svg: true
+            }),
+            selectedIcon = new L.ExtraMarkers.icon({
+                icon: `fa-${marker.icon}`,
+                markerColor: marker.selected_color,
+                shape: marker.selected_shape,
+                prefix: 'fa',
+                svg: true
+            })
+        let type
+
+        if (marker.place_id) {
+            type = 'place'
+        } else if (marker.creature_id) {
+            type = 'creature'
+        } else if (marker.player_id) {
+            type = 'player'
+        }
+
         return L
             .marker([marker.lat, marker.lng], {
                 draggable: isDm,
                 icon: mainIcon,
                 id: marker.id,
                 mainIcon: mainIcon,
-                selectedIcon: selectedIcon
+                selectedIcon: selectedIcon,
+                type
             })
             .addTo(map)
             .on('dragend', function (e) {
@@ -196,17 +207,19 @@ $(document).ready(function () {
                     })
             })
             .on('click', function () {
-                if ($('.show-place-change-view-btn').is(':visible')) {
-                    $('.show-place-change-view-btn').trigger('click')
+                if ($(`.show-${type}-change-view-btn`).is(':visible')) {
+                    $(`.show-${type}-change-view-btn`).trigger('click')
                 }
                 getSelectedMarker(marker.id, true)
             })
     }
 
-    setSelectedMarker = function(marker, setMapMarker = false) {
+    setSelectedMarker = function (marker, setMapMarker = false) {
+        let type
         mapMarkers.forEach(mapMarker => {
             if (mapMarker.options.id == marker.id) {
                 mapMarker.setIcon(mapMarker.options.selectedIcon)
+                type = mapMarker.options.type
                 if (setMapMarker) {
                     setMapMarker = mapMarker
                 }
@@ -215,14 +228,22 @@ $(document).ready(function () {
                 mapMarker.setIcon(mapMarker.options.mainIcon)
             }
         })
-        sidebar.open('place-marker')
+        sidebar.open(`${type}-marker`)
     }
 
     getSelectedMarker = function(markerId, mapMarker = false) {
         axios.get(`/markers/${markerId}`)
             .then(res => {
-                let marker = res.data.marker
-                $('#place-marker-container').html(res.data.showComponent)
+                let marker = res.data.marker,
+                    type
+
+                if (marker.place_id) {
+                    type = 'place'
+                } else if (marker.creature_id) {
+                    type = 'creature'
+                }
+
+                $(`#${type}-marker-container`).html(res.data.showComponent)
                 setSelectedMarker(marker, mapMarker)
             })
     }
@@ -237,7 +258,10 @@ $(document).ready(function () {
         selected_color: mapModel.player_marker_selected_color,
         lat: mapModel.player_marker_lat,
         lng: mapModel.player_marker_lng,
-        controller: `/maps/${mapModel.id}/movement`
+        controller: `/maps/${mapModel.id}/movement`,
+        place_id: false,
+        creature_id: false,
+        player_id: true
     })
 
     playerMarker.off('click')
@@ -246,12 +270,9 @@ $(document).ready(function () {
         mapMarkers.push(addMarker(marker))
     })
 
-    $(document).on('click', '.marker-list-button', function() {
-        getSelectedMarker($(this).data('marker-id'), true)
-    })
-
     function setMarkerSidebar(marker, mapMarker = false) {
         let icon = marker.icon
+
         if (mapMarker) {
             let markerLatLng = mapMarker.getLatLng()
             markerLatLng = {
@@ -260,11 +281,14 @@ $(document).ready(function () {
             }
             map.flyTo(markerLatLng, 0.5, {duration: 1, easeLinearity: 1})
         }
+
         $('#marker-id').val(marker.id)
-        $('#place-id').val(marker.place.id)
-        /* $('.save-time').text(marker.place.updated_at)
-        $('.show-place-name').text(marker.place.name)
-        $('.show-place-body-editor, .show-place-body-display').html(marker.place.body) */
+
+        if (marker.place) {
+            $('#place-id').val(marker.place.id)
+        } else if (marker.creature) {
+            $('#creature-id').val(marker.creature.id)
+        }
 
         $('#marker-icon-select').select2({
             width: '100%',
@@ -352,15 +376,25 @@ $(document).ready(function () {
     function updateMarkerIcon(id, icon) {
         mapMarkers.forEach(marker => {
             if (marker.options.id == id) {
+                let color, selectedColor, shape
+                if (marker.options.type === 'place') {
+                    color = 'blue'
+                    selectedColor = 'green'
+                    shape = 'circle'
+                } else if (marker.options.type === 'creature') {
+                    color = 'orange'
+                    selectedColor = 'yellow'
+                    shape = 'penta'
+                }
                 let mainIcon = new L.ExtraMarkers.icon({
                         icon: `fa-${icon}`,
-                        markerColor: 'blue',
-                        shape: 'circle',
+                        markerColor: color,
+                        shape,
                         prefix: 'fa'
                     }),
                     selectedIcon = new L.ExtraMarkers.icon({
                         icon: `fa-${icon}`,
-                        markerColor: 'green',
+                        markerColor: selectedColor,
                         shape: 'square',
                         prefix: 'fa'
                     })
@@ -384,9 +418,9 @@ $(document).ready(function () {
             })
     })
 
-    function addMapMarker(e, placeId = false) {
+    function addMapMarker(e, id, type) {
         sidebar.close()
-        $('#map-container').append(`<img id="new-map-marker" data-place-id="${placeId}" src="${black}" alt="Black map marker icon">`)
+        $('#map-container').append(`<img id="new-map-marker" data-${type}-id="${id}" src="${black}" alt="Black map marker icon">`)
         $('#new-map-marker').css({
             position: 'fixed',
             top: e.offsetX + 12.5,
@@ -408,27 +442,34 @@ $(document).ready(function () {
 
     function newMarkerClick(e) {
         turnOffNewMarkerEvents()
-        let placeId = $('#new-map-marker').data('place-id')
+        let id, type
+        if ($('#new-map-marker').data('place-id')) {
+            id = $('#new-map-marker').data('place-id')
+            type = 'place'
+        } else if ($('#new-map-marker').data('creature-id')) {
+            id = $('#new-map-marker').data('creature-id')
+            type = 'creature'
+        }
         $('#new-map-marker').remove()
         $('#map-container').css('cursor', `grab`)
-        $place = $(`.compendium-place[data-place-id="${placeId}"]`)
-        $place.find('.to-marker-btn').remove()
-        $place.html(`
-            ${$place.text()}
+        const $item = $(`.compendium-${type}[data-${type}-id="${id}"]`)
+        $item.find('.to-marker-btn').remove()
+        $item.html(`
+            ${$item.text()}
             <i class="fa fa-map-marker-alt"></i>
             <small class="text-muted">${mapModel.name}</small>
         `)
-        axios.post('/markers', { map_id, lat: e.latlng.lat, lng: e.latlng.lng, placeId })
+        axios.post('/markers', { map_id, lat: e.latlng.lat, lng: e.latlng.lng, id, type })
             .then(res => {
-                showNewMarker(res.data.marker)
-                getSelectedMarker(res.data.marker.id, true)
+                showNewMarker(res.data.marker, type)
             })
     }
 
-    function showNewMarker(marker) {
-        $(`.compendium-place[data-place-id="${marker.place.id}"]`).attr('data-marker-id', marker.id)
+    function showNewMarker(marker, type) {
+        $(`.compendium-${type}[data-${type}-id="${marker[type].id}"]`).attr('data-marker-id', marker.id)
         let mapMarker = addMarker(marker)
         mapMarkers.push(mapMarker)
+        getSelectedMarker(marker.id, true)
     }
 
     function newMarkerCancel() {
@@ -454,11 +495,11 @@ $(document).ready(function () {
                 marker = mapMarkers.filter(m => m.options.id == e.markerUpdate.id)[0]
                 marker.setIcon(marker.options.mainIcon)
             } else if (e.markerUpdate.update_type === 'marker') {
-                showNewMarker(e.markerUpdate.marker)
-                getSelectedMarker(e.markerUpdate.marker.id, true)
+                showNewMarker(e.markerUpdate.marker, e.markerUpdate.compendium_type)
+                // getSelectedMarker(e.markerUpdate.marker.id, true)
             } else if (e.markerUpdate.update_type === 'delete') {
                 let thisMapMarker = mapMarkers.filter(marker => marker.options.id == e.markerUpdate.marker.id)[0]
-                deleteMapMarker(thisMapMarker, e.markerUpdate.placeId, 'place')
+                deleteMapMarker(thisMapMarker, e.markerUpdate.compendium_item_id, e.markerUpdate.compendium_type)
             }
         } else if (e.markerUpdate.marker_type === 'player') {
             if (e.markerUpdate.update_type === 'movement') {
@@ -477,23 +518,31 @@ $(document).ready(function () {
         }
     })
 
-    $('#new-marker').on('click', function(e) {
-        addMapMarker(e)
-    })
-
     $(document).on('click', '.to-marker-btn', function (e) {
-        addMapMarker(e, $(this).data('place-id'))
+        if ($(this).data('place-id')) {
+            addMapMarker(e, $(this).data('place-id'), 'place')
+        } else if ($(this).data('creature-id')) {
+            addMapMarker(e, $(this).data('creature-id'), 'creature')
+        }
     })
 
     $(document).on('click', '#delete-marker', function() {
         const markerId = $('#marker-id').val()
-        const placeId = $('#place-id').val()
-        let thisMapMarker = mapMarkers.filter(marker => marker.options.id == markerId)[0]
+        let compendiumItemId,
+            type,
+            thisMapMarker = mapMarkers.filter(marker => marker.options.id == markerId)[0]
+
+        if (thisMapMarker.options.type === 'place') {
+            compendiumItemId = $('#place-id').val()
+            type = 'place'
+        } else if (thisMapMarker.options.type === 'creature') {
+            compendiumItemId = $('#creature-id').val()
+            type = 'creature'
+        }
         axios.delete(`/markers/${markerId}`)
             .then(res => {
                 if (res.status === 200) {
-                    deleteMapMarker(thisMapMarker, placeId, 'place')
-                    sidebar.open('compendium')
+                    deleteMapMarker(thisMapMarker, compendiumItemId, type)
                 }
             })
     })
@@ -502,9 +551,13 @@ $(document).ready(function () {
         marker.removeFrom(map)
         $(`.marker-list-button[data-${type}-id="${id}"]`).remove()
         $(`.compendium-${type}[data-${type}-id="${id}"]`).children().remove()
-        $(`.compendium-${type}[data-${type}-id="${id}"]`).append(`
-            <button class="btn btn-success btn-sm float-right to-marker-btn" data-${type}-id="${id}"><i class="fa fa-map-marker-alt"></i></button>
-        `)
+        $(`.compendium-${type}[data-${type}-id="${id}"]`).removeAttr('data-marker-id')
+        if (isDm) {
+            $(`.compendium-${type}[data-${type}-id="${id}"]`).append(`
+                <button class="btn btn-success btn-sm float-right to-marker-btn" data-${type}-id="${id}"><i class="fa fa-map-marker-alt"></i></button>
+            `)
+            $('#marker-options').remove()
+        }
         pnotify.success({title: 'Marker deleted'})
     }
 

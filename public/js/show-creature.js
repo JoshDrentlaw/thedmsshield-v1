@@ -1,9 +1,10 @@
 $(document).ready(function () {
-    let editor, saveTimeout
-
-    $(document).on('blur', '#show-creature-name', function () {
-        console.log(creature_id)
-        axios.put(`/creatures/${creature_id}`, {name: $(this).text()})
+    $(document).on('blur', '.show-creature-name', function () {
+        let name = $(this).text()
+        if (!creature_id) {
+            creature_id = $('#creature-id').val()
+        }
+        axios.put(`/creatures/${creature_id}`, {name})
             .then(function ({ data }) {
                 if (data.status === 200) {
                     pnotify.success({title: 'Name updated!'})
@@ -12,23 +13,44 @@ $(document).ready(function () {
                     if (pathname === 'creatures') {
                         const state = {campaign_id, creature_id}
                         window.history.pushState(state, '', data.redirect)
+                    } else if (pathname === 'maps') {
+                        let html = name
+                        if ($('#marker-id').length) {
+                            html += `
+                                <i class="fa fa-map-marker-alt"></i>
+                                <small class="text-muted">${mapModel.name}</small>
+                            `
+                        } else {
+                            html += `
+                                <button class="btn btn-success btn-sm float-right to-marker-btn" data-creature-id="${creature_id}"><i class="fa fa-map-marker-alt"></i></button>
+                            `
+                        }
+                        $(`.compendium-creature[data-creature-id="${creature_id}"]`).html(html)
                     }
                 }
             })
     })
-
-    $(document).on('click', '#show-creature-body-display', function () {
-        console.log('body display')
-        if (isDm) {
-            $('#show-creature-editor-container').removeClass('d-none')
-            $(this).addClass('d-none')
-            tinymceInit()
-            let iana = luxon.local().toFormat('z')
-            $('#show-creature-save-time').text(luxon.fromISO($('#show-creature-save-time').text()).setZone(iana).toFormat('FF'))
+    $(document).on('keypress', '.show-creature-name', function (e) {
+        if (e.key === 'Enter') {
+            $('.show-creature-name:visible').trigger('blur')
         }
     })
 
-    $(document).on('click', '#show-creature-change-view-btn', function () {
+    $(document).on('click', '.show-creature-body-display', function () {
+        let $this = $(this)
+        let $editorContainer = $this.siblings('.show-creature-editor-container')
+        let $saveTime = $editorContainer.find('.save-time')
+        if (isDm) {
+            let creatureId = $this.siblings('#creature-id').val()
+            $editorContainer.removeClass('d-none')
+            $this.addClass('d-none')
+            tinymceInit(creatureId, 'creatures', {selector: '.show-creature-body-editor'})
+            let iana = luxon.local().toFormat('z')
+            $saveTime.text(luxon.fromISO($saveTime.text()).setZone(iana).toFormat('FF'))
+        }
+    })
+
+    $(document).on('click', '.show-creature-change-view-btn', function () {
         let body = tinymce.activeEditor.getContent()
         tinymce.activeEditor.destroy()
         $('#show-creature-editor-container').addClass('d-none')

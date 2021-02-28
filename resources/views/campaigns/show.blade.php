@@ -254,27 +254,6 @@ if ($campaign->cover_public_id) {
         </div>
     </div>
 </div>
-
-{{-- NEW THING MODAL --}}
-<div class="modal" id="new-thing-modal" tabindex="-1" role="dialog">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">New Thing</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <x-create-thing />
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" id="new-thing-submit">Submit</button>
-            </div>
-        </div>
-    </div>
-</div>
 @endsection
 
 @section('scripts')

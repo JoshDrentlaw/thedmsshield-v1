@@ -11,17 +11,36 @@ use JD\Cloudder\Facades\Cloudder;
 use App\Debug\Debug;
 use Exception;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Redirect;
+
+use App\Broadcasting\CompendiumChannel;
+use App\Events\CreatureUpdate;
 
 class CreaturesController extends Controller
 {
+    /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index($campaign_url)
     {
-        //
+        if (!$campaign_url) {
+            Redirect::to($_SERVER['HTTP_REFERER']);
+        }
+        $campaign = Campaign::firstWhere('url', $campaign_url);
+        $creatures = Creature::all()->where('campaign_id', $campaign->id);
+        return view('creatures.index', compact('campaign', 'creatures'));
     }
 
     /**
@@ -47,7 +66,7 @@ class CreaturesController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'name' => 'required|unique:creatures,name|max:50',
+            'name' => 'required|max:50',
             'body' => 'max:2000'
         ]);
         try {
@@ -57,6 +76,13 @@ class CreaturesController extends Controller
             $creature->body = $validated['body'];
             $creature->campaign_id = $request->post('campaign_id');
             $creature->save();
+            $creatureUpdate = collect([
+                'campaign_id' => $creature->campaign_id,
+                'id' => $creature->id,
+                'type' => 'newCreature',
+                'creature' => $creature
+            ]);
+            broadcast(new CreatureUpdate($creatureUpdate))->toOthers();
             return ['status' => 200, 'creature' => $creature];
         } catch (Exception $e) {
             return ['status' => 500, 'message' => $e->getMessage()];
@@ -99,8 +125,23 @@ class CreaturesController extends Controller
         extract($request->post());
         $creature = Creature::find($id);
         $lastUpdated = $creature->updated_at;
-        $showComponent = view('components.show-creature', compact('creature', 'isDm', 'lastUpdated'))->render();
+        $onMap = Str::contains($_SERVER['HTTP_REFERER'], 'maps');
+        $showComponent = view('components.show-creature', compact('creature', 'isDm', 'lastUpdated', 'onMap'))->render();
         return ['status' => 200, 'showComponent' => $showComponent];
+    }
+
+    public function show_to_players($id)
+    {
+        $creature = Creature::find($id);
+        $creatureUpdate = collect([
+            'campaign_id' => $creature->campaign_id,
+            'id' => $creature->id,
+            'type' => 'showToPlayers',
+            'markerless' => $creature->markerless,
+            'markerId' => !$creature->markerless ? $creature->marker->id : false
+        ]);
+        broadcast(new CreatureUpdate($creatureUpdate))->toOthers();
+        return ['status' => 200];
     }
 
     /**
@@ -118,36 +159,44 @@ class CreaturesController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  App\Models\Creature $creature
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Creature $creature)
     {
-        try {
-            $res = ['status' => 200];
-            $post = $request->post();
-            if (isset($post['body'])) {
-                $valid = $request->validate([
-                    'body' => 'max:2000'
-                ]);
-                $updated = Creature::where('id', $id)->first()->updated_at;
-                $res['updated_at'] = $updated;
-                Creature::where('id', $id)->update(['body' => $valid['body']]);
-            }
-            if (isset($post['name'])) {
-                $valid = $request->validate([
-                    'name' => 'max:50'
-                ]);
-                $url = strtolower(str_replace(' ', '_', $valid['name']));
+        $res = ['status' => 200];
+        $post = $request->post();
+        if (isset($post['body'])) {
+            $valid = $request->validate([
+                'body' => 'max:65535'
+            ]);
+            $updated = $creature->first()->updated_at;
+            $res['updated_at'] = $updated;
+            $creature->update(['body' => $valid['body']]);
+        }
+        if (isset($post['name'])) {
+            $valid = $request->validate([
+                'name' => 'max:50'
+            ]);
+            $valid['name'] = trim($valid['name']);
+            $url = Str::slug($valid['name'], '_');
+            if ($url !== $creature->url) {
                 $http = explode('/', $_SERVER['HTTP_REFERER']);
                 array_splice($http, -1, 1, $url);
                 $res['redirect'] = implode('/', $http);
-                Creature::where('id', $id)->update(['name' => $valid['name'], 'url' => $url]);
             }
-            return $res;
-        } catch (Exception $e) {
-            return ['status' => 500, 'message' => $e->getMessage()];
+            $creature->update(['name' => $valid['name'], 'url' => $url]);
         }
+        $creature->refresh();
+        $creatureUpdate = collect([
+            'campaign_id' => $creature->campaign_id,
+            'id' => $creature->id,
+            'type' => 'edit',
+            'name' => $creature->name,
+            'body' => $creature->body
+        ]);
+        broadcast(new CreatureUpdate($creatureUpdate))->toOthers();
+        return $res;
     }
 
     /**

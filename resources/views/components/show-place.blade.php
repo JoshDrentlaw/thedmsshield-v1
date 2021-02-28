@@ -27,23 +27,25 @@
     </div>
 
     @if($isDm && !$place->markerless)
-        <div class="card">
-            <div class="card-body">
-                <label>Marker Icon</label>
-                <select id="marker-icon-select">
-                    <?php
-                        $marker = new App\Models\Marker;
-                    ?>
-                    @foreach($marker->place_icons as $icon)
+        <div id="marker-options">
+            <div class="card">
+                <div class="card-body">
+                    <label>Marker Icon</label>
+                    <select id="marker-icon-select">
                         <?php
-                            $text = Str::title(str_replace('-', ' ', $icon));
+                            $marker = new App\Models\Marker;
                         ?>
-                        <option value="{{$icon}}">{{$text}}</option>
-                    @endforeach
-                </select>
+                        @foreach($marker->place_icons as $icon)
+                            <?php
+                                $text = Str::title(str_replace('-', ' ', $icon));
+                            ?>
+                            <option value="{{$icon}}">{{$text}}</option>
+                        @endforeach
+                    </select>
+                </div>
             </div>
+            <button id="delete-marker" class="mt-3 btn btn-danger btn-block">Delete Marker</button>
         </div>
-        <button id="delete-marker" class="mt-3 btn btn-danger btn-block">Delete Marker</button>
     @endif
     @if($isDm && $onMap)
         <button id="show-to-players" class="mt-3 btn btn-info btn-block" data-id="{{$place->id}}" data-type="places">Show to Players</button>

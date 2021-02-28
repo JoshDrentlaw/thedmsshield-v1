@@ -9,17 +9,19 @@ class ShowCreature extends Component
     public $creature;
     public $isDm;
     public $lastUpdated;
+    public $onMap;
 
     /**
      * Create a new component instance.
      *
      * @return void
      */
-    public function __construct($creature, $isDm, $lastUpdated)
+    public function __construct($creature, $isDm, $lastUpdated, $onMap)
     {
         $this->creature = $creature;
         $this->isDm = $isDm;
         $this->lastUpdated = $lastUpdated;
+        $this->onMap = $onMap;
     }
 
     /**
