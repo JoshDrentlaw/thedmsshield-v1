@@ -22,6 +22,9 @@ use App\Listeners\LogMarkerUpdate;
 use App\Events\PlaceUpdate;
 use App\Listeners\LogPlaceUpdate;
 
+use App\Events\CreatureUpdate;
+use App\Listeners\LogCreatureUpdate;
+
 class EventServiceProvider extends ServiceProvider
 {
     /**
@@ -47,6 +50,9 @@ class EventServiceProvider extends ServiceProvider
         ],
         PlaceUpdate::class => [
             LogPlaceUpdate::class
+        ],
+        CreatureUpdate::class => [
+            LogCreatureUpdate::class
         ]
     ];
 

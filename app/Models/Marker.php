@@ -8,7 +8,7 @@ class Marker extends Model
 {
     protected $table = 'markers';
 
-    protected $with = ['place'];
+    protected $with = ['place', 'creature'];
 
     public function map() {
         return $this->belongsTo('App\Models\Map');
@@ -16,6 +16,10 @@ class Marker extends Model
 
     public function place() {
         return $this->belongsTo('App\Models\Place');
+    }
+
+    public function creature() {
+        return $this->belongsTo('App\Models\Creature');
     }
 
     public function getPlaceIconsAttribute() {
@@ -51,6 +55,48 @@ class Marker extends Model
             'archway',
             'house-user',
             'hospital-user'
+        ];
+    }
+
+    public function getCreatureIconsAttribute() {
+        return [
+            'location-arrow',
+            'search-location',
+            'thumbtack',
+            'street-view',
+            'compass',
+            'plane',
+            'plane-departure',
+            'plane-arrival',
+            'map-pin',
+            'globe',
+            'users',
+            'user-friends',
+            'user',
+            'user-slash',
+            'users-cog',
+            'user-times',
+            'user-tie',
+            'user-tag',
+            'user-slash',
+            'user-shield',
+            'user-secret',
+            'user-plus',
+            'user-nurse',
+            'user-ninja',
+            'user-music',
+            'user-minus',
+            'user-md',
+            'user-lock',
+            'user-injured',
+            'user-graduate',
+            'user-cog',
+            'user-edit',
+            'user-clock',
+            'user-circle',
+            'user-check',
+            'user-astronaut',
+            'user-alt-slash'
         ];
     }
 

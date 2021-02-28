@@ -9,6 +9,7 @@ use App\Events\MarkerUpdate;
 use App\Models\Map;
 use App\Models\Marker;
 use App\Models\Place;
+use App\Models\Creature;
 use Notify;
 use Illuminate\Support\Facades\Auth;
 
@@ -21,7 +22,6 @@ class MarkersController extends Controller
      */
     public function index()
     {
-        // auth()->user()->id;
         return Marker::all();
     }
 
@@ -32,7 +32,7 @@ class MarkersController extends Controller
      */
     public function create()
     {
-        
+        //
     }
 
     /**
@@ -48,15 +48,27 @@ class MarkersController extends Controller
         $marker->lat = $request->post('lat');
         $marker->lng = $request->post('lng');
         $marker->map_id = $request->post('map_id');
-        $marker->place_id = $request->post('placeId');
+        if ($request->post('type') === 'place') {
+            $marker->place_id = $request->post('id');
+            $type = 'place';
+        } elseif ($request->post('type') === 'creature') {
+            $marker->creature_id = $request->post('id');
+            $marker->icon = 'user';
+            $marker->color = 'orange';
+            $marker->selected_color = 'yellow';
+            $marker->shape = 'penta';
+            $marker->selected_shape = 'square';
+            $type = 'creature';
+        }
         $marker->save();
-        $marker = Marker::where('id', $marker->id)->with('place')->get()[0];
+        $marker = Marker::where('id', $marker->id)->with(['place', 'creature'])->get()[0];
         $markerUpdate = collect([
             'map_id' => $request->post('map_id'),
             'id' => $marker->id,
             'update_type' => 'marker',
             'marker_type' => 'map',
-            'marker' => $marker
+            'marker' => $marker,
+            'compendium_type' => $type
         ]);
         broadcast(new MarkerUpdate($markerUpdate))->toOthers();
         return compact('marker');
@@ -65,27 +77,34 @@ class MarkersController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Marker  $marker
+     * @param  \App\Models\Marker  $marker
      * @return \Illuminate\Http\Response
      */
     public function show(Marker $marker)
     {
-        $place = Place::find($marker->place_id);
-        $lastUpdated = $place->updated_at;
         $isDm = $marker->map->campaign->dm->id === Auth::user()->id;
         $onMap = Str::contains($_SERVER['HTTP_REFERER'], 'maps');
-        $showComponent = view('components.show-place', compact('place', 'isDm', 'lastUpdated', 'onMap'))->render();
+
+        if ($marker->place_id) {
+            $place = Place::find($marker->place_id);
+            $lastUpdated = $place->updated_at;
+            $showComponent = view('components.show-place', compact('place', 'isDm', 'lastUpdated', 'onMap'))->render();
+        } else if ($marker->creature_id) {
+            $creature = Creature::find($marker->creature_id);
+            $lastUpdated = $creature->updated_at;
+            $showComponent = view('components.show-creature', compact('creature', 'isDm', 'lastUpdated', 'onMap'))->render();
+        }
+
         return [
             'marker' => $marker,
             'showComponent' => $showComponent
         ];
-        // return Marker::find($marker);
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Marker  $marker
+     * @param  \App\Models\Marker  $marker
      * @return \Illuminate\Http\Response
      */
     public function edit(Marker $marker)
@@ -97,7 +116,7 @@ class MarkersController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Marker  $marker
+     * @param  \App\Models\Marker  $marker
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Marker $marker)
@@ -118,15 +137,6 @@ class MarkersController extends Controller
                 $markerUpdate->put('lng', $request['lng']);
                 broadcast(new MarkerUpdate($markerUpdate))->toOthers();
                 return true;
-            case 'note':
-                Place::where('id', $marker->id)->update([
-                    'body' => $request['body'],
-                    'name' => $request['name']
-                ]);
-                $markerUpdate->put('body', $request['body']);
-                $markerUpdate->put('name', $request['name']);
-                // broadcast(new MarkerUpdate($markerUpdate))->toOthers();
-                return true;
             case 'icon':
                 Marker::where('id', $marker->id)->update([
                     'icon' => $request['icon']
@@ -140,7 +150,7 @@ class MarkersController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Marker  $marker
+     * @param  \App\Models\Marker  $marker
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
@@ -151,9 +161,16 @@ class MarkersController extends Controller
             'id' => $marker->id,
             'update_type' => 'delete',
             'marker_type' => 'map',
-            'marker' => $marker,
-            'placeId' => $marker->place->id
+            'marker' => $marker
         ]);
+
+        if ($marker->place_id) {
+            $markerUpdate->put('compendium_item_id', $marker->place->id);
+            $markerUpdate->put('compendium_type', 'place');
+        } else if ($marker->creature_id) {
+            $markerUpdate->put('compendium_item_id', $marker->creature->id);
+            $markerUpdate->put('compendium_type', 'creature');
+        }
         $marker->delete();
         broadcast(new MarkerUpdate($markerUpdate))->toOthers();
         return ['status' => 200];
