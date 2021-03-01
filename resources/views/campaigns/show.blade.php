@@ -29,7 +29,7 @@ if ($campaign->cover_public_id) {
                 <div class="card-body">
                     {{-- MAP LIST GROUP --}}
                     <div id="map-rows" class="row row-cols-1 row-cols-md-2 row-cols-lg-3">
-                        @forelse($maps as $map)
+                        @forelse($maps->sortBy(['created_at', 'desc']) as $map)
                             <x-map-list :map="$map" :is-dm="$isDm" />
                         @empty
                             <p class="px-3"><i>No maps...</i></p>
