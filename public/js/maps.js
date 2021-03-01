@@ -187,16 +187,15 @@ $(document).ready(function () {
             type = 'player'
         }
 
-        return L
+        let mapMarker = L
             .marker([marker.lat, marker.lng], {
-                draggable: isDm,
+                draggable: isDm && !marker.locked,
                 icon: mainIcon,
                 id: marker.id,
                 mainIcon: mainIcon,
                 selectedIcon: selectedIcon,
                 type
             })
-            .addTo(map)
             .on('dragend', function (e) {
                 const controller = Object.prototype.hasOwnProperty.call(marker, 'controller') ? marker.controller : `/markers/${marker.id}`
                 axios.put(controller, {type: 'movement', lat: e.target._latlng.lat, lng: e.target._latlng.lng, map_id})
@@ -212,6 +211,12 @@ $(document).ready(function () {
                 }
                 getSelectedMarker(marker.id, true)
             })
+
+        if (type === 'player' || isDm || (!isDm && marker.visible)) {
+            mapMarker.addTo(map)
+        }
+
+        return mapMarker
     }
 
     setSelectedMarker = function (marker, setMapMarker = false) {
@@ -273,7 +278,7 @@ $(document).ready(function () {
     function setMarkerSidebar(marker, mapMarker = false) {
         let icon = marker.icon
 
-        if (mapMarker) {
+        if (mapMarker && (isDm || (!isDm && marker.visible))) {
             let markerLatLng = mapMarker.getLatLng()
             markerLatLng = {
                 lat: markerLatLng.lat,
@@ -500,6 +505,16 @@ $(document).ready(function () {
             } else if (e.markerUpdate.update_type === 'delete') {
                 let thisMapMarker = mapMarkers.filter(marker => marker.options.id == e.markerUpdate.marker.id)[0]
                 deleteMapMarker(thisMapMarker, e.markerUpdate.compendium_item_id, e.markerUpdate.compendium_type)
+            } else if (e.markerUpdate.update_type === 'visibility') {
+                mapMarkers.forEach(mapMarker => {
+                    if (mapMarker.options.id == e.markerUpdate.id) {
+                        if (e.markerUpdate.visible) {
+                            mapMarker.addTo(map)
+                        } else {
+                            mapMarker.removeFrom(map)
+                        }
+                    }
+                })
             }
         } else if (e.markerUpdate.marker_type === 'player') {
             if (e.markerUpdate.update_type === 'movement') {
@@ -524,6 +539,59 @@ $(document).ready(function () {
         } else if ($(this).data('creature-id')) {
             addMapMarker(e, $(this).data('creature-id'), 'creature')
         }
+    })
+
+    $(document).on('click', '#lock-marker', function () {
+        const markerId = $('#marker-id').val(),
+            $this = $(this)
+            locked = !$this.hasClass('btn-danger')
+
+        axios.put(`/markers/${markerId}`, { type: 'lock', map_id, locked })
+            .then(res => {
+                if (res.status === 200) {
+                    $this.toggleClass('btn-danger btn-success')
+                    $this.children().remove()
+                    let icon
+                    if (locked) {
+                        icon = 'fa-lock'
+                    } else {
+                        icon = 'fa-lock-open'
+                    }
+                    $this.append(`<i class="fa ${icon}"></i>`)
+                    mapMarkers.forEach(mapMarker => {
+                        if (mapMarker.options.id == markerId) {
+                            mapMarker.removeFrom(map)
+                            if (locked) {
+                                mapMarker.options.draggable = false
+                            } else {
+                                mapMarker.options.draggable = true
+                            }
+                            mapMarker.addTo(map)
+                        }
+                    })
+                }
+            })
+    })
+
+    $(document).on('click', '#marker-visible', function () {
+        const markerId = $('#marker-id').val(),
+            $this = $(this)
+            visible = !$this.hasClass('btn-success')
+
+        axios.put(`/markers/${markerId}`, { type: 'visibility', map_id, visible })
+            .then(res => {
+                if (res.status === 200) {
+                    $this.toggleClass('btn-danger btn-success')
+                    $this.children().remove()
+                    let icon
+                    if (visible) {
+                        icon = 'fa-eye'
+                    } else {
+                        icon = 'fa-eye-slash'
+                    }
+                    $this.append(`<i class="fa ${icon}"></i>`)
+                }
+            })
     })
 
     $(document).on('click', '#delete-marker', function() {

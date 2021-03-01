@@ -1,6 +1,6 @@
 <div id="place-body" class="card card-body">
     @csrf
-    <h1 class="card-title mb-4">
+    <h1 class="card-title">
         <span class="show-place-name<?= $isDm ? ' interactive' : '' ?>" contenteditable="<?= $isDm ? 'true' : 'false' ?>">
             {{$place->name}}
         </span>
@@ -8,7 +8,7 @@
             <br><small class="text-muted d-inline-block mt-3"><i class="fa fa-map-marker-alt mr-2"></i>{{$place->marker->map->name}}</small>
         @endif
     </h1>
-    <div class="form-group mb-4">
+    <div class="form-group mt-4">
         @if(!$place->markerless)
             <input id="marker-id" value="{{$place->marker->id}}" type="hidden">
         @endif
@@ -26,29 +26,61 @@
         </div>
     </div>
 
-    @if($isDm && !$place->markerless)
-        <div id="marker-options">
+    @if($isDm && $onMap)
+        <button id="show-to-players" class="mt-2 btn btn-info btn-block" data-id="{{$place->id}}" data-type="places">Show to Players</button>
+    @endif
+
+    @if($isDm)
+        <div id="place-options" class="mt-4">
             <div class="card">
                 <div class="card-body">
-                    <label>Marker Icon</label>
-                    <select id="marker-icon-select">
-                        <?php
-                            $marker = new App\Models\Marker;
-                        ?>
-                        @foreach($marker->place_icons as $icon)
-                            <?php
-                                $text = Str::title(str_replace('-', ' ', $icon));
-                            ?>
-                            <option value="{{$icon}}">{{$text}}</option>
-                        @endforeach
-                    </select>
+                    <h4 class="card-title">Place Options</h4>
+                    <button class="btn btn-danger"><i class="fa fa-eye-slash"></i></button>
                 </div>
             </div>
-            <button id="delete-marker" class="mt-3 btn btn-danger btn-block">Delete Marker</button>
         </div>
-    @endif
-    @if($isDm && $onMap)
-        <button id="show-to-players" class="mt-3 btn btn-info btn-block" data-id="{{$place->id}}" data-type="places">Show to Players</button>
+        @if (!$place->markerless)
+            <div id="marker-options" class="mt-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">Marker Options</h4>
+                        <label>Marker Icon</label>
+                        <select id="marker-icon-select">
+                            <?php
+                                $marker = new App\Models\Marker;
+                            ?>
+                            @foreach($marker->place_icons as $icon)
+                                <?php
+                                    $text = Str::title(str_replace('-', ' ', $icon));
+                                ?>
+                                <option value="{{$icon}}">{{$text}}</option>
+                            @endforeach
+                        </select>
+                        <div class="btn-group mt-3">
+                            <?php
+                                if ($place->marker->locked == 0) {
+                                    $lockBtn = 'success';
+                                    $lockIcon = '-open';
+                                } else {
+                                    $lockBtn = 'danger';
+                                    $lockIcon = '';
+                                }
+                                if ($place->marker->visible == 1) {
+                                    $visibleBtn = 'success';
+                                    $visibleIcon = '';
+                                } else {
+                                    $visibleBtn = 'danger';
+                                    $visibleIcon = '-slash';
+                                }
+                            ?>
+                            <button id="lock-marker" class="btn btn-{{$lockBtn}}"><i class="fa fa-lock{{$lockIcon}}"></i></button>
+                            <button id="marker-visible" class="btn btn-{{$visibleBtn}}"><i class="fa fa-eye{{$visibleIcon}}"></i></button>
+                        </div>
+                        <button id="delete-marker" class="mt-3 btn btn-danger btn-block">Delete Marker</button>
+                    </div>
+                </div>
+            </div>
+        @endif
     @endif
 </div>
 
