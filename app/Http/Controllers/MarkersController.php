@@ -144,6 +144,18 @@ class MarkersController extends Controller
                 $markerUpdate->put('icon', $request['icon']);
                 broadcast(new MarkerUpdate($markerUpdate))->toOthers();
                 return true;
+            case 'visibility':
+                $marker->update([
+                    'visible' => $request['visible'] ? 1 : 0
+                ]);
+                $markerUpdate->put('visible', $request['visible']);
+                broadcast(new MarkerUpdate($markerUpdate))->toOthers();
+                return true;
+            case 'lock':
+                $marker->update([
+                    'locked' => $request['locked'] ? 1 : 0
+                ]);
+                return true;
         }
     }
 

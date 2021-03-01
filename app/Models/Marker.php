@@ -10,6 +10,14 @@ class Marker extends Model
 
     protected $with = ['place', 'creature'];
 
+    protected $fillable = [
+        'lat',
+        'lng',
+        'icon',
+        'visible',
+        'locked'
+    ];
+
     public function map() {
         return $this->belongsTo('App\Models\Map');
     }
