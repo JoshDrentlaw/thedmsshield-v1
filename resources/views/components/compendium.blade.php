@@ -54,11 +54,13 @@
                     @forelse ($creatures as $creature)
                         <?php
                             $markerId = '';
+                            $mapId = '';
                             if ($creature->marker) {
                                 $markerId = ' data-marker-id=' . $creature->marker->id . '';
+                                $mapId = ' data-map-id=' . $creature->marker->map->id . '';
                             }
                         ?>
-                        <a class="list-group-item list-group-item-action interactive dmshield-link compendium-creature compendium-item{{$show}}"{{$markerId}} data-creature-id="{{$creature->id}}" {{$path === 'map' ? '' : 'href=/campaigns/' . $campaign->url . '/compendium/creatures/' . $creature->url}}>
+                        <a class="list-group-item list-group-item-action interactive dmshield-link compendium-creature compendium-item{{$show}}"{{$markerId}}{{$mapId}} data-creature-id="{{$creature->id}}" {{$path === 'map' ? '' : 'href=/campaigns/' . $campaign->url . '/compendium/creatures/' . $creature->url}}>
                             {{$creature->name}}
                             @if($creature->marker)
                                 <i class="fa fa-map-marker-alt"></i>
@@ -104,11 +106,13 @@
                     @forelse ($places as $place)
                         <?php
                             $markerId = '';
+                            $mapId = '';
                             if ($place->marker) {
                                 $markerId = ' data-marker-id=' . $place->marker->id . '';
+                                $mapId = ' data-map-id=' . $place->marker->map->id . '';
                             }
                         ?>
-                        <a class="list-group-item list-group-item-action interactive dmshield-link compendium-place compendium-item{{$show}}"{{$markerId}} data-place-id="{{$place->id}}" {{$path === 'map' ? '' : 'href=/campaigns/' . $campaign->url . '/compendium/places/' . $place->url}}>
+                        <a class="list-group-item list-group-item-action interactive dmshield-link compendium-place compendium-item{{$show}}"{{$markerId}}{{$mapId}} data-place-id="{{$place->id}}" {{$path === 'map' ? '' : 'href=/campaigns/' . $campaign->url . '/compendium/places/' . $place->url}}>
                             {{$place->name}}
                             @if($place->marker)
                                 <i class="fa fa-map-marker-alt"></i>

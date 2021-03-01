@@ -7,9 +7,7 @@ $(document).ready(function () {
     // SHOW CREATURE
     $(document).on('click', '.compendium-creature.show', function (e) {
         if (!$(e.target).hasClass('to-marker-btn') && $(e.target).parents('.to-marker-btn').length === 0) {
-            console.log($(this).data('marker-id'))
-            if ($(this).data('marker-id')) {
-                console.log('got into marker')
+            if ($(this).data('marker-id') && map_id == $(this).data('map-id')) {
                 getSelectedMarker($(this).data('marker-id'), true)
             } else {
                 creature_id = $(this).data('creature-id')
@@ -54,7 +52,8 @@ $(document).ready(function () {
     // SHOW PLACE
     $(document).on('click', '.compendium-place.show', function (e) {
         if (!$(e.target).hasClass('to-marker-btn') && $(e.target).parents('.to-marker-btn').length === 0) {
-            if ($(this).data('marker-id')) {
+            console.log(map_id, $(this).data('map-id'), (map_id == $(this).data('map-id')))
+            if ($(this).data('marker-id') && map_id == $(this).data('map-id')) {
                 getSelectedMarker($(this).data('marker-id'), true)
             } else {
                 place_id = $(this).data('place-id')
