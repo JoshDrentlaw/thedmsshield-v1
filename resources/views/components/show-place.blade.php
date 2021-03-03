@@ -4,7 +4,7 @@
         <span class="show-place-name<?= $isDm ? ' interactive' : '' ?>" contenteditable="<?= $isDm ? 'true' : 'false' ?>">
             {{$place->name}}
         </span>
-        @if($place->marker)
+        @if($place->marker && ($isDm || (!$isDm && $place->marker->visible)))
             <br><small class="text-muted d-inline-block mt-3"><i class="fa fa-map-marker-alt mr-2"></i>{{$place->marker->map->name}}</small>
         @endif
     </h1>
@@ -35,7 +35,16 @@
             <div class="card">
                 <div class="card-body">
                     <h4 class="card-title">Place Options</h4>
-                    <button class="btn btn-danger"><i class="fa fa-eye-slash"></i></button>
+                    <?php
+                        if ($place->visible == 1) {
+                            $visibleBtn = 'success';
+                            $visibleIcon = '';
+                        } else {
+                            $visibleBtn = 'danger';
+                            $visibleIcon = '-slash';
+                        }
+                    ?>
+                    <button class="btn btn-{{$visibleBtn}}" id="place-visible"><i class="fa fa-eye{{$visibleIcon}}"></i></button>
                 </div>
             </div>
         </div>
@@ -56,7 +65,7 @@
                                 <option value="{{$icon}}">{{$text}}</option>
                             @endforeach
                         </select>
-                        <div class="btn-group mt-3">
+                        <div class="btn-group btn-group-lg mt-3">
                             <?php
                                 if ($place->marker->locked == 0) {
                                     $lockBtn = 'success';
@@ -74,9 +83,9 @@
                                 }
                             ?>
                             <button id="lock-marker" class="btn btn-{{$lockBtn}}"><i class="fa fa-lock{{$lockIcon}}"></i></button>
-                            <button id="marker-visible" class="btn btn-{{$visibleBtn}}"><i class="fa fa-eye{{$visibleIcon}}"></i></button>
+                            <button id="marker-visible" class="btn btn-{{$visibleBtn}}" data-type="place"><i class="fa fa-eye{{$visibleIcon}}"></i></button>
                         </div>
-                        <button id="delete-marker" class="mt-3 btn btn-danger btn-block">Delete Marker</button>
+                        <button id="delete-marker" class="mt-5 btn btn-danger btn-block">Delete Marker</button>
                     </div>
                 </div>
             </div>

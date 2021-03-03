@@ -166,35 +166,46 @@ class CreaturesController extends Controller
     {
         $res = ['status' => 200];
         $post = $request->post();
-        if (isset($post['body'])) {
-            $valid = $request->validate([
-                'body' => 'max:65535'
-            ]);
-            $updated = $creature->first()->updated_at;
-            $res['updated_at'] = $updated;
-            $creature->update(['body' => $valid['body']]);
-        }
-        if (isset($post['name'])) {
-            $valid = $request->validate([
-                'name' => 'max:50'
-            ]);
-            $valid['name'] = trim($valid['name']);
-            $url = Str::slug($valid['name'], '_');
-            if ($url !== $creature->url) {
-                $http = explode('/', $_SERVER['HTTP_REFERER']);
-                array_splice($http, -1, 1, $url);
-                $res['redirect'] = implode('/', $http);
-            }
-            $creature->update(['name' => $valid['name'], 'url' => $url]);
-        }
-        $creature->refresh();
         $creatureUpdate = collect([
             'campaign_id' => $creature->campaign_id,
             'id' => $creature->id,
-            'type' => 'edit',
-            'name' => $creature->name,
-            'body' => $creature->body
+            'type' => $post['type']
         ]);
+        if ($post['type'] === 'edit') {
+            if (isset($post['body'])) {
+                $valid = $request->validate([
+                'body' => 'max:65535'
+            ]);
+                $updated = $creature->first()->updated_at;
+                $res['updated_at'] = $updated;
+                $creature->update(['body' => $valid['body']]);
+            }
+            if (isset($post['name'])) {
+                $valid = $request->validate([
+                'name' => 'max:50'
+            ]);
+                $valid['name'] = trim($valid['name']);
+                $url = Str::slug($valid['name'], '_');
+                if ($url !== $creature->url) {
+                    $http = explode('/', $_SERVER['HTTP_REFERER']);
+                    array_splice($http, -1, 1, $url);
+                    $res['redirect'] = implode('/', $http);
+                }
+                $creature->update(['name' => $valid['name'], 'url' => $url]);
+            }
+            $creature->refresh();
+            $creatureUpdate->put('name', $creature->name);
+            $creatureUpdate->put('body', $creature->body);
+        } elseif ($post['type'] === 'visibility') {
+            $creature->update(['visible' => $post['visible']]);
+            $creatureUpdate->put('visible', $post['visible']);
+            $creatureUpdate->put('hasMarker', !$creature->markerless);
+            if (!$creature->markerless) {
+                $creatureUpdate->put('marker', $creature->marker);
+                $creatureUpdate->put('markerVisible', $creature->marker->visible);
+            }
+            $res = true;
+        }
         broadcast(new CreatureUpdate($creatureUpdate))->toOthers();
         return $res;
     }

@@ -166,35 +166,46 @@ class PlacesController extends Controller
     {
         $res = ['status' => 200];
         $post = $request->post();
-        if (isset($post['body'])) {
-            $valid = $request->validate([
-                'body' => 'max:65535'
-            ]);
-            $updated = $place->first()->updated_at;
-            $res['updated_at'] = $updated;
-            $place->update(['body' => $valid['body']]);
-        }
-        if (isset($post['name'])) {
-            $valid = $request->validate([
-                'name' => 'max:50'
-            ]);
-            $valid['name'] = trim($valid['name']);
-            $url = Str::slug($valid['name'], '_');
-            if ($url !== $place->url) {
-                $http = explode('/', $_SERVER['HTTP_REFERER']);
-                array_splice($http, -1, 1, $url);
-                $res['redirect'] = implode('/', $http);
-            }
-            $place->update(['name' => $valid['name'], 'url' => $url]);
-        }
-        $place->refresh();
         $placeUpdate = collect([
             'campaign_id' => $place->campaign_id,
             'id' => $place->id,
-            'type' => 'edit',
-            'name' => $place->name,
-            'body' => $place->body
+            'type' => $post['type']
         ]);
+        if ($post['type'] === 'edit') {
+            if (isset($post['body'])) {
+                $valid = $request->validate([
+                'body' => 'max:65535'
+            ]);
+                $updated = $place->first()->updated_at;
+                $res['updated_at'] = $updated;
+                $place->update(['body' => $valid['body']]);
+            }
+            if (isset($post['name'])) {
+                $valid = $request->validate([
+                'name' => 'max:50'
+            ]);
+                $valid['name'] = trim($valid['name']);
+                $url = Str::slug($valid['name'], '_');
+                if ($url !== $place->url) {
+                    $http = explode('/', $_SERVER['HTTP_REFERER']);
+                    array_splice($http, -1, 1, $url);
+                    $res['redirect'] = implode('/', $http);
+                }
+                $place->update(['name' => $valid['name'], 'url' => $url]);
+            }
+            $place->refresh();
+            $placeUpdate->put('name', $place->name);
+            $placeUpdate->put('body', $place->body);
+        } elseif ($post['type'] === 'visibility') {
+            $place->update(['visible' => $post['visible']]);
+            $placeUpdate->put('visible', $post['visible']);
+            $placeUpdate->put('hasMarker', !$place->markerless);
+            if (!$place->markerless) {
+                $placeUpdate->put('marker', $place->marker);
+                $placeUpdate->put('markerVisible', $place->marker->visible);
+            }
+            $res = true;
+        }
         broadcast(new PlaceUpdate($placeUpdate))->toOthers();
         return $res;
     }

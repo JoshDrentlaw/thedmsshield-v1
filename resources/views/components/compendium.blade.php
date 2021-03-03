@@ -1,4 +1,5 @@
 <?php
+    use App\Debug\Debug;
     $isDm = $isDm ? 1 : 0;
     switch ($path) {
         case 'map':
@@ -59,12 +60,15 @@
                                 $markerId = ' data-marker-id=' . $creature->marker->id . '';
                                 $mapId = ' data-map-id=' . $creature->marker->map->id . '';
                             }
+                            $vis = ($isDm || (!$isDm && $creature->visible)) ? '' : ' d-none';
                         ?>
-                        <a class="list-group-item list-group-item-action interactive dmshield-link compendium-creature compendium-item{{$show}}"{{$markerId}}{{$mapId}} data-creature-id="{{$creature->id}}" {{$path === 'map' ? '' : 'href=/campaigns/' . $campaign->url . '/compendium/creatures/' . $creature->url}}>
+                        <a class="list-group-item list-group-item-action interactive dmshield-link compendium-creature compendium-item{{$show}}{{$vis}}"{{$markerId}}{{$mapId}} data-creature-id="{{$creature->id}}" {{$path === 'map' ? '' : 'href=/campaigns/' . $campaign->url . '/compendium/creatures/' . $creature->url}}>
                             {{$creature->name}}
-                            @if($creature->marker)
-                                <i class="fa fa-map-marker-alt"></i>
-                                <small class="text-muted">{{$creature->marker->map->name}}</small>
+                            @if($creature->marker && ($isDm || (!$isDm && $creature->marker->visible)))
+                                <span class="marker-location">
+                                    <i class="fa fa-map-marker-alt"></i>
+                                    <small class="text-muted">{{$creature->marker->map->name}}</small>
+                                </span>
                             @else
                                 @if($path === 'map' && $isDm)
                                     <button class="btn btn-success btn-sm float-right to-marker-btn" data-creature-id="{{$creature->id}}"><i class="fa fa-map-marker-alt"></i></button>
@@ -111,12 +115,15 @@
                                 $markerId = ' data-marker-id=' . $place->marker->id . '';
                                 $mapId = ' data-map-id=' . $place->marker->map->id . '';
                             }
+                            $vis = ($isDm || (!$isDm && $place->visible)) ? '' : ' d-none';
                         ?>
-                        <a class="list-group-item list-group-item-action interactive dmshield-link compendium-place compendium-item{{$show}}"{{$markerId}}{{$mapId}} data-place-id="{{$place->id}}" {{$path === 'map' ? '' : 'href=/campaigns/' . $campaign->url . '/compendium/places/' . $place->url}}>
+                        <a class="list-group-item list-group-item-action interactive dmshield-link compendium-place compendium-item{{$show}}{{$vis}}"{{$markerId}}{{$mapId}} data-place-id="{{$place->id}}" {{$path === 'map' ? '' : 'href=/campaigns/' . $campaign->url . '/compendium/places/' . $place->url}}>
                             {{$place->name}}
-                            @if($place->marker)
-                                <i class="fa fa-map-marker-alt"></i>
-                                <small class="text-muted">{{$place->marker->map->name}}</small>
+                            @if($place->marker && ($isDm || (!$isDm && $place->marker->visible)))
+                                <span class="marker-location">
+                                    <i class="fa fa-map-marker-alt"></i>
+                                    <small class="text-muted">{{$place->marker->map->name}}</small>
+                                </span>
                             @else
                                 @if($path === 'map' && $isDm)
                                     <button class="btn btn-success btn-sm float-right to-marker-btn" data-place-id="{{$place->id}}"><i class="fa fa-map-marker-alt"></i></button>

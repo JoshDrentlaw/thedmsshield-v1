@@ -4,7 +4,7 @@
         <span class="show-creature-name<?= $isDm ? ' interactive' : '' ?>" contenteditable="<?= $isDm ? 'true' : 'false' ?>">
             {{$creature->name}}
         </span>
-        @if($creature->marker)
+        @if($creature->marker && ($isDm || (!$isDm && $creature->marker->visible)))
             <br><small class="text-muted d-inline-block mt-3"><i class="fa fa-map-marker-alt mr-2"></i>{{$creature->marker->map->name}}</small>
         @endif
     </h1>
@@ -35,7 +35,7 @@
             <div class="card">
                 <div class="card-body">
                     <h4 class="card-title">Creature Options</h4>
-                    <button class="btn btn-danger"><i class="fa fa-eye-slash"></i></button>
+                    <button class="btn btn-danger" id="creature-visible"><i class="fa fa-eye-slash"></i></button>
                 </div>
             </div>
         </div>
@@ -74,7 +74,7 @@
                                 }
                             ?>
                             <button id="lock-marker" class="btn btn-{{$lockBtn}}"><i class="fa fa-lock{{$lockIcon}}"></i></button>
-                            <button id="marker-visible" class="btn btn-{{$visibleBtn}}"><i class="fa fa-eye{{$visibleIcon}}"></i></button>
+                            <button id="marker-visible" class="btn btn-{{$visibleBtn}}" data-type="creature"><i class="fa fa-eye{{$visibleIcon}}"></i></button>
                         </div>
                         <button id="delete-marker" class="mt-3 btn btn-danger btn-block">Delete Marker</button>
                     </div>
