@@ -4,7 +4,7 @@ $(document).ready(function () {
         if (!creature_id) {
             creature_id = $('#creature-id').val()
         }
-        axios.put(`/creatures/${creature_id}`, {name})
+        axios.put(`/creatures/${creature_id}`, {type: 'edit', name})
             .then(function ({ data }) {
                 if (data.status === 200) {
                     pnotify.success({title: 'Name updated!'})
@@ -17,8 +17,10 @@ $(document).ready(function () {
                         let html = name
                         if ($('#marker-id').length) {
                             html += `
-                                <i class="fa fa-map-marker-alt"></i>
-                                <small class="text-muted">${mapModel.name}</small>
+                                <span class="marker-location">
+                                    <i class="fa fa-map-marker-alt"></i>
+                                    <small class="text-muted">${mapModel.name}</small>
+                                </span>
                             `
                         } else {
                             html += `
@@ -55,5 +57,26 @@ $(document).ready(function () {
         tinymce.activeEditor.destroy()
         $('#show-creature-editor-container').addClass('d-none')
         $('#show-creature-body-display').removeClass('d-none').html(body)
+    })
+
+    $(document).on('click', '#creature-visible', function () {
+        const creatureId = $('#creature-id').val(),
+            $this = $(this)
+            visible = !$this.hasClass('btn-success')
+
+        axios.put(`/creatures/${creatureId}`, { type: 'visibility', map_id, visible })
+            .then(res => {
+                if (res.status === 200) {
+                    $this.toggleClass('btn-danger btn-success')
+                    $this.children().remove()
+                    let icon
+                    if (visible) {
+                        icon = 'fa-eye'
+                    } else {
+                        icon = 'fa-eye-slash'
+                    }
+                    $this.append(`<i class="fa ${icon}"></i>`)
+                }
+            })
     })
 })

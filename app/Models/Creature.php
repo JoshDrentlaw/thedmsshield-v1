@@ -11,7 +11,8 @@ class Creature extends Model
     protected $fillable = [
         'name',
         'url',
-        'body'
+        'body',
+        'visible'
     ];
 
     public function campaign() {

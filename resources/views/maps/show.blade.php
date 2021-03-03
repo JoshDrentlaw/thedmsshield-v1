@@ -340,8 +340,16 @@ $isDm = $isDm ? 1 : 0;
 
 @section('scripts')
     <script>
-        const mapModel = {!!$map!!}
-        const CLOUDINARY_IMG_PATH = '{!!env('CLOUDINARY_IMG_PATH')!!}'
+        const map = L.map('map-container', {
+            crs: L.CRS.Simple,
+            minZoom: -10,
+            keepInView: true,
+            zoomSnap: 0.05,
+            zoomDelta: 0.5,
+            // drawControl: true
+        }),
+        mapModel = {!!$map!!},
+            CLOUDINARY_IMG_PATH = '{!!env('CLOUDINARY_IMG_PATH')!!}'
         let mapUrl = '{!!$map_url!!}'
         let map_id = {!!$map->id!!}
         let user_id = {!!$user_id!!}
@@ -415,6 +423,35 @@ $isDm = $isDm ? 1 : 0;
                             ${e.placeUpdate.place.name}
                         </a>
                     `)
+                } else if (e.placeUpdate.type === 'visibility') {
+                    const $compendiumItem = $(`.compendium-place[data-place-id="${e.placeUpdate.id}"]`)
+                    if (e.placeUpdate.visible) {
+                        $compendiumItem.removeClass('d-none')
+                    } else {
+                        $compendiumItem.addClass('d-none')
+                    }
+                    if (e.placeUpdate.hasMarker) {
+                        mapMarkers.forEach(mapMarker => {
+                            console.log(mapMarker.options.id, e.placeUpdate.marker.id,mapMarker.options.id == e.placeUpdate.marker.id)
+                            if (mapMarker.options.id == e.placeUpdate.marker.id) {
+                                if (e.placeUpdate.visible && e.placeUpdate.markerVisible) {
+                                    mapMarker.addTo(map)
+                                    if ($compendiumItem.find('.marker-length').length === 0) {
+                                        $compendiumItem.append(`
+                                            <span class="marker-location">
+                                                <i class="fa fa-map-marker-alt"></i>
+                                                <small class="text-muted">${mapModel.name}</small>
+                                            </span>
+                                        `)
+                                    }
+                                } else {
+                                    mapMarker.removeFrom(map)
+                                    $compendiumItem.find('.marker-location').remove()
+                                    sidebar.close()
+                                }
+                            }
+                        })
+                    }
                 }
             }).listen('CreatureUpdate', e => {
                 if (e.creatureUpdate.type === 'edit') {
@@ -449,6 +486,35 @@ $isDm = $isDm ? 1 : 0;
                             ${e.creatureUpdate.creature.name}
                         </a>
                     `)
+                } else if (e.creatureUpdate.type === 'visibility') {
+                    const $compendiumItem = $(`.compendium-creature[data-creature-id="${e.creatureUpdate.id}"]`)
+                    if (e.creatureUpdate.visible) {
+                        $compendiumItem.removeClass('d-none')
+                    } else {
+                        $compendiumItem.addClass('d-none')
+                    }
+                    if (e.creatureUpdate.hasMarker) {
+                        mapMarkers.forEach(mapMarker => {
+                            console.log(mapMarker.options.id, e.creatureUpdate.marker.id,mapMarker.options.id == e.creatureUpdate.marker.id)
+                            if (mapMarker.options.id == e.creatureUpdate.marker.id) {
+                                if (e.creatureUpdate.visible && e.creatureUpdate.markerVisible) {
+                                    mapMarker.addTo(map)
+                                    if ($compendiumItem.find('.marker-location').length === 0) {
+                                        $compendiumItem.append(`
+                                            <span class="marker-location">
+                                                <i class="fa fa-map-marker-alt"></i>
+                                                <small class="text-muted">${mapModel.name}</small>
+                                            </span>
+                                        `)
+                                    }
+                                } else {
+                                    mapMarker.removeFrom(map)
+                                    $compendiumItem.find('.marker-location').remove()
+                                    sidebar.close()
+                                }
+                            }
+                        })
+                    }
                 }
             })
         })

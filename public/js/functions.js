@@ -35,8 +35,13 @@ function tinymceInit(id, path, opts) {
                         clearTimeout(saveTimeout)
                     }
                     saveTimeout = setTimeout(function () {
-                        let body = tinymce.activeEditor.getContent()
-                        axios.put(`/${path}/${id}`, {body})
+                        let body = tinymce.activeEditor.getContent(),
+                            putData = { body }
+                        
+                        if (Object.prototype.hasOwnProperty.call(opts, 'putData')) {
+                            putData = $.extend(true, {}, putData, opts.putData)
+                        }
+                        axios.put(`/${path}/${id}`, putData)
                             .then(function ({ data }) {
                                 if (data.status === 200) {
                                     $('.save-time:visible').addClass('shadow-pulse');
