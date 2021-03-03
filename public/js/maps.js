@@ -2,14 +2,6 @@ $(document).ready(function () {
     const maxLatBound = mapHeight,
         maxLngBound = mapWidth,
         bounds = [[0,0], [maxLatBound, maxLngBound]],
-        map = L.map('map-container', {
-            crs: L.CRS.Simple,
-            minZoom: -10,
-            keepInView: true,
-            zoomSnap: 0.05,
-            zoomDelta: 0.5,
-            // drawControl: true
-        }),
         image = L.imageOverlay(mapUrl, bounds).addTo(map),
         drawnItems = new L.FeatureGroup(),
         drawControl = new L.Control.Draw({
@@ -212,7 +204,7 @@ $(document).ready(function () {
                 getSelectedMarker(marker.id, true)
             })
 
-        if (type === 'player' || isDm || (!isDm && marker.visible)) {
+        if (type === 'player' || isDm || (!isDm && (type === 'place' && marker.place.visible || type === 'creature' && marker.creature.visible) && marker.visible)) {
             mapMarker.addTo(map)
         }
 
@@ -276,9 +268,16 @@ $(document).ready(function () {
     })
 
     function setMarkerSidebar(marker, mapMarker = false) {
-        let icon = marker.icon
+        let icon = marker.icon,
+            type
 
-        if (mapMarker && (isDm || (!isDm && marker.visible))) {
+        if (marker.place) {
+            type = 'place'
+        } else if (marker.creature) {
+            type = 'creature'
+        }
+
+        if (mapMarker && (isDm || (!isDm && marker[type].visible && marker.visible))) {
             let markerLatLng = mapMarker.getLatLng()
             markerLatLng = {
                 lat: markerLatLng.lat,
@@ -309,7 +308,12 @@ $(document).ready(function () {
 
     $(document).on('click', '#show-to-players', function () {
         const id = $(this).data('id'),
-            type = $(this).data('type')
+            type = $(this).data('type'),
+            t = type.substr(0, (type.length - 1))
+
+        if ($(`#${t}-visible`).hasClass('btn-danger')) {
+            $(`#${t}-visible`).trigger('click')
+        }
         axios.post(`/${type}/show_to_players/${id}`)
     })
 
@@ -461,8 +465,10 @@ $(document).ready(function () {
         $item.find('.to-marker-btn').remove()
         $item.html(`
             ${$item.text()}
-            <i class="fa fa-map-marker-alt"></i>
-            <small class="text-muted">${mapModel.name}</small>
+            <span class="marker-location">
+                <i class="fa fa-map-marker-alt"></i>
+                <small class="text-muted">${mapModel.name}</small>
+            </span>
         `)
         axios.post('/markers', { map_id, lat: e.latlng.lat, lng: e.latlng.lng, id, type })
             .then(res => {
@@ -575,23 +581,27 @@ $(document).ready(function () {
 
     $(document).on('click', '#marker-visible', function () {
         const markerId = $('#marker-id').val(),
-            $this = $(this)
+            $this = $(this),
+            type = $this.data('type'),
             visible = !$this.hasClass('btn-success')
 
-        axios.put(`/markers/${markerId}`, { type: 'visibility', map_id, visible })
-            .then(res => {
-                if (res.status === 200) {
-                    $this.toggleClass('btn-danger btn-success')
-                    $this.children().remove()
-                    let icon
-                    if (visible) {
-                        icon = 'fa-eye'
-                    } else {
-                        icon = 'fa-eye-slash'
+        if ($(`#${type}-visible`).hasClass('btn-success')) {
+            axios.put(`/markers/${markerId}`, { type: 'visibility', map_id, visible })
+                .then(res => {
+                    if (res.status === 200) {
+                        $this.toggleClass('btn-danger btn-success')
+                        $this.children().remove()
+                        let icon
+                        if (visible) {
+                            icon = 'fa-eye'
+                        } else {
+                            icon = 'fa-eye-slash'
+                        }
+                        $this.append(`<i class="fa ${icon}"></i>`)
                     }
-                    $this.append(`<i class="fa ${icon}"></i>`)
-                }
-            })
+                })
+        }
+        
     })
 
     $(document).on('click', '#delete-marker', function() {

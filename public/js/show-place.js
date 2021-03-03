@@ -4,7 +4,7 @@ $(document).ready(function () {
         if (!place_id) {
             place_id = $('#place-id').val()
         }
-        axios.put(`/places/${place_id}`, {name})
+        axios.put(`/places/${place_id}`, {type: 'edit', name})
             .then(function ({ data }) {
                 if (data.status === 200) {
                     pnotify.success({title: 'Name updated!'})
@@ -17,8 +17,10 @@ $(document).ready(function () {
                         let html = name
                         if ($('#marker-id').length) {
                             html += `
-                                <i class="fa fa-map-marker-alt"></i>
-                                <small class="text-muted">${mapModel.name}</small>
+                                <span class="marker-location">
+                                    <i class="fa fa-map-marker-alt"></i>
+                                    <small class="text-muted">${mapModel.name}</small>
+                                </span>
                             `
                         } else {
                             html += `
@@ -44,7 +46,7 @@ $(document).ready(function () {
             let placeId = $this.siblings('#place-id').val()
             $editorContainer.removeClass('d-none')
             $this.addClass('d-none')
-            tinymceInit(placeId, 'places', {selector: '.show-place-body-editor'})
+            tinymceInit(placeId, 'places', {selector: '.show-place-body-editor', putData: {type: 'edit'}})
             let iana = luxon.local().toFormat('z')
             $saveTime.text(luxon.fromISO($saveTime.text()).setZone(iana).toFormat('FF'))
         }
@@ -55,5 +57,26 @@ $(document).ready(function () {
         tinymce.activeEditor.destroy()
         $('.show-place-editor-container:visible').addClass('d-none')
         $('.show-place-body-display:hidden').removeClass('d-none').html(body)
+    })
+
+    $(document).on('click', '#place-visible', function () {
+        const placeId = $('#place-id').val(),
+            $this = $(this)
+            visible = !$this.hasClass('btn-success')
+
+        axios.put(`/places/${placeId}`, { type: 'visibility', map_id, visible })
+            .then(res => {
+                if (res.status === 200) {
+                    $this.toggleClass('btn-danger btn-success')
+                    $this.children().remove()
+                    let icon
+                    if (visible) {
+                        icon = 'fa-eye'
+                    } else {
+                        icon = 'fa-eye-slash'
+                    }
+                    $this.append(`<i class="fa ${icon}"></i>`)
+                }
+            })
     })
 })
