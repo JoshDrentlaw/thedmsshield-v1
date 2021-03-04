@@ -4,8 +4,14 @@
         <span class="show-place-name<?= $isDm ? ' interactive' : '' ?>" contenteditable="<?= $isDm ? 'true' : 'false' ?>">
             {{$place->name}}
         </span>
-        @if($place->marker && ($isDm || (!$isDm && $place->marker->visible)))
-            <br><small class="text-muted d-inline-block mt-3"><i class="fa fa-map-marker-alt mr-2"></i>{{$place->marker->map->name}}</small>
+        @if($place->marker)
+            <?php
+                $hideLocation = ' d-none';
+                if (!$isDm && $place->marker->visible) {
+                    $hideLocation = '';
+                }
+            ?>
+            <br><small id="marker-location" class="text-muted mt-3{{$hideLocation}}"><i class="fa fa-map-marker-alt mr-2"></i>{{$place->marker->map->name}}</small>
         @endif
     </h1>
     <div class="form-group mt-4">
@@ -85,7 +91,7 @@
                             <button id="lock-marker" class="btn btn-{{$lockBtn}}"><i class="fa fa-lock{{$lockIcon}}"></i></button>
                             <button id="marker-visible" class="btn btn-{{$visibleBtn}}" data-type="place"><i class="fa fa-eye{{$visibleIcon}}"></i></button>
                         </div>
-                        <button id="delete-marker" class="mt-5 btn btn-danger btn-block">Delete Marker</button>
+                        <button class="mt-5 btn btn-danger btn-block" data-toggle="modal" data-target="#delete-marker-modal">Delete Marker</button>
                     </div>
                 </div>
             </div>

@@ -336,6 +336,28 @@ $isDm = $isDm ? 1 : 0;
             </div>
         </div>
     </div>
+
+    {{-- DELETE MARKER MODAL --}}
+    <div class="modal" id="delete-marker-modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Delete marker?</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>This will permanently delete the selected marker.</p>
+                    <p>Are you sure you want to delete?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-danger" id="delete-marker">Delete marker</button>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @section('scripts')
@@ -370,6 +392,20 @@ $isDm = $isDm ? 1 : 0;
         let mapMarkers = []
         let setSelectedMarker
         let getSelectedMarker
+
+        function customIconSelection(icon) {
+            if (!icon.id) {
+                return icon.text
+            }
+            return $(`<i class="fa fa-${icon.id} mr-1"></i> <span>${icon.text}</span>`)
+        }
+
+        function customIconResult(icon) {
+            if (!icon.id) {
+                return icon.text
+            }
+            return $(`<i class="fa fa-${icon.id} mr-1"></i> <span>${icon.text}</span>`)
+        }
 
         new Promise((res, rej) => {
             while (!Echo.socketId) {
@@ -432,21 +468,15 @@ $isDm = $isDm ? 1 : 0;
                     }
                     if (e.placeUpdate.hasMarker) {
                         mapMarkers.forEach(mapMarker => {
-                            console.log(mapMarker.options.id, e.placeUpdate.marker.id,mapMarker.options.id == e.placeUpdate.marker.id)
                             if (mapMarker.options.id == e.placeUpdate.marker.id) {
                                 if (e.placeUpdate.visible && e.placeUpdate.markerVisible) {
                                     mapMarker.addTo(map)
-                                    if ($compendiumItem.find('.marker-length').length === 0) {
-                                        $compendiumItem.append(`
-                                            <span class="marker-location">
-                                                <i class="fa fa-map-marker-alt"></i>
-                                                <small class="text-muted">${mapModel.name}</small>
-                                            </span>
-                                        `)
-                                    }
+                                    $('#marker-location').removeClass('d-none')
+                                    $compendiumItem.find('.marker-location').removeClass('d-none')
                                 } else {
                                     mapMarker.removeFrom(map)
-                                    $compendiumItem.find('.marker-location').remove()
+                                    $('#marker-location').addClass('d-none')
+                                    $compendiumItem.find('.marker-location').addClass('d-none')
                                     sidebar.close()
                                 }
                             }
@@ -495,21 +525,15 @@ $isDm = $isDm ? 1 : 0;
                     }
                     if (e.creatureUpdate.hasMarker) {
                         mapMarkers.forEach(mapMarker => {
-                            console.log(mapMarker.options.id, e.creatureUpdate.marker.id,mapMarker.options.id == e.creatureUpdate.marker.id)
                             if (mapMarker.options.id == e.creatureUpdate.marker.id) {
                                 if (e.creatureUpdate.visible && e.creatureUpdate.markerVisible) {
                                     mapMarker.addTo(map)
-                                    if ($compendiumItem.find('.marker-location').length === 0) {
-                                        $compendiumItem.append(`
-                                            <span class="marker-location">
-                                                <i class="fa fa-map-marker-alt"></i>
-                                                <small class="text-muted">${mapModel.name}</small>
-                                            </span>
-                                        `)
-                                    }
+                                    $('#marker-location').removeClass('d-none')
+                                    $compendiumItem.find('.marker-location').removeClass('d-none')
                                 } else {
                                     mapMarker.removeFrom(map)
-                                    $compendiumItem.find('.marker-location').remove()
+                                    $('#marker-location').addClass('d-none')
+                                    $compendiumItem.find('.marker-location').addClass('d-none')
                                     sidebar.close()
                                 }
                             }
