@@ -9,6 +9,8 @@ $(document).ready(function () {
         if (!$(e.target).hasClass('to-marker-btn') && $(e.target).parents('.to-marker-btn').length === 0) {
             if ($(this).data('marker-id') && map_id == $(this).data('map-id')) {
                 getSelectedMarker($(this).data('marker-id'), true)
+            } else if ($(this).data('marker-id') && map_id != $(this).data('map-id')) {
+                getSelectedMarker($(this).data('marker-id'), false)
             } else {
                 creature_id = $(this).data('creature-id')
                 axios.post('/creatures/show_component', {id: creature_id, isDm})
@@ -55,6 +57,8 @@ $(document).ready(function () {
             console.log(map_id, $(this).data('map-id'), (map_id == $(this).data('map-id')))
             if ($(this).data('marker-id') && map_id == $(this).data('map-id')) {
                 getSelectedMarker($(this).data('marker-id'), true)
+            } else if ($(this).data('marker-id') && map_id != $(this).data('map-id')) {
+                getSelectedMarker($(this).data('marker-id'), false)
             } else {
                 place_id = $(this).data('place-id')
                 axios.post('/places/show_component', {id: place_id, isDm})

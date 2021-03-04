@@ -211,8 +211,7 @@ $(document).ready(function () {
         return mapMarker
     }
 
-    setSelectedMarker = function (marker, setMapMarker = false) {
-        let type
+    setSelectedMarker = function (marker, setMapMarker = false, type = false) {
         mapMarkers.forEach(mapMarker => {
             if (mapMarker.options.id == marker.id) {
                 mapMarker.setIcon(mapMarker.options.selectedIcon)
@@ -220,11 +219,11 @@ $(document).ready(function () {
                 if (setMapMarker) {
                     setMapMarker = mapMarker
                 }
-                setMarkerSidebar(marker, setMapMarker)
             } else {
                 mapMarker.setIcon(mapMarker.options.mainIcon)
             }
         })
+        setMarkerSidebar(marker, setMapMarker)
         sidebar.open(`${type}-marker`)
     }
 
@@ -241,7 +240,7 @@ $(document).ready(function () {
                 }
 
                 $(`#${type}-marker-container`).html(res.data.showComponent)
-                setSelectedMarker(marker, mapMarker)
+                setSelectedMarker(marker, mapMarker, type)
             })
     }
 
@@ -339,20 +338,6 @@ $(document).ready(function () {
     $(document).on('change', '#player-marker-selected_color', function () {
         updatePlayerMarkerIcon()
     })
-
-    function customIconSelection(icon) {
-        if (!icon.id) {
-            return icon.text
-        }
-        return $(`<i class="fa fa-${icon.id} mr-1"></i> <span>${icon.text}</span>`)
-    }
-
-    function customIconResult(icon) {
-        if (!icon.id) {
-            return icon.text
-        }
-        return $(`<i class="fa fa-${icon.id} mr-1"></i> <span>${icon.text}</span>`)
-    }
 
     function updatePlayerMarkerIcon() {
         const id = mapModel.id,
@@ -507,17 +492,21 @@ $(document).ready(function () {
                 marker.setIcon(marker.options.mainIcon)
             } else if (e.markerUpdate.update_type === 'marker') {
                 showNewMarker(e.markerUpdate.marker, e.markerUpdate.compendium_type)
-                // getSelectedMarker(e.markerUpdate.marker.id, true)
             } else if (e.markerUpdate.update_type === 'delete') {
                 let thisMapMarker = mapMarkers.filter(marker => marker.options.id == e.markerUpdate.marker.id)[0]
                 deleteMapMarker(thisMapMarker, e.markerUpdate.compendium_item_id, e.markerUpdate.compendium_type)
             } else if (e.markerUpdate.update_type === 'visibility') {
                 mapMarkers.forEach(mapMarker => {
                     if (mapMarker.options.id == e.markerUpdate.id) {
+                        const $compendiumItem = $(`.compendium-${mapMarker.options.type}[data-marker-id="${e.markerUpdate.id}"]`)
                         if (e.markerUpdate.visible) {
                             mapMarker.addTo(map)
+                            $('#marker-location').removeClass('d-none')
+                            $compendiumItem.find('.marker-location').removeClass('d-none')
                         } else {
                             mapMarker.removeFrom(map)
+                            $('#marker-location').addClass('d-none')
+                            $compendiumItem.find('.marker-location').addClass('d-none')
                         }
                     }
                 })
@@ -636,7 +625,8 @@ $(document).ready(function () {
             `)
             $('#marker-options').remove()
         }
-        pnotify.success({title: 'Marker deleted'})
+        pnotify.success({ title: 'Marker deleted' })
+        $('#delete-marker-modal').modal('hide')
     }
 
     // ANCHOR USER COLOR
