@@ -81,14 +81,6 @@ window.tinymce = tinymce
 
 /**
  * 
- *  Random words
- * 
- *  */
-import randomWords from 'random-words'
-window.randomWords = randomWords
-
-/**
- * 
  *  Tabulator
  * 
  *  */
