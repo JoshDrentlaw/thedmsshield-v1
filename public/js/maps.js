@@ -490,8 +490,6 @@ $(document).ready(function () {
                 updateMarkerIcon(e.markerUpdate.id, e.markerUpdate.icon)
                 marker = mapMarkers.filter(m => m.options.id == e.markerUpdate.id)[0]
                 marker.setIcon(marker.options.mainIcon)
-            } else if (e.markerUpdate.update_type === 'marker') {
-                showNewMarker(e.markerUpdate.marker, e.markerUpdate.compendium_type)
             } else if (e.markerUpdate.update_type === 'delete') {
                 let thisMapMarker = mapMarkers.filter(marker => marker.options.id == e.markerUpdate.marker.id)[0]
                 deleteMapMarker(thisMapMarker, e.markerUpdate.compendium_item_id, e.markerUpdate.compendium_type)
