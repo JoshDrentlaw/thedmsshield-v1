@@ -62,15 +62,6 @@ class MarkersController extends Controller
         }
         $marker->save();
         $marker = Marker::where('id', $marker->id)->with(['place', 'creature'])->get()[0];
-        $markerUpdate = collect([
-            'map_id' => $request->post('map_id'),
-            'id' => $marker->id,
-            'update_type' => 'marker',
-            'marker_type' => 'map',
-            'marker' => $marker,
-            'compendium_type' => $type
-        ]);
-        broadcast(new MarkerUpdate($markerUpdate))->toOthers();
         return compact('marker');
     }
 
