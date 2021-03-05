@@ -41,6 +41,7 @@
         "pnotify": "^5.1.2",
         "random-words": "^1.1.1",
         "select2": "^4.0.13",
+        "tabulator-tables": "^4.9.3",
         "tinymce": "^5.4.2"
     }
 }
