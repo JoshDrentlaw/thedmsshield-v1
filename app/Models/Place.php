@@ -12,6 +12,7 @@ class Place extends Model
         'name',
         'url',
         'body',
+        'dm_notes',
         'visible'
     ];
 

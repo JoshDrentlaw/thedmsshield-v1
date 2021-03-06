@@ -16210,7 +16210,8 @@ a.text-dark:focus {
   border-radius: 6px;
 }
 
-[contenteditable=true].show-place-body-display {
+[contenteditable=true].show-place-body-display,
+[contenteditable=true].show-creature-body-display {
   padding: 1em;
 }
 

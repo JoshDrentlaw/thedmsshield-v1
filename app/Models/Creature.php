@@ -12,6 +12,7 @@ class Creature extends Model
         'name',
         'url',
         'body',
+        'dm_notes',
         'visible'
     ];
 
