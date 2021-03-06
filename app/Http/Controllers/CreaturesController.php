@@ -174,16 +174,24 @@ class CreaturesController extends Controller
         if ($post['type'] === 'edit') {
             if (isset($post['body'])) {
                 $valid = $request->validate([
-                'body' => 'max:65535'
-            ]);
-                $updated = $creature->first()->updated_at;
-                $res['updated_at'] = $updated;
-                $creature->update(['body' => $valid['body']]);
+                    'body' => 'max:65535'
+                ]);
+                $update = ['body' => $valid['body']];
+                if (isset($post['dm_notes'])) {
+                    $valid['dm_notes'] = $request->validate([
+                        'dm_notes' => 'max:65535'
+                    ])['dm_notes'];
+                    Debug::log($valid);
+                    $update['dm_notes'] = $valid['dm_notes'];
+                }
+                $creature->update($update);
+                $creature->refresh();
+                $res['updated_at'] = $creature->updated_at;
             }
             if (isset($post['name'])) {
                 $valid = $request->validate([
-                'name' => 'max:50'
-            ]);
+                    'name' => 'max:50'
+                ]);
                 $valid['name'] = trim($valid['name']);
                 $url = Str::slug($valid['name'], '_');
                 if ($url !== $creature->url) {

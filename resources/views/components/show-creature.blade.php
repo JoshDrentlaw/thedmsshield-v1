@@ -20,15 +20,35 @@
         @endif
         <input id="creature-id" value="{{$creature->id}}" type="hidden">
         <div class="show-creature-editor-container d-none">
+            <h3>Notes</h3>
             <span>Last updated: <em class="save-time">{{$lastUpdated->format('c')}}</em></span>
-            <div class="show-creature-body-editor">
+            <div id="all-editor" class="show-creature-body-editor">
                 {!!$creature->body!!}
             </div>
+            @if($isDm)
+                <h3 class="mt-3">DM Notes</h3>
+                <div id="dm-editor" class="show-creature-dm-note-editor">
+                    {!!$creature->dm_notes!!}
+                </div>
+            @endif
             <button type="button" class="show-creature-change-view-btn btn btn-secondary mt-4">Change view</button>
         </div>
 
         <div class="show-creature-body-display<?= $isDm ? ' interactive' : '' ?>" contenteditable="<?= $isDm ? 'true' : 'false' ?>">
-            {!!$creature->body!!}
+            <div class="card card-body">
+                <h5 class="card-title">Notes</h5>
+                <div id="body-content">
+                    {!!$creature->body!!}
+                </div>
+            </div>
+            @if($isDm)
+                <div class="card card-body mt-3">
+                    <h5 class="card-title">DM Notes</h5>
+                    <div id="dm-note-content">
+                        {!!$creature->dm_notes!!}
+                    </div>
+                </div>
+            @endif
         </div>
     </div>
 

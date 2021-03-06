@@ -42,21 +42,31 @@ $(document).ready(function () {
         let $this = $(this)
         let $editorContainer = $this.siblings('.show-creature-editor-container')
         let $saveTime = $editorContainer.find('.save-time')
+        let creatureId = $this.siblings('#creature-id').val()
+        $editorContainer.removeClass('d-none')
+        $this.addClass('d-none')
+        tinymceInit(creatureId, 'creatures', {selector: '.show-creature-body-editor', putData: {type: 'edit'}})
         if (isDm) {
-            let creatureId = $this.siblings('#creature-id').val()
-            $editorContainer.removeClass('d-none')
-            $this.addClass('d-none')
-            tinymceInit(creatureId, 'creatures', {selector: '.show-creature-body-editor'})
-            let iana = luxon.local().toFormat('z')
-            $saveTime.text(luxon.fromISO($saveTime.text()).setZone(iana).toFormat('FF'))
+            tinymceInit(creatureId, 'creatures', { selector: '.show-creature-dm-note-editor', putData: { type: 'edit' } }, true)
         }
+        let iana = luxon.local().toFormat('z')
+        $saveTime.text(luxon.fromISO($saveTime.text()).setZone(iana).toFormat('FF'))
     })
 
     $(document).on('click', '.show-creature-change-view-btn', function () {
-        let body = tinymce.activeEditor.getContent()
+        let body = tinymce.get('all-editor').getContent(),
+            dmNotes
+        
+        if (isDm) {
+            dmNotes = tinymce.get('dm-editor').getContent()
+        }
         tinymce.activeEditor.destroy()
-        $('#show-creature-editor-container').addClass('d-none')
-        $('#show-creature-body-display').removeClass('d-none').html(body)
+        $('.show-creature-editor-container:visible').addClass('d-none')
+        $('.show-creature-body-display:hidden').removeClass('d-none')
+        $('#body-content').html(body)
+        if (isDm) {
+            $('#dm-note-content').html(dmNotes)
+        }
     })
 
     $(document).on('click', '#creature-visible', function () {
