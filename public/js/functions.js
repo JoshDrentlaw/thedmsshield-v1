@@ -12,20 +12,20 @@ function showValidationErrors(errors, model) {
     pnotify.error({title: 'The following errors occured:', text, textTrusted: true})
 }
 
-function tinymceInit(id, path, opts) {
-    console.log(id)
-    let saveTimeout
+function tinymceInit(id, path, opts, dm = false) {
+    let saveTimeout,
+        autosaveId = dm ? 'dm' : 'all'
+
     let options = {
-        height: 500,
+        height: 300,
         skin_url: '/css/',
         content_css: '/css/content.css',
         plugins: 'autosave',
-        autosave_interval: '3s',
-        autosave_prefix: '{path}-autosave-{query}',
+        autosave_interval: '1s',
+        autosave_prefix: `{path}-autosave-${autosaveId}-{query}`,
         autosave_ask_before_unload: false,
         indent: false,
         init_instance_callback: function (editor) {
-            console.log(id)
             if (id !== 'new') {
                 editor.focus()
                 editor.selection.select(editor.getBody(), true)
@@ -35,9 +35,15 @@ function tinymceInit(id, path, opts) {
                         clearTimeout(saveTimeout)
                     }
                     saveTimeout = setTimeout(function () {
-                        let body = tinymce.activeEditor.getContent(),
-                            putData = { body }
-                        
+                        let body = tinymce.get('all-editor').getContent(),
+                            dmNotes,
+                            putData = {body}
+
+                        if (dm) {
+                            dmNotes = tinymce.get('dm-editor').getContent()
+                            putData['dm_notes'] = dmNotes
+                        }
+
                         if (Object.prototype.hasOwnProperty.call(opts, 'putData')) {
                             putData = $.extend(true, {}, putData, opts.putData)
                         }

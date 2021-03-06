@@ -20,15 +20,35 @@
         @endif
         <input id="place-id" value="{{$place->id}}" type="hidden">
         <div class="show-place-editor-container d-none">
+            <h3>Notes</h3>
             <span>Last updated: <em class="save-time">{{$lastUpdated->format('c')}}</em></span>
-            <div class="show-place-body-editor">
+            <div id="all-editor" class="show-place-body-editor">
                 {!!$place->body!!}
             </div>
+            @if($isDm)
+                <h3 class="mt-3">DM Notes</h3>
+                <div id="dm-editor" class="show-place-dm-note-editor">
+                    {!!$place->dm_notes!!}
+                </div>
+            @endif
             <button type="button" class="show-place-change-view-btn btn btn-secondary mt-4">Change view</button>
         </div>
 
         <div class="show-place-body-display<?= $isDm ? ' interactive' : '' ?>" contenteditable="<?= $isDm ? 'true' : 'false' ?>">
-            {!!$place->body!!}
+            <div class="card card-body">
+                <h5 class="card-title">Notes</h5>
+                <div id="body-content">
+                    {!!$place->body!!}
+                </div>
+            </div>
+            @if($isDm)
+                <div class="card card-body mt-3">
+                    <h5 class="card-title">DM Notes</h5>
+                    <div id="dm-note-content">
+                        {!!$place->dm_notes!!}
+                    </div>
+                </div>
+            @endif
         </div>
     </div>
 

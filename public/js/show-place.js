@@ -42,21 +42,31 @@ $(document).ready(function () {
         let $this = $(this)
         let $editorContainer = $this.siblings('.show-place-editor-container')
         let $saveTime = $editorContainer.find('.save-time')
+        let placeId = $this.siblings('#place-id').val()
+        $editorContainer.removeClass('d-none')
+        $this.addClass('d-none')
+        tinymceInit(placeId, 'places', {selector: '.show-place-body-editor', putData: {type: 'edit'}})
         if (isDm) {
-            let placeId = $this.siblings('#place-id').val()
-            $editorContainer.removeClass('d-none')
-            $this.addClass('d-none')
-            tinymceInit(placeId, 'places', {selector: '.show-place-body-editor', putData: {type: 'edit'}})
-            let iana = luxon.local().toFormat('z')
-            $saveTime.text(luxon.fromISO($saveTime.text()).setZone(iana).toFormat('FF'))
+            tinymceInit(placeId, 'places', { selector: '.show-place-dm-note-editor', putData: { type: 'edit' } }, true)
         }
+        let iana = luxon.local().toFormat('z')
+        $saveTime.text(luxon.fromISO($saveTime.text()).setZone(iana).toFormat('FF'))
     })
 
     $(document).on('click', '.show-place-change-view-btn', function () {
-        let body = tinymce.activeEditor.getContent()
+        let body = tinymce.get('all-editor').getContent(),
+            dmNotes
+        
+        if (isDm) {
+            dmNotes = tinymce.get('dm-editor').getContent()
+        }
         tinymce.activeEditor.destroy()
         $('.show-place-editor-container:visible').addClass('d-none')
-        $('.show-place-body-display:hidden').removeClass('d-none').html(body)
+        $('.show-place-body-display:hidden').removeClass('d-none')
+        $('#body-content').html(body)
+        if (isDm) {
+            $('#dm-note-content').html(dmNotes)
+        }
     })
 
     $(document).on('click', '#place-visible', function () {

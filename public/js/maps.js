@@ -681,11 +681,9 @@ $(document).ready(function () {
         if (e.ping.status === 'show') {
             showMapPing(e.ping)
         } else if (e.ping.status === 'remove') {
-            console.log(pingMarkers)
             if (pingMarkers.length > 0) {
                 const thisPing = pingMarkers.shift()
                 thisPing.remove(map)
-                console.log(pingMarkers)
             }
         }
     })
@@ -708,7 +706,6 @@ $(document).ready(function () {
     }
 
     function removeMapPing(e) {
-        console.log(pingMarkers)
         setTimeout(function () {
             if (pingMarkers.length > 0) {
                 $('#map-container').css('cursor', 'grab')

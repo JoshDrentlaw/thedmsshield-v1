@@ -18,7 +18,8 @@
     border: 1px solid #eeeeee;
     border-radius: 6px;
 
-    &.show-place-body-display {
+    &.show-place-body-display,
+    &.show-creature-body-display {
         padding: 1em;
     }
 
