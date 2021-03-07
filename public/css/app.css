@@ -16211,7 +16211,8 @@ a.text-dark:focus {
 }
 
 [contenteditable=true].show-place-body-display,
-[contenteditable=true].show-creature-body-display {
+[contenteditable=true].show-creature-body-display,
+[contenteditable=true].show-compendium-item-body-display {
   padding: 1em;
 }
 

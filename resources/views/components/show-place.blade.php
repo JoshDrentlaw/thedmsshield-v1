@@ -1,4 +1,4 @@
-<div id="place-body" class="card card-body">
+{{-- <div id="place-body" class="card card-body">
     @csrf
     <h1 class="card-title">
         <span class="show-place-name<?= $isDm ? ' interactive' : '' ?>" contenteditable="<?= $isDm ? 'true' : 'false' ?>">
@@ -50,7 +50,7 @@
                 </div>
             @endif
         </div>
-    </div>
+    </div> --}}
 
     @if($isDm && $onMap)
         <button id="show-to-players" class="mt-2 btn btn-info btn-block" data-id="{{$place->id}}" data-type="places">Show to Players</button>
@@ -117,7 +117,7 @@
             </div>
         @endif
     @endif
-</div>
+{{-- </div>
 
 @section('component-scripts')
     @if(!$onMap)
@@ -126,4 +126,4 @@
         </script>
         <script type="module" src="{{ asset('js/show-place.js') . '?' . time() }}"></script>
     @endif
-@endsection
+@endsection --}}

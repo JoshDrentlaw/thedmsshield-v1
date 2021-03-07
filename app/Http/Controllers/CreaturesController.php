@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use App\Models\Campaign;
 use App\Models\Creature;
+use App\Models\CompendiumItem;
 use Illuminate\Http\Request;
 use JD\Cloudder\Facades\Cloudder;
 use App\Debug\Debug;
@@ -65,28 +66,15 @@ class CreaturesController extends Controller
      */
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'name' => 'required|max:50',
-            'body' => 'max:2000'
+        $creature = CompendiumItem::storeCompendiumItem(new Creature, $request);
+        $creatureUpdate = collect([
+            'campaign_id' => $creature->campaign_id,
+            'id' => $creature->id,
+            'type' => 'newCreature',
+            'creature' => $creature
         ]);
-        try {
-            $creature = new Creature;
-            $creature->url = Str::slug($validated['name'], '_');
-            $creature->name = $validated['name'];
-            $creature->body = $validated['body'];
-            $creature->campaign_id = $request->post('campaign_id');
-            $creature->save();
-            $creatureUpdate = collect([
-                'campaign_id' => $creature->campaign_id,
-                'id' => $creature->id,
-                'type' => 'newCreature',
-                'creature' => $creature
-            ]);
-            broadcast(new CreatureUpdate($creatureUpdate))->toOthers();
-            return ['status' => 200, 'creature' => $creature];
-        } catch (Exception $e) {
-            return ['status' => 500, 'message' => $e->getMessage()];
-        }
+        broadcast(new CreatureUpdate($creatureUpdate))->toOthers();
+        return ['status' => 200, 'item' => $creature];
     }
 
     /**
@@ -123,10 +111,11 @@ class CreaturesController extends Controller
     public function show_component(Request $request)
     {
         extract($request->post());
-        $creature = Creature::find($id);
-        $lastUpdated = $creature->updated_at;
+        $item = Creature::find($id);
+        $itemType = 'creature';
+        $lastUpdated = $item->updated_at;
         $onMap = Str::contains($_SERVER['HTTP_REFERER'], 'maps');
-        $showComponent = view('components.show-creature', compact('creature', 'isDm', 'lastUpdated', 'onMap'))->render();
+        $showComponent = view('components.compendium-item', compact('item', 'itemType', 'isDm', 'lastUpdated', 'onMap'))->render();
         return ['status' => 200, 'showComponent' => $showComponent];
     }
 
@@ -172,36 +161,10 @@ class CreaturesController extends Controller
             'type' => $post['type']
         ]);
         if ($post['type'] === 'edit') {
-            if (isset($post['body'])) {
-                $valid = $request->validate([
-                    'body' => 'max:65535'
-                ]);
-                $update = ['body' => $valid['body']];
-                if (isset($post['dm_notes'])) {
-                    $valid['dm_notes'] = $request->validate([
-                        'dm_notes' => 'max:65535'
-                    ])['dm_notes'];
-                    Debug::log($valid);
-                    $update['dm_notes'] = $valid['dm_notes'];
-                }
-                $creature->update($update);
-                $creature->refresh();
-                $res['updated_at'] = $creature->updated_at;
-            }
-            if (isset($post['name'])) {
-                $valid = $request->validate([
-                    'name' => 'max:50'
-                ]);
-                $valid['name'] = trim($valid['name']);
-                $url = Str::slug($valid['name'], '_');
-                if ($url !== $creature->url) {
-                    $http = explode('/', $_SERVER['HTTP_REFERER']);
-                    array_splice($http, -1, 1, $url);
-                    $res['redirect'] = implode('/', $http);
-                }
-                $creature->update(['name' => $valid['name'], 'url' => $url]);
-            }
-            $creature->refresh();
+            $item = new CompendiumItem();
+            $creature = $item::updateCompendiumItem($request, $creature);
+            $res['updated_at'] = $creature->updated_at;
+            $res['redirect'] = $item::$redirect;
             $creatureUpdate->put('name', $creature->name);
             $creatureUpdate->put('body', $creature->body);
         } elseif ($post['type'] === 'visibility') {
