@@ -8,7 +8,6 @@ class ShowCreature extends Component
 {
     public $creature;
     public $isDm;
-    public $lastUpdated;
     public $onMap;
 
     /**
@@ -16,11 +15,10 @@ class ShowCreature extends Component
      *
      * @return void
      */
-    public function __construct($creature, $isDm, $lastUpdated, $onMap)
+    public function __construct($creature, $isDm, $onMap)
     {
         $this->creature = $creature;
         $this->isDm = $isDm;
-        $this->lastUpdated = $lastUpdated;
         $this->onMap = $onMap;
     }
 

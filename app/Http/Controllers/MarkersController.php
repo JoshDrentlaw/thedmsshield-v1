@@ -77,14 +77,18 @@ class MarkersController extends Controller
         $onMap = Str::contains($_SERVER['HTTP_REFERER'], 'maps');
 
         if ($marker->place_id) {
-            $item = Place::find($marker->place_id);
+            $place = Place::find($marker->place_id);
+            $item = $place;
+            $options = view('components.show-place', compact('place', 'isDm', 'onMap'))->render();
             $itemType = 'place';
         } else if ($marker->creature_id) {
-            $item = Creature::find($marker->creature_id);
+            $creature = Creature::find($marker->creature_id);
+            $item = $creature;
+            $options = view('components.show-creature', compact('creature', 'isDm', 'onMap'))->render();
             $itemType = 'creature';
         }
         $lastUpdated = $item->updated_at;
-        $showComponent = view('components.compendium-item', compact('item', 'itemType', 'isDm', 'lastUpdated', 'onMap'))->render();
+        $showComponent = view('components.compendium-item', compact('item', 'itemType', 'isDm', 'lastUpdated', 'onMap', 'options'))->render();
 
         return [
             'marker' => $marker,

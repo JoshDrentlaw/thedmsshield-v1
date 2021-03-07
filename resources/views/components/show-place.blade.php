@@ -1,7 +1,3 @@
-@if($isDm && $onMap)
-    <button id="show-to-players" class="mt-2 btn btn-info btn-block" data-id="{{$place->id}}" data-type="places">Show to Players</button>
-@endif
-
 @if($isDm)
     <div id="place-options" class="mt-4">
         <div class="card">

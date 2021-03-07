@@ -53,6 +53,12 @@
             @endif
         </div>
     </div>
+
+    @if($isDm && $onMap)
+        <button id="show-to-players" class="mt-2 btn btn-info btn-block" data-id="{{$item->id}}" data-type="{{$itemType}}s">Show to Players</button>
+    @endif
+
+    {!!$options!!}
 </div>
 
 @section('component-scripts')

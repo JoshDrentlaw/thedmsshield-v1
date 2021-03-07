@@ -8,7 +8,6 @@ class ShowPlace extends Component
 {
     public $place;
     public $isDm;
-    public $lastUpdated;
     public $onMap;
 
     /**
@@ -16,11 +15,10 @@ class ShowPlace extends Component
      *
      * @return void
      */
-    public function __construct($place, $isDm, $lastUpdated, $onMap)
+    public function __construct($place, $isDm, $onMap)
     {
         $this->place = $place;
         $this->isDm = $isDm;
-        $this->lastUpdated = $lastUpdated;
         $this->onMap = $onMap;
     }
 
