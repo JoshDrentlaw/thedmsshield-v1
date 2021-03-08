@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use App\Models\Campaign;
 use App\Models\Place;
+use App\Models\CompendiumItem;
 use Illuminate\Http\Request;
 use JD\Cloudder\Facades\Cloudder;
 use App\Debug\Debug;
@@ -65,28 +66,15 @@ class PlacesController extends Controller
      */
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'name' => 'required|max:50',
-            'body' => 'max:2000'
+        $place = CompendiumItem::storeCompendiumItem(new Place, $request);
+        $placeUpdate = collect([
+            'campaign_id' => $place->campaign_id,
+            'id' => $place->id,
+            'type' => 'newPlace',
+            'place' => $place
         ]);
-        try {
-            $place = new Place;
-            $place->url = Str::slug($validated['name'], '_');
-            $place->name = $validated['name'];
-            $place->body = $validated['body'];
-            $place->campaign_id = $request->post('campaign_id');
-            $place->save();
-            $placeUpdate = collect([
-                'campaign_id' => $place->campaign_id,
-                'id' => $place->id,
-                'type' => 'newPlace',
-                'place' => $place
-            ]);
-            broadcast(new PlaceUpdate($placeUpdate))->toOthers();
-            return ['status' => 200, 'place' => $place];
-        } catch (Exception $e) {
-            return ['status' => 500, 'message' => $e->getMessage()];
-        }
+        broadcast(new PlaceUpdate($placeUpdate))->toOthers();
+        return ['status' => 200, 'item' => $place];
     }
 
     /**
@@ -123,11 +111,10 @@ class PlacesController extends Controller
     public function show_component(Request $request)
     {
         extract($request->post());
-        $place = Place::find($id);
-        $lastUpdated = $place->updated_at;
-        $onMap = Str::contains($_SERVER['HTTP_REFERER'], 'maps');
-        $showComponent = view('components.show-place', compact('place', 'isDm', 'lastUpdated', 'onMap'))->render();
-        return ['status' => 200, 'showComponent' => $showComponent];
+        return [
+            'status' => 200,
+            'showComponent' => CompendiumItem::showComponent(Place::find($id), 'place')
+        ];
     }
 
     public function show_to_players($id)
@@ -172,40 +159,16 @@ class PlacesController extends Controller
             'type' => $post['type']
         ]);
         if ($post['type'] === 'edit') {
-            if (isset($post['body'])) {
-                $valid = $request->validate([
-                    'body' => 'max:65535'
-                ]);
-                $update = ['body' => $valid['body']];
-                if (isset($post['dm_notes'])) {
-                    $valid['dm_notes'] = $request->validate([
-                        'dm_notes' => 'max:65535'
-                    ])['dm_notes'];
-                    Debug::log($valid);
-                    $update['dm_notes'] = $valid['dm_notes'];
-                }
-                $place->update($update);
-                $place->refresh();
-                $res['updated_at'] = $place->updated_at;
-            }
-            if (isset($post['name'])) {
-                $valid = $request->validate([
-                    'name' => 'max:50'
-                ]);
-                $valid['name'] = trim($valid['name']);
-                $url = Str::slug($valid['name'], '_');
-                if ($url !== $place->url) {
-                    $http = explode('/', $_SERVER['HTTP_REFERER']);
-                    array_splice($http, -1, 1, $url);
-                    $res['redirect'] = implode('/', $http);
-                }
-                $place->update(['name' => $valid['name'], 'url' => $url]);
-            }
-            $place->refresh();
+            $item = new CompendiumItem();
+            $place = $item::updateCompendiumItem($request, $place);
+            $res['updated_at'] = $place->updated_at;
+            $res['redirect'] = $item::$redirect;
             $placeUpdate->put('name', $place->name);
             $placeUpdate->put('body', $place->body);
         } elseif ($post['type'] === 'visibility') {
-            $place->update(['visible' => $post['visible']]);
+            $place->visible = $post['visible'];
+            $place->save();
+            $place->refresh();
             $placeUpdate->put('visible', $post['visible']);
             $placeUpdate->put('hasMarker', !$place->markerless);
             if (!$place->markerless) {

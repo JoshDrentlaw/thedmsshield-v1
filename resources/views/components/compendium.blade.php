@@ -5,7 +5,7 @@
         case 'map':
             $btnGrpFloat = '';
             $titleInline = '';
-            $show = ' show';
+            $show = ' show-component';
             break;
         case 'campaign':
             $btnGrpFloat = 'float-right';
@@ -39,7 +39,7 @@
                         <button class="btn btn-secondary" data-target="#creatureDescription" data-toggle="collapse" aria-expanded="false" aria-controls="creatureDescription">Description</button>
                         <a href="/campaigns/{{$campaign->url}}/compendium/creatures" class="btn btn-primary">All creatures</a>
                         @if ($isDm)
-                            <button class="btn btn-success btn-sm" id="new-creature-btn">New creature</button>
+                            <button class="btn btn-success btn-sm new-compendium-item" data-type="creature">New creature</button>
                         @endif
                     </div>
                 </div>
@@ -62,7 +62,7 @@
                             }
                             $vis = ($isDm || (!$isDm && $creature->visible)) ? '' : ' d-none';
                         ?>
-                        <a class="list-group-item list-group-item-action interactive dmshield-link compendium-creature compendium-item{{$show}}{{$vis}}"{{$markerId}}{{$mapId}} data-creature-id="{{$creature->id}}" {{$path === 'map' ? '' : 'href=/campaigns/' . $campaign->url . '/compendium/creatures/' . $creature->url}}>
+                        <a class="list-group-item list-group-item-action interactive dmshield-link compendium-creature compendium-item{{$show}}{{$vis}}"{{$markerId}}{{$mapId}} data-creature-id="{{$creature->id}}" data-type="creature" {{$path === 'map' ? '' : 'href=/campaigns/' . $campaign->url . '/compendium/creatures/' . $creature->url}}>
                             {{$creature->name}}
                             @if($creature->marker && ($isDm || (!$isDm && $creature->marker->visible)))
                                 <span class="marker-location">
@@ -91,7 +91,7 @@
                         <button class="btn btn-secondary" data-target="#placesDescription" data-toggle="collapse" aria-expanded="false" aria-controls="placesDescription">Description</button>
                         <a href="/campaigns/{{$campaign->url}}/compendium/places" class="btn btn-primary">All places</a>
                         @if ($isDm)
-                            <button class="btn btn-success" id="new-place-btn">New place</button>
+                            <button class="btn btn-success new-compendium-item" data-type="place">New place</button>
                         @endif
                     </div>
                 </div>
@@ -117,7 +117,7 @@
                             }
                             $vis = ($isDm || (!$isDm && $place->visible)) ? '' : ' d-none';
                         ?>
-                        <a class="list-group-item list-group-item-action interactive dmshield-link compendium-place compendium-item{{$show}}{{$vis}}"{{$markerId}}{{$mapId}} data-place-id="{{$place->id}}" {{$path === 'map' ? '' : 'href=/campaigns/' . $campaign->url . '/compendium/places/' . $place->url}}>
+                        <a class="list-group-item list-group-item-action interactive dmshield-link compendium-place compendium-item{{$show}}{{$vis}}"{{$markerId}}{{$mapId}} data-place-id="{{$place->id}}" data-type="place" {{$path === 'map' ? '' : 'href=/campaigns/' . $campaign->url . '/compendium/places/' . $place->url}}>
                             {{$place->name}}
                             @if($place->marker && ($isDm || (!$isDm && $place->marker->visible)))
                                 <span class="marker-location">
