@@ -4,9 +4,10 @@ namespace App\View\Components;
 
 use Illuminate\View\Component;
 
-class ShowCreature extends Component
+class CompendiumItem extends Component
 {
-    public $creature;
+    public $item;
+    public $itemType;
     public $isDm;
     public $lastUpdated;
     public $onMap;
@@ -16,9 +17,10 @@ class ShowCreature extends Component
      *
      * @return void
      */
-    public function __construct($creature, $isDm, $lastUpdated, $onMap)
+    public function __construct($item, $itemType, $isDm, $lastUpdated, $onMap)
     {
-        $this->creature = $creature;
+        $this->item = $item;
+        $this->itemType = $itemType;
         $this->isDm = $isDm;
         $this->lastUpdated = $lastUpdated;
         $this->onMap = $onMap;
@@ -31,6 +33,6 @@ class ShowCreature extends Component
      */
     public function render()
     {
-        return view('components.show-creature');
+        return view('components.compendium-item');
     }
 }

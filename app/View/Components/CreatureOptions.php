@@ -4,11 +4,10 @@ namespace App\View\Components;
 
 use Illuminate\View\Component;
 
-class ShowPlace extends Component
+class CreatureOptions extends Component
 {
-    public $place;
+    public $creature;
     public $isDm;
-    public $lastUpdated;
     public $onMap;
 
     /**
@@ -16,21 +15,20 @@ class ShowPlace extends Component
      *
      * @return void
      */
-    public function __construct($place, $isDm, $lastUpdated, $onMap)
+    public function __construct($creature, $isDm, $onMap)
     {
-        $this->place = $place;
+        $this->creature = $creature;
         $this->isDm = $isDm;
-        $this->lastUpdated = $lastUpdated;
         $this->onMap = $onMap;
     }
 
     /**
      * Get the view / contents that represent the component.
      *
-     * @return \Illuminate\View\View|string
+     * @return \Illuminate\Contracts\View\View|string
      */
     public function render()
     {
-        return view('components.show-place');
+        return view('components.creature-options');
     }
 }

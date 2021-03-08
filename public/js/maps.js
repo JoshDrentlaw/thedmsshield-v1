@@ -288,9 +288,9 @@ $(document).ready(function () {
         $('#marker-id').val(marker.id)
 
         if (marker.place) {
-            $('#place-id').val(marker.place.id)
+            $('#item-id').val(marker.place.id)
         } else if (marker.creature) {
-            $('#creature-id').val(marker.creature.id)
+            $('#item-id').val(marker.creature.id)
         }
 
         $('#marker-icon-select').select2({
