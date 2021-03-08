@@ -4,7 +4,7 @@ namespace App\View\Components;
 
 use Illuminate\View\Component;
 
-class ShowCreature extends Component
+class CreatureOptions extends Component
 {
     public $creature;
     public $isDm;
@@ -29,6 +29,6 @@ class ShowCreature extends Component
      */
     public function render()
     {
-        return view('components.show-creature');
+        return view('components.creature-options');
     }
 }

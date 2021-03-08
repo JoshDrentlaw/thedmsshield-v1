@@ -4,7 +4,7 @@ namespace App\View\Components;
 
 use Illuminate\View\Component;
 
-class ShowPlace extends Component
+class PlaceOptions extends Component
 {
     public $place;
     public $isDm;
@@ -29,6 +29,6 @@ class ShowPlace extends Component
      */
     public function render()
     {
-        return view('components.show-place');
+        return view('components.place-options');
     }
 }

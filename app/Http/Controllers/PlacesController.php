@@ -111,13 +111,11 @@ class PlacesController extends Controller
     public function show_component(Request $request)
     {
         extract($request->post());
-        $place = Place::find($id);
-        $item = $place;
+        $item = Place::find($id);
         $itemType = 'place';
         $lastUpdated = $item->updated_at;
         $onMap = Str::contains($_SERVER['HTTP_REFERER'], 'maps');
-        $options = view('components.show-place', compact('place', 'isDm', 'onMap'))->render();
-        $showComponent = view('components.compendium-item', compact('item', 'itemType', 'isDm', 'lastUpdated', 'onMap', 'options'))->render();
+        $showComponent = view('components.compendium-item', compact('item', 'itemType', 'isDm', 'lastUpdated', 'onMap'))->render();
         return ['status' => 200, 'showComponent' => $showComponent];
     }
 

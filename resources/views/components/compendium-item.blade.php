@@ -1,3 +1,7 @@
+<?php
+use App\Debug\Debug;
+?>
+
 <div id="compendium-item-container" class="card card-body">
     @csrf
     <input id="item-id" value="{{$item->id}}" type="hidden">
@@ -58,7 +62,14 @@
         <button id="show-to-players" class="mt-2 btn btn-info btn-block" data-id="{{$item->id}}" data-type="{{$itemType}}s">Show to Players</button>
     @endif
 
-    {!!$options!!}
+    @switch($itemType)
+        @case('place')
+            <x-place-options :place="$item" :is-dm="$isDm" :on-map="$onMap" />
+            @break
+        @case('creature')
+            <x-creature-options :creature="$item" :is-dm="$isDm" :on-map="$onMap" />
+            @break
+    @endswitch
 </div>
 
 @section('component-scripts')
@@ -66,6 +77,6 @@
         <script>
             const isDm = {!!$isDm!!}
         </script>
-        <script type="module" src="{{ asset('js/show-' . $itemType . '.js') . '?' . time() }}"></script>
+        <script type="module" src="{{ asset('js/' . $itemType . 'Options.js') . '?' . time() }}"></script>
     @endif
 @endsection

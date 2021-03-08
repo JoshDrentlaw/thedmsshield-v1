@@ -11,21 +11,19 @@ class CompendiumItem extends Component
     public $isDm;
     public $lastUpdated;
     public $onMap;
-    public $options;
 
     /**
      * Create a new component instance.
      *
      * @return void
      */
-    public function __construct($item, $itemType, $isDm, $lastUpdated, $onMap, $options)
+    public function __construct($item, $itemType, $isDm, $lastUpdated, $onMap)
     {
         $this->item = $item;
         $this->itemType = $itemType;
         $this->isDm = $isDm;
         $this->lastUpdated = $lastUpdated;
         $this->onMap = $onMap;
-        $this->options = $options;
     }
 
     /**

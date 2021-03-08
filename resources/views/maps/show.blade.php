@@ -539,8 +539,8 @@ $isDm = $isDm ? 1 : 0;
 
     <script src="{{ asset('js/maps.js') . '?' . time() }}"></script>
     <script src="{{ asset('js/compendium.js') . '?' . time() }}"></script>
-    <script src="{{ asset('js/show-place.js') . '?' . time() }}"></script>
-    <script src="{{ asset('js/show-creature.js') . '?' . time() }}"></script>
+    <script src="{{ asset('js/placeOptions.js') . '?' . time() }}"></script>
+    <script src="{{ asset('js/creatureOptions.js') . '?' . time() }}"></script>
     <script src="{{ asset('js/die-roller.js') . '?' . time() }}"></script>
     <script src="{{ asset('js/mapChatMessages.js') . '?' . time() }}"></script>
 @endsection
