@@ -65,4 +65,11 @@ class CompendiumItem extends Model
 
         return $item;
     }
+
+    public static function showComponent($item, $itemType)
+    {
+        $lastUpdated = $item->updated_at;
+        $onMap = Str::contains($_SERVER['HTTP_REFERER'], 'maps');
+        return view('components.compendium-item', compact('item', 'itemType', 'isDm', 'lastUpdated', 'onMap'))->render();
+    }
 }

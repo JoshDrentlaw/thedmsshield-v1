@@ -111,12 +111,10 @@ class PlacesController extends Controller
     public function show_component(Request $request)
     {
         extract($request->post());
-        $item = Place::find($id);
-        $itemType = 'place';
-        $lastUpdated = $item->updated_at;
-        $onMap = Str::contains($_SERVER['HTTP_REFERER'], 'maps');
-        $showComponent = view('components.compendium-item', compact('item', 'itemType', 'isDm', 'lastUpdated', 'onMap'))->render();
-        return ['status' => 200, 'showComponent' => $showComponent];
+        return [
+            'status' => 200,
+            'showComponent' => CompendiumItem::showComponent(Place::find($id), 'place')
+        ];
     }
 
     public function show_to_players($id)
@@ -168,7 +166,9 @@ class PlacesController extends Controller
             $placeUpdate->put('name', $place->name);
             $placeUpdate->put('body', $place->body);
         } elseif ($post['type'] === 'visibility') {
-            $place->update(['visible' => $post['visible']]);
+            $place->visible = $post['visible'];
+            $place->save();
+            $place->refresh();
             $placeUpdate->put('visible', $post['visible']);
             $placeUpdate->put('hasMarker', !$place->markerless);
             if (!$place->markerless) {

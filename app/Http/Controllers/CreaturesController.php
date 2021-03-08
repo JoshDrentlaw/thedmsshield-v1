@@ -111,12 +111,10 @@ class CreaturesController extends Controller
     public function show_component(Request $request)
     {
         extract($request->post());
-        $item = Creature::find($id);
-        $itemType = 'creature';
-        $lastUpdated = $item->updated_at;
-        $onMap = Str::contains($_SERVER['HTTP_REFERER'], 'maps');
-        $showComponent = view('components.compendium-item', compact('item', 'itemType', 'isDm', 'lastUpdated', 'onMap'))->render();
-        return ['status' => 200, 'showComponent' => $showComponent];
+        return [
+            'status' => 200,
+            'showComponent' => CompendiumItem::showComponent(Creature::find($id), 'creature')
+        ];
     }
 
     public function show_to_players($id)
