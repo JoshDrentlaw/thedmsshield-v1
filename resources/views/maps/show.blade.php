@@ -519,6 +519,120 @@ $isDm = $isDm ? 1 : 0;
                         })
                     }
                 }
+            }).listen('OrganizationUpdate', e => {
+                if (e.organizationUpdate.type === 'edit') {
+                    if (e.organizationUpdate.id == $('#organization-id').val()) {
+                        $('.show-organization-name').text(e.organizationUpdate.name)
+                        let html = e.organizationUpdate.name
+                        if ($('#marker-id').length) {
+                            html += `
+                                <i class="fa fa-map-marker-alt"></i>
+                                <small class="text-muted">${mapModel.name}</small>
+                            `
+                        }
+                        $(`.compendium-organization[data-organization-id="${organization_id}"]`).html(html)
+                        $('.show-organization-body-display').html(e.organizationUpdate.body)
+                    }
+                } else if (e.organizationUpdate.type === 'showToPlayers') {
+                    if (e.organizationUpdate.markerless) {
+                        axios.post('/organizations/show_component', {id: e.organizationUpdate.id, isDm: false})
+                        .then(({ data }) => {
+                            if (data.status === 200) {
+                                sidebar.open('organization-marker')
+                                $('#organization-marker-container').html(data.showComponent)
+                            }
+                        })
+                    } else {
+                        getSelectedMarker(e.organizationUpdate.markerId, true)
+                    }
+                } else if (e.organizationUpdate.type === 'newOrganization') {
+                    $(`#compendium-organizations-list`).find('.first-item').remove()
+                    $(`#compendium-organizations-list`).append(`
+                        <a class="list-group-item list-group-item-action interactive dmshield-link compendium-organization compendium-item show" data-organization-id="${e.organizationUpdate.organization.id}">
+                            ${e.organizationUpdate.organization.name}
+                        </a>
+                    `)
+                } else if (e.organizationUpdate.type === 'visibility') {
+                    const $compendiumItem = $(`.compendium-organization[data-organization-id="${e.organizationUpdate.id}"]`)
+                    if (e.organizationUpdate.visible) {
+                        $compendiumItem.removeClass('d-none')
+                    } else {
+                        $compendiumItem.addClass('d-none')
+                    }
+                    if (e.organizationUpdate.hasMarker) {
+                        mapMarkers.forEach(mapMarker => {
+                            if (mapMarker.options.id == e.organizationUpdate.marker.id) {
+                                if (e.organizationUpdate.visible && e.organizationUpdate.markerVisible) {
+                                    mapMarker.addTo(map)
+                                    $('#marker-location').removeClass('d-none')
+                                    $compendiumItem.find('.marker-location').removeClass('d-none')
+                                } else {
+                                    mapMarker.removeFrom(map)
+                                    $('#marker-location').addClass('d-none')
+                                    $compendiumItem.find('.marker-location').addClass('d-none')
+                                    sidebar.close()
+                                }
+                            }
+                        })
+                    }
+                }
+            }).listen('ItemUpdate', e => {
+                if (e.itemUpdate.type === 'edit') {
+                    if (e.itemUpdate.id == $('#item-id').val()) {
+                        $('.show-item-name').text(e.itemUpdate.name)
+                        let html = e.itemUpdate.name
+                        if ($('#marker-id').length) {
+                            html += `
+                                <i class="fa fa-map-marker-alt"></i>
+                                <small class="text-muted">${mapModel.name}</small>
+                            `
+                        }
+                        $(`.compendium-item[data-item-id="${item_id}"]`).html(html)
+                        $('.show-item-body-display').html(e.itemUpdate.body)
+                    }
+                } else if (e.itemUpdate.type === 'showToPlayers') {
+                    if (e.itemUpdate.markerless) {
+                        axios.post('/items/show_component', {id: e.itemUpdate.id, isDm: false})
+                        .then(({ data }) => {
+                            if (data.status === 200) {
+                                sidebar.open('item-marker')
+                                $('#item-marker-container').html(data.showComponent)
+                            }
+                        })
+                    } else {
+                        getSelectedMarker(e.itemUpdate.markerId, true)
+                    }
+                } else if (e.itemUpdate.type === 'newItem') {
+                    $(`#compendium-items-list`).find('.first-item').remove()
+                    $(`#compendium-items-list`).append(`
+                        <a class="list-group-item list-group-item-action interactive dmshield-link compendium-item compendium-item show" data-item-id="${e.itemUpdate.item.id}">
+                            ${e.itemUpdate.item.name}
+                        </a>
+                    `)
+                } else if (e.itemUpdate.type === 'visibility') {
+                    const $compendiumItem = $(`.compendium-item[data-item-id="${e.itemUpdate.id}"]`)
+                    if (e.itemUpdate.visible) {
+                        $compendiumItem.removeClass('d-none')
+                    } else {
+                        $compendiumItem.addClass('d-none')
+                    }
+                    if (e.itemUpdate.hasMarker) {
+                        mapMarkers.forEach(mapMarker => {
+                            if (mapMarker.options.id == e.itemUpdate.marker.id) {
+                                if (e.itemUpdate.visible && e.itemUpdate.markerVisible) {
+                                    mapMarker.addTo(map)
+                                    $('#marker-location').removeClass('d-none')
+                                    $compendiumItem.find('.marker-location').removeClass('d-none')
+                                } else {
+                                    mapMarker.removeFrom(map)
+                                    $('#marker-location').addClass('d-none')
+                                    $compendiumItem.find('.marker-location').addClass('d-none')
+                                    sidebar.close()
+                                }
+                            }
+                        })
+                    }
+                }
             })
         })
 
@@ -541,6 +655,8 @@ $isDm = $isDm ? 1 : 0;
     <script src="{{ asset('js/compendium.js') . '?' . time() }}"></script>
     <script src="{{ asset('js/placeOptions.js') . '?' . time() }}"></script>
     <script src="{{ asset('js/creatureOptions.js') . '?' . time() }}"></script>
+    <script src="{{ asset('js/organizationOptions.js') . '?' . time() }}"></script>
+    <script src="{{ asset('js/itemOptions.js') . '?' . time() }}"></script>
     <script src="{{ asset('js/die-roller.js') . '?' . time() }}"></script>
     <script src="{{ asset('js/mapChatMessages.js') . '?' . time() }}"></script>
 @endsection

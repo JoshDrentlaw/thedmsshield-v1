@@ -33,7 +33,7 @@
                 <div class="mb-2">
                     <h4 class="mb-2 {{$titleInline}}">
                         <i class="fa fa-users"></i>
-                        Creatures
+                        NPC's & Creatures
                     </h4>
                     <div class="btn-group btn-group-sm mb-2 compendium-btn-group {{$btnGrpFloat}}">
                         <button class="btn btn-secondary" data-target="#creatureDescription" data-toggle="collapse" aria-expanded="false" aria-controls="creatureDescription">Description</button>
@@ -132,6 +132,110 @@
                         </a>
                     @empty
                         <p class="mb-0 first-item">Add your first place!</p>
+                    @endforelse
+                </div>
+            </li>
+            {{-- ORGANIZATIONS --}}
+            <li class="list-group-item">
+                <div class="mb-2">
+                    <h4 class="mb-2 {{$titleInline}}">
+                        <i class="fa fa-users"></i>
+                        Organizations
+                    </h4>
+                    <div class="btn-group btn-group-sm mb-2 compendium-btn-group {{$btnGrpFloat}}">
+                        <button class="btn btn-secondary" data-target="#organizationDescription" data-toggle="collapse" aria-expanded="false" aria-controls="organizationDescription">Description</button>
+                        <a href="/campaigns/{{$campaign->url}}/compendium/organizations" class="btn btn-primary">All organizations</a>
+                        @if ($isDm)
+                            <button class="btn btn-success btn-sm new-compendium-item" data-type="organization">New organization</button>
+                        @endif
+                    </div>
+                </div>
+                <div class="collapse mb-2 compendium-description" id="organizationDescription">
+                    <div class="card card-body">
+                        <p>Organization description.</p>
+                    </div>
+                </div>
+                <div class="list-group list-group-flush compendium-list-group" id="compendium-organizations-list">
+                    <?php
+                        $organizations = $campaign->organizations->sortBy(['name', 'asc']);
+                    ?>
+                    @forelse ($organizations as $organization)
+                        <?php
+                            $markerId = '';
+                            $mapId = '';
+                            if ($organization->marker) {
+                                $markerId = ' data-marker-id=' . $organization->marker->id . '';
+                                $mapId = ' data-map-id=' . $organization->marker->map->id . '';
+                            }
+                            $vis = ($isDm || (!$isDm && $organization->visible)) ? '' : ' d-none';
+                        ?>
+                        <a class="list-group-item list-group-item-action interactive dmshield-link compendium-organization compendium-item{{$show}}{{$vis}}"{{$markerId}}{{$mapId}} data-organization-id="{{$organization->id}}" data-type="organization" {{$path === 'map' ? '' : 'href=/campaigns/' . $campaign->url . '/compendium/organizations/' . $organization->url}}>
+                            {{$organization->name}}
+                            @if($organization->marker && ($isDm || (!$isDm && $organization->marker->visible)))
+                                <span class="marker-location">
+                                    <i class="fa fa-map-marker-alt"></i>
+                                    <small class="text-muted">{{$organization->marker->map->name}}</small>
+                                </span>
+                            @else
+                                @if($path === 'map' && $isDm)
+                                    <button class="btn btn-success btn-sm float-right to-marker-btn" data-organization-id="{{$organization->id}}"><i class="fa fa-map-marker-alt"></i></button>
+                                @endif
+                            @endif
+                        </a>
+                    @empty
+                        <p class="mb-0 first-item">Add your first organization!</p>
+                    @endforelse
+                </div>
+            </li>
+            {{-- ITEMS --}}
+            <li class="list-group-item">
+                <div class="mb-2">
+                    <h4 class="mb-2 {{$titleInline}}">
+                        <i class="fa fa-magic"></i>
+                        Items
+                    </h4>
+                    <div class="btn-group btn-group-sm mb-2 compendium-btn-group {{$btnGrpFloat}}">
+                        <button class="btn btn-secondary" data-target="#itemDescription" data-toggle="collapse" aria-expanded="false" aria-controls="itemDescription">Description</button>
+                        <a href="/campaigns/{{$campaign->url}}/compendium/items" class="btn btn-primary">All items</a>
+                        @if ($isDm)
+                            <button class="btn btn-success btn-sm new-compendium-item" data-type="item">New item</button>
+                        @endif
+                    </div>
+                </div>
+                <div class="collapse mb-2 compendium-description" id="itemDescription">
+                    <div class="card card-body">
+                        <p>Item description.</p>
+                    </div>
+                </div>
+                <div class="list-group list-group-flush compendium-list-group" id="compendium-items-list">
+                    <?php
+                        $items = $campaign->items->sortBy(['name', 'asc']);
+                    ?>
+                    @forelse ($items as $item)
+                        <?php
+                            $markerId = '';
+                            $mapId = '';
+                            if ($item->marker) {
+                                $markerId = ' data-marker-id=' . $item->marker->id . '';
+                                $mapId = ' data-map-id=' . $item->marker->map->id . '';
+                            }
+                            $vis = ($isDm || (!$isDm && $item->visible)) ? '' : ' d-none';
+                        ?>
+                        <a class="list-group-item list-group-item-action interactive dmshield-link compendium-item compendium-item{{$show}}{{$vis}}"{{$markerId}}{{$mapId}} data-item-id="{{$item->id}}" data-type="item" {{$path === 'map' ? '' : 'href=/campaigns/' . $campaign->url . '/compendium/items/' . $item->url}}>
+                            {{$item->name}}
+                            @if($item->marker && ($isDm || (!$isDm && $item->marker->visible)))
+                                <span class="marker-location">
+                                    <i class="fa fa-map-marker-alt"></i>
+                                    <small class="text-muted">{{$item->marker->map->name}}</small>
+                                </span>
+                            @else
+                                @if($path === 'map' && $isDm)
+                                    <button class="btn btn-success btn-sm float-right to-marker-btn" data-item-id="{{$item->id}}"><i class="fa fa-map-marker-alt"></i></button>
+                                @endif
+                            @endif
+                        </a>
+                    @empty
+                        <p class="mb-0 first-item">Add your first item!</p>
                     @endforelse
                 </div>
             </li>
