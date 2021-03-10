@@ -58,7 +58,8 @@
                                 <h6 class="dropdown-header dms-navbar-dropdown-header">Campaign Compendium</h6>
                                 <a class="dropdown-item" href="/campaigns/{{$campaign->url}}/compendium/creatures">Creatures</a>
                                 <a class="dropdown-item" href="/campaigns/{{$campaign->url}}/compendium/places">Places</a>
-                                <a class="dropdown-item" href="/campaigns/{{$campaign->url}}/compendium/things">Things</a>
+                                <a class="dropdown-item" href="/campaigns/{{$campaign->url}}/compendium/organizations">Organizations</a>
+                                <a class="dropdown-item" href="/campaigns/{{$campaign->url}}/compendium/items">Items</a>
                             </div>
                         </li>
                     @endif

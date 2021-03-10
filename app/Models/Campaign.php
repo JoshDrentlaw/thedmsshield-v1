@@ -23,12 +23,12 @@ class Campaign extends Model
         return $this->hasMany('App\Models\Place');
     }
 
-    public function things() {
-        return $this->hasMany('App\Models\Thing');
+    public function organizations() {
+        return $this->hasMany('App\Models\Organization');
     }
 
-    public function ideas() {
-        return $this->hasMany('App\Models\Idea');
+    public function items() {
+        return $this->hasMany('App\Models\Item');
     }
 
     public function creatures() {
