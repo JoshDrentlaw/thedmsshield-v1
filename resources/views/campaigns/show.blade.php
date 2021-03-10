@@ -213,8 +213,29 @@ if ($campaign->cover_public_id) {
     </div>
 </div>
 
+{{-- NEW COMPENDIUM ITEM MODAL --}}
+<div class="modal" id="new-compendium-item-modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="new-compendium-item-title"></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <x-create-compendium-item />
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="new-compendium-item-submit">Submit</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 {{-- NEW CREATURE MODAL --}}
-<div class="modal" id="new-creature-modal" tabindex="-1" role="dialog">
+{{-- <div class="modal" id="new-creature-modal" tabindex="-1" role="dialog">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -232,10 +253,10 @@ if ($campaign->cover_public_id) {
             </div>
         </div>
     </div>
-</div>
+</div> --}}
 
 {{-- NEW PLACE MODAL --}}
-<div class="modal" id="new-place-modal" tabindex="-1" role="dialog">
+{{-- <div class="modal" id="new-place-modal" tabindex="-1" role="dialog">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -253,7 +274,7 @@ if ($campaign->cover_public_id) {
             </div>
         </div>
     </div>
-</div>
+</div> --}}
 @endsection
 
 @section('scripts')
