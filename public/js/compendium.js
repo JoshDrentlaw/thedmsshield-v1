@@ -104,11 +104,9 @@ $(document).ready(function () {
         if (onMap) {
             sidebar.close()
         }
-        $('#new-compendium-item-modal').delay('500').modal('show')
         $('#new-compendium-item-modal-type').val(type)
         $('#new-compendium-item-title').text(`New ${titleType}`)
-        $('#new-compendium-item-name-label').text(`${titleType} Name`)
-        $('#new-compendium-item-body-label').text(`${titleType} Body`)
+        $('#new-compendium-item-modal').delay('500').modal('show')
         tinymceInit('new', `${type}s`, {selector: '.compendium-item-body-editor', height: 300})
     })
 

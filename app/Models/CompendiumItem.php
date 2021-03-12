@@ -8,9 +8,6 @@ use Illuminate\Support\Str;
 
 use App\Debug\Debug;
 
-use App\Models\Place;
-use App\Models\Creature;
-
 class CompendiumItem extends Model
 {
     use HasFactory;
@@ -20,12 +17,10 @@ class CompendiumItem extends Model
     public static function storeCompendiumItem($item, $request)
     {
         $validated = $request->validate([
-            'name' => 'required|max:50',
-            'body' => 'max:2000'
+            'name' => 'required|max:50'
         ]);
         $item->url = Str::slug($validated['name'], '_');
         $item->name = $validated['name'];
-        $item->body = $validated['body'];
         $item->campaign_id = $request->post('campaign_id');
         $item->save();
         $item->refresh();
