@@ -113,7 +113,7 @@ class ItemsController extends Controller
         extract($request->post());
         return [
             'status' => 200,
-            'showComponent' => CompendiumItem::showComponent(Item::find($id), 'item')
+            'showComponent' => CompendiumItem::showComponent(Item::find($id), 'item', 'isDm')
         ];
     }
 

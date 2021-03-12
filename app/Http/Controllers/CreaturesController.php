@@ -113,7 +113,7 @@ class CreaturesController extends Controller
         extract($request->post());
         return [
             'status' => 200,
-            'showComponent' => CompendiumItem::showComponent(Creature::find($id), 'creature')
+            'showComponent' => CompendiumItem::showComponent(Creature::find($id), 'creature', 'isDm')
         ];
     }
 

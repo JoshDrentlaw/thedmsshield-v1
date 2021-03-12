@@ -113,7 +113,7 @@ class OrganizationsController extends Controller
         extract($request->post());
         return [
             'status' => 200,
-            'showComponent' => CompendiumItem::showComponent(Organization::find($id), 'organization')
+            'showComponent' => CompendiumItem::showComponent(Organization::find($id), 'organization', 'isDm')
         ];
     }
 

@@ -69,6 +69,12 @@ use App\Debug\Debug;
         @case('creature')
             <x-creature-options :creature="$item" :is-dm="$isDm" :on-map="$onMap" />
             @break
+        @case('item')
+            <x-item-options :item="$item" :is-dm="$isDm" :on-map="$onMap" />
+            @break
+        @case('organization')
+            <x-organization-options :organization="$item" :is-dm="$isDm" :on-map="$onMap" />
+            @break
     @endswitch
 </div>
 

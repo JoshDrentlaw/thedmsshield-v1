@@ -22,10 +22,10 @@
 <div class="row justify-content-center">
     <div class="col-12">
         @if($path === 'campaign')
-            <h3 class="card-title">
+            <h2 class="card-title">
                 <i class="fa fa-book"></i>
                 Compendium
-            </h3>
+            </h2>
         @endif
         <ul class="list-group list-group-flush mx-n3">
             {{-- CREATURES --}}

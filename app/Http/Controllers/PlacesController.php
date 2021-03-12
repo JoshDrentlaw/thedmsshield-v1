@@ -113,7 +113,7 @@ class PlacesController extends Controller
         extract($request->post());
         return [
             'status' => 200,
-            'showComponent' => CompendiumItem::showComponent(Place::find($id), 'place')
+            'showComponent' => CompendiumItem::showComponent(Place::find($id), 'place', 'isDm')
         ];
     }
 

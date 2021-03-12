@@ -8,7 +8,7 @@ use App\Debug\Debug;
 <div class="container-fluid pt-3">
     <div class="row justify-content-center">
         <div class="col-sm-8">
-            <x-show-item :item="$item" :is-dm="$isDm" :last-updated="$lastUpdated" :on-map="0" />
+            <x-compendium-item :item="$item" itemType="item" :is-dm="$isDm" :last-updated="$lastUpdated" :on-map="0" />
         </div>
     </div>
 </div>
