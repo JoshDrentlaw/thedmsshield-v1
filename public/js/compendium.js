@@ -113,10 +113,9 @@ $(document).ready(function () {
     // ANCHOR e NEW ITEM SUBMIT
     $(document).on('click', '#new-compendium-item-submit', function () {
         const name = $('#new-compendium-item-name').val(),
-            body = tinymce.activeEditor.getContent(),
             type = $('#new-compendium-item-modal-type').val()
 
-        axios.post(`/${type}s`, {name, body, campaign_id})
+        axios.post(`/${type}s`, {name, campaign_id})
             .then(({ data }) => {
                 if (data.status === 200) {
                     pnotify.success({title: `New ${type} saved`})

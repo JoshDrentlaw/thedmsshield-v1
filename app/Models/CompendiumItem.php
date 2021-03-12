@@ -61,7 +61,7 @@ class CompendiumItem extends Model
         return $item;
     }
 
-    public static function showComponent($item, $itemType)
+    public static function showComponent($item, $itemType, $isDm)
     {
         $lastUpdated = $item->updated_at;
         $onMap = Str::contains($_SERVER['HTTP_REFERER'], 'maps');
