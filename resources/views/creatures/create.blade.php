@@ -5,5 +5,5 @@ use App\Debug\Debug;
 @extends('layouts.app')
 
 @section('content')
-<x-create-creature />
+<x-create-compendium-item />
 @endsection

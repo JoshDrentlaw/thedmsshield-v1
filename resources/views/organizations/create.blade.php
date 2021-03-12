@@ -5,5 +5,5 @@ use App\Debug\Debug;
 @extends('layouts.app')
 
 @section('content')
-<x-create-organization />
+<x-create-compendium-item />
 @endsection

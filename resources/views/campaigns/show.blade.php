@@ -233,48 +233,6 @@ if ($campaign->cover_public_id) {
         </div>
     </div>
 </div>
-
-{{-- NEW CREATURE MODAL --}}
-{{-- <div class="modal" id="new-creature-modal" tabindex="-1" role="dialog">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">New Creature</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <x-create-creature />
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" id="new-creature-submit">Submit</button>
-            </div>
-        </div>
-    </div>
-</div> --}}
-
-{{-- NEW PLACE MODAL --}}
-{{-- <div class="modal" id="new-place-modal" tabindex="-1" role="dialog">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">New Place</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <x-create-place />
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" id="new-place-submit">Submit</button>
-            </div>
-        </div>
-    </div>
-</div> --}}
 @endsection
 
 @section('scripts')
