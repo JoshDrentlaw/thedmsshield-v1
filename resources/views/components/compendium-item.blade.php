@@ -62,7 +62,69 @@ use App\Debug\Debug;
         <button id="show-to-players" class="mt-2 btn btn-info btn-block" data-id="{{$item->id}}" data-type="{{$itemType}}s">Show to Players</button>
     @endif
 
-    @switch($itemType)
+    @if($isDm)
+        <div id="{{$itemType}}-options" class="mt-4">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title"><?= ucwords($itemType) ?> Options</h4>
+                    <?php
+                        if ($item->visible == 1) {
+                            $visibleBtn = 'success';
+                            $visibleIcon = '';
+                        } else {
+                            $visibleBtn = 'danger';
+                            $visibleIcon = '-slash';
+                        }
+                    ?>
+                    <button class="btn btn-{{$visibleBtn}}" id="{{$itemType}}-visible"><i class="fa fa-eye{{$visibleIcon}}"></i></button>
+                </div>
+            </div>
+        </div>
+        @if (!$item->markerless)
+            <div id="marker-options" class="mt-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">Marker Options</h4>
+                        <label>Marker Icon</label>
+                        <select id="marker-icon-select">
+                            <?php
+                                $marker = new App\Models\Marker;
+                            ?>
+                            @foreach($marker["{$itemType}_icons"] as $icon)
+                                <?php
+                                    $text = Str::title(str_replace('-', ' ', $icon));
+                                ?>
+                                <option value="{{$icon}}">{{$text}}</option>
+                            @endforeach
+                        </select>
+                        <div class="btn-group btn-group-lg mt-3">
+                            <?php
+                                if ($item->marker->locked == 0) {
+                                    $lockBtn = 'success';
+                                    $lockIcon = '-open';
+                                } else {
+                                    $lockBtn = 'danger';
+                                    $lockIcon = '';
+                                }
+                                if ($item->marker->visible == 1) {
+                                    $visibleBtn = 'success';
+                                    $visibleIcon = '';
+                                } else {
+                                    $visibleBtn = 'danger';
+                                    $visibleIcon = '-slash';
+                                }
+                            ?>
+                            <button id="lock-marker" class="btn btn-{{$lockBtn}}"><i class="fa fa-lock{{$lockIcon}}"></i></button>
+                            <button id="marker-visible" class="btn btn-{{$visibleBtn}}" data-type="{{$itemType}}"><i class="fa fa-eye{{$visibleIcon}}"></i></button>
+                        </div>
+                        <button class="mt-5 btn btn-danger btn-block" data-toggle="modal" data-target="#delete-marker-modal">Delete Marker</button>
+                    </div>
+                </div>
+            </div>
+        @endif
+    @endif
+
+    {{-- @switch($itemType)
         @case('place')
             <x-place-options :place="$item" :is-dm="$isDm" :on-map="$onMap" />
             @break
@@ -75,14 +137,96 @@ use App\Debug\Debug;
         @case('organization')
             <x-organization-options :organization="$item" :is-dm="$isDm" :on-map="$onMap" />
             @break
-    @endswitch
+    @endswitch --}}
 </div>
 
 @section('component-scripts')
     @if(!$onMap)
         <script>
             const isDm = {!!$isDm!!}
+            const map_id = 0
+            @if(!$item->markerless)
+                const icon = '{!!$item->marker->icon!!}'
+
+                markerIconSelect2(icon)
+
+                $(document).on('select2:select', '#marker-icon-select', function () {
+                    let id = $('#marker-id').val(),
+                        icon = $(this).val()
+
+                    axios.put(`/markers/${id}`, {type: 'icon', icon, map_id})
+                        .then(res => {
+                            if (res.status === 200) {
+                                pnotify.success({ title: 'Map marker icon updated!' })
+                            }
+                        })
+                })
+
+                $(document).on('click', '#lock-marker', function () {
+                    const markerId = $('#marker-id').val(),
+                        $this = $(this)
+                        locked = !$this.hasClass('btn-danger')
+
+                    axios.put(`/markers/${markerId}`, { type: 'lock', map_id, locked })
+                        .then(res => {
+                            if (res.status === 200) {
+                                $this.toggleClass('btn-danger btn-success')
+                                $this.children().remove()
+                                let icon
+                                if (locked) {
+                                    icon = 'fa-lock'
+                                } else {
+                                    icon = 'fa-lock-open'
+                                }
+                                $this.append(`<i class="fa ${icon}"></i>`)
+                            }
+                        })
+                })
+
+                $(document).on('click', '#marker-visible', function () {
+                    const markerId = $('#marker-id').val(),
+                        $this = $(this),
+                        type = $this.data('type'),
+                        visible = !$this.hasClass('btn-success')
+
+                    axios.put(`/markers/${markerId}`, { type: 'visibility', map_id, visible })
+                        .then(res => {
+                            if (res.status === 200) {
+                                $this.toggleClass('btn-danger btn-success')
+                                $this.children().remove()
+                                let icon
+                                if (visible) {
+                                    icon = 'fa-eye'
+                                } else {
+                                    icon = 'fa-eye-slash'
+                                }
+                                $this.append(`<i class="fa ${icon}"></i>`)
+                            }
+                        })
+                })
+
+                $(document).on('click', '#delete-marker', function() {
+                    const markerId = $('#marker-id').val()
+                    let compendiumItemId,
+                        type,
+                        thisMapMarker = mapMarkers.filter(marker => marker.options.id == markerId)[0]
+
+                    if (thisMapMarker.options.type === 'place') {
+                        compendiumItemId = $('#place-id').val()
+                        type = 'place'
+                    } else if (thisMapMarker.options.type === 'creature') {
+                        compendiumItemId = $('#creature-id').val()
+                        type = 'creature'
+                    }
+                    axios.delete(`/markers/${markerId}`)
+                        .then(res => {
+                            if (res.status === 200) {
+                                deleteMapMarker(thisMapMarker, compendiumItemId, type)
+                            }
+                        })
+                })
+            @endif
         </script>
-        <script type="module" src="{{ asset('js/' . $itemType . 'Options.js') . '?' . time() }}"></script>
     @endif
+    <script type="module" src="{{ asset('js/' . $itemType . 'Options.js') . '?' . time() }}"></script>
 @endsection

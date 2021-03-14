@@ -1,7 +1,7 @@
 $(document).ready(function () {
     $(document).on('click', '#place-visible', function () {
         const placeId = $('#place-id').val(),
-            $this = $(this)
+            $this = $(this),
             visible = !$this.hasClass('btn-success')
 
         axios.put(`/places/${placeId}`, { type: 'visibility', map_id, visible })

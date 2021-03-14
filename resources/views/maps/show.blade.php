@@ -15,8 +15,7 @@ $isDm = $isDm ? 1 : 0;
                     <li><a href="#the-table" role="tab" class="sidebar-tab-link"><i class="fa fa-users"></i></a></li>
                     <li><a href="#die-rollers" role="tab" class="sidebar-tab-link"><i class="fa fa-dice-d20"></i></a></li>
                     <li><a href="#compendium" role="tab" class="sidebar-tab-link"><i class="fa fa-book"></i></a></li>
-                    <li class="d-none"><a href="#place-marker" role="tab" class="sidebar-tab-link"></a></li>
-                    <li class="d-none"><a href="#creature-marker" role="tab" class="sidebar-tab-link"></a></li>
+                    <li class="d-none"><a href="#compendium-item" role="tab" class="sidebar-tab-link"></a></li>
                 </ul>
                 <!-- bottom aligned tabs -->
                 @if($isDm)
@@ -211,25 +210,15 @@ $isDm = $isDm ? 1 : 0;
                         <x-compendium :campaign="$campaign" :is-dm="$isDm" path="map" />
                     </div>
                 </div>
-                {{-- PLACE --}}
-                <div class="leaflet-sidebar-pane" id="place-marker">
+                {{-- COMPENDIUM itemType --}}
+                <div class="leaflet-sidebar-pane" id="compendium-item">
                     <h1 class="leaflet-sidebar-header mb-4 d-flex align-items-center justify-content-between">
-                        Place
+                        <span id="compendium-type-title"></span>
                         <div class="leaflet-sidebar-close d-block">
                             <i class="fa fa-caret-left"></i>
                         </div>
                     </h1>
-                    <div id="place-marker-container"></div>
-                </div>
-                {{-- CREATURE --}}
-                <div class="leaflet-sidebar-pane" id="creature-marker">
-                    <h1 class="leaflet-sidebar-header mb-4 d-flex align-items-center justify-content-between">
-                        Creature
-                        <div class="leaflet-sidebar-close d-block">
-                            <i class="fa fa-caret-left"></i>
-                        </div>
-                    </h1>
-                    <div id="creature-marker-container"></div>
+                    <div id="compendium-item-container"></div>
                 </div>
                 {{-- MAP SETTINGS --}}
                 @if($isDm)
@@ -372,20 +361,6 @@ $isDm = $isDm ? 1 : 0;
         let setSelectedMarker
         let getSelectedMarker
 
-        function customIconSelection(icon) {
-            if (!icon.id) {
-                return icon.text
-            }
-            return $(`<i class="fa fa-${icon.id} mr-1"></i> <span>${icon.text}</span>`)
-        }
-
-        function customIconResult(icon) {
-            if (!icon.id) {
-                return icon.text
-            }
-            return $(`<i class="fa fa-${icon.id} mr-1"></i> <span>${icon.text}</span>`)
-        }
-
         new Promise((res, rej) => {
             while (!Echo.socketId) {
                 setTimeout(() => {}, 50)
@@ -424,8 +399,8 @@ $isDm = $isDm ? 1 : 0;
                         axios.post('/places/show_component', {id: e.placeUpdate.id, isDm: false})
                         .then(({ data }) => {
                             if (data.status === 200) {
-                                sidebar.open('place-marker')
-                                $('#place-marker-container').html(data.showComponent)
+                                sidebar.open('compendium-item')
+                                $('#compendium-item-container').html(data.showComponent)
                             }
                         })
                     } else {

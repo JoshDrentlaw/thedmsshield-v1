@@ -1,10 +1,10 @@
 $(document).ready(function () {
-    $(document).on('click', '#item-visible', function () {
-        const itemId = $('#item-id').val(),
-            $this = $(this)
+    $(document).on('click', '#organization-visible', function () {
+        const organizationId = $('#organization-id').val(),
+            $this = $(this),
             visible = !$this.hasClass('btn-success')
 
-        axios.put(`/items/${itemId}`, { type: 'visibility', map_id, visible })
+        axios.put(`/organizations/${organizationId}`, { type: 'visibility', map_id, visible })
             .then(res => {
                 if (res.status === 200) {
                     $this.toggleClass('btn-danger btn-success')

@@ -159,10 +159,10 @@ class ItemsController extends Controller
             'type' => $post['type']
         ]);
         if ($post['type'] === 'edit') {
-            $item = new CompendiumItem();
-            $item = $item::updateCompendiumItem($request, $item);
+            $compendiumItem = new CompendiumItem();
+            $item = $compendiumItem::updateCompendiumItem($request, $item);
             $res['updated_at'] = $item->updated_at;
-            $res['redirect'] = $item::$redirect;
+            $res['redirect'] = $compendiumItem::$redirect;
             $itemUpdate->put('name', $item->name);
             $itemUpdate->put('body', $item->body);
         } elseif ($post['type'] === 'visibility') {
