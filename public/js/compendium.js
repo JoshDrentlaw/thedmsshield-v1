@@ -2,6 +2,10 @@ $(document).ready(function () {
     const onMap = window.location.href.search('maps') >= 0,
         show = onMap ? ' show-component' : ''
 
+    if ($('body').innerWidth() <= 460) {
+        $('.compendium-btn-group').removeClass('btn-group').addClass('btn-group-vertical')
+    }
+
     // ANCHOR e SHOW ITEM COMPONENT
     $(document).on('click', '.compendium-item.show-component', function (e) {
         if (!$(e.target).hasClass('to-marker-btn') && $(e.target).parents('.to-marker-btn').length === 0) {
