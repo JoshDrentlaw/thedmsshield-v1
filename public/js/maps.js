@@ -139,7 +139,7 @@ $(document).ready(function () {
                 do {
                     map.setView([maxLatBound / 2, maxLngBound / 2], i.value())
                     i.add(0.05)
-                } while (i.value() <= 0.5 && ((mapWidth * Math.pow(2, i.value())) + spacer) < screenWidth)
+                } while (i.value() <= 0.2 && ((mapWidth * Math.pow(2, i.value())) + spacer) < screenWidth)
             }
         }
     }
@@ -175,6 +175,10 @@ $(document).ready(function () {
             type = 'place'
         } else if (marker.creature_id) {
             type = 'creature'
+        } else if (marker.organization_id) {
+            type = 'organization'
+        } else if (marker.item_id) {
+            type = 'item'
         } else if (marker.player_id) {
             type = 'player'
         }
@@ -204,7 +208,15 @@ $(document).ready(function () {
                 getSelectedMarker(marker.id, true)
             })
 
-        if (type === 'player' || isDm || (!isDm && (type === 'place' && marker.place.visible || type === 'creature' && marker.creature.visible) && marker.visible)) {
+        if (
+            type === 'player' ||
+            isDm ||
+            (
+                !isDm &&
+                marker[type].visible &&
+                marker.visible
+            )
+        ) {
             mapMarker.addTo(map)
         }
 
@@ -224,7 +236,7 @@ $(document).ready(function () {
             }
         })
         setMarkerSidebar(marker, setMapMarker)
-        sidebar.open(`${type}-marker`)
+        sidebar.open(`compendium-item`)
     }
 
     getSelectedMarker = function(markerId, mapMarker = false) {
@@ -237,9 +249,14 @@ $(document).ready(function () {
                     type = 'place'
                 } else if (marker.creature_id) {
                     type = 'creature'
+                } else if (marker.organization_id) {
+                    type = 'organization'
+                } else if (marker.item_id) {
+                    type = 'item'
                 }
 
-                $(`#${type}-marker-container`).html(res.data.showComponent)
+                $(`#compendium-type-title`).text(type.charAt(0).toUpperCase() + type.substr(1))
+                $(`#compendium-item-container`).html(res.data.showComponent)
                 setSelectedMarker(marker, mapMarker, type)
             })
     }
@@ -257,6 +274,8 @@ $(document).ready(function () {
         controller: `/maps/${mapModel.id}/movement`,
         place_id: false,
         creature_id: false,
+        organiztion_id: false,
+        item_id: false,
         player_id: true
     })
 
@@ -274,6 +293,10 @@ $(document).ready(function () {
             type = 'place'
         } else if (marker.creature) {
             type = 'creature'
+        } else if (marker.organization) {
+            type = 'organization'
+        } else if (marker.item) {
+            type = 'item'
         }
 
         if (mapMarker && (isDm || (!isDm && marker[type].visible && marker.visible))) {
@@ -291,18 +314,13 @@ $(document).ready(function () {
             $('#item-id').val(marker.place.id)
         } else if (marker.creature) {
             $('#item-id').val(marker.creature.id)
+        } else if (marker.organization) {
+            $('#item-id').val(marker.organization.id)
+        } else if (marker.item) {
+            $('#item-id').val(marker.item.id)
         }
 
-        $('#marker-icon-select').select2({
-            width: '100%',
-            minimumResultsForSearch: Infinity,
-            sorter: function (icons) {
-                icons.sort((a, b) => a.text > b.text ? 1 : -1)
-                return icons
-            },
-            templateResult: customIconResult,
-            templateSelection: customIconSelection
-        }).val(icon).trigger('change')
+        markerIconSelect2(icon)
     }
 
     $(document).on('click', '#show-to-players', function () {
@@ -376,6 +394,14 @@ $(document).ready(function () {
                     selectedColor = 'green'
                     shape = 'circle'
                 } else if (marker.options.type === 'creature') {
+                    color = 'orange'
+                    selectedColor = 'yellow'
+                    shape = 'penta'
+                } else if (marker.options.type === 'organization') {
+                    color = 'orange'
+                    selectedColor = 'yellow'
+                    shape = 'penta'
+                } else if (marker.options.type === 'item') {
                     color = 'orange'
                     selectedColor = 'yellow'
                     shape = 'penta'
@@ -531,6 +557,10 @@ $(document).ready(function () {
             addMapMarker(e, $(this).data('place-id'), 'place')
         } else if ($(this).data('creature-id')) {
             addMapMarker(e, $(this).data('creature-id'), 'creature')
+        } else if ($(this).data('organization-id')) {
+            addMapMarker(e, $(this).data('organization-id'), 'organization')
+        } else if ($(this).data('item-id')) {
+            addMapMarker(e, $(this).data('item-id'), 'item')
         }
     })
 
@@ -603,6 +633,12 @@ $(document).ready(function () {
         } else if (thisMapMarker.options.type === 'creature') {
             compendiumItemId = $('#creature-id').val()
             type = 'creature'
+        } else if (thisMapMarker.options.type === 'organization') {
+            compendiumItemId = $('#organization-id').val()
+            type = 'organization'
+        } else if (thisMapMarker.options.type === 'item') {
+            compendiumItemId = $('#item-id').val()
+            type = 'item'
         }
         axios.delete(`/markers/${markerId}`)
             .then(res => {

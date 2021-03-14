@@ -1,7 +1,7 @@
 $(document).ready(function () {
     $(document).on('click', '#creature-visible', function () {
         const creatureId = $('#creature-id').val(),
-            $this = $(this)
+            $this = $(this),
             visible = !$this.hasClass('btn-success')
 
         axios.put(`/creatures/${creatureId}`, { type: 'visibility', map_id, visible })

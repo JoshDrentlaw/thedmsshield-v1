@@ -20,8 +20,9 @@ $(document).ready(function () {
                 axios.post(`/${type}s/show_component`, {id: item_id, isDm})
                     .then(({ data }) => {
                         if (data.status === 200) {
-                            sidebar.open(`${type}-marker`)
-                            $(`#${type}-marker-container`).html(data.showComponent)
+                            sidebar.open(`compendium-item`)
+                            $('#compendium-type-title').text(type.charAt(0).toUpperCase() + type.substr(1))
+                            $(`#compendium-item-container`).html(data.showComponent)
                         }
                     })
             }
@@ -111,27 +112,17 @@ $(document).ready(function () {
         $('#new-compendium-item-modal-type').val(type)
         $('#new-compendium-item-title').text(`New ${titleType}`)
         $('#new-compendium-item-modal').delay('500').modal('show')
-        tinymceInit('new', `${type}s`, {selector: '.compendium-item-body-editor', height: 300})
+        $('#new-compendium-item-name').trigger('focus')
     })
 
     // ANCHOR e NEW ITEM SUBMIT
-    $(document).on('click', '#new-compendium-item-submit', function () {
-        const name = $('#new-compendium-item-name').val(),
-            type = $('#new-compendium-item-modal-type').val()
-
-        axios.post(`/${type}s`, {name, campaign_id})
-            .then(({ data }) => {
-                if (data.status === 200) {
-                    pnotify.success({title: `New ${type} saved`})
-                    addNewCompendiumItem(data.item, type)
-                } else if (data.status === 500) {
-                    pnotify.error({title: 'Error', text: `Unable to save ${type}. Try again later.`})
-                }
-            })
-            .catch((error) => {
-                showValidationErrors(error.response.data.errors, type)
-            })
-    })
+    $(document).on('click', '#new-compendium-item-submit', newItemSubmit)
+        .on('keypress', '#new-compendium-item-name', function (e) {
+            if (e.key === 'Enter') {
+                e.preventDefault()
+                newItemSubmit()
+            }
+        })
 
     // ANCHOR e TOGGLE ITEM VISIBILITY
     /* $(document).on('click', '#place-visible', function () {
@@ -156,21 +147,44 @@ $(document).ready(function () {
     }) */
 
     // ANCHOR () ADD NEW COMPENDIUM ITEM
-    function addNewCompendiumItem(item, type, marker = false) {
-        const link = onMap ? '' : ` href="/campaigns/${campaign.url}/compendium/${type}/${item.url}"`
+    function addNewCompendiumItem(item, type) {
+        const link = onMap ? '' : ` href="/campaigns/${campaign.url}/compendium/${type}s/${item.url}"`
         $(`#compendium-${type}s-list`).find('.first-item').remove()
         $(`#compendium-${type}s-list`).append(`
             <a class="list-group-item list-group-item-action interactive dmshield-link compendium-${type} compendium-item${show}" data-${type}-id="${item.id}" data-type="${type}"${link}>
                 ${item.name}
-                <button class="btn btn-success btn-sm float-right to-marker-btn" data-${type}-id="${item.id}">
-                    <i class="fa fa-map-marker-alt"></i>
-                </button>
+                ${onMap ? `
+                    <button class="btn btn-success btn-sm float-right to-marker-btn" data-${type}-id="${item.id}">
+                        <i class="fa fa-map-marker-alt"></i>
+                    </button>
+                ` : ''
+                }
             </a>
         `)
         $(`#new-compendium-item-modal`).modal('hide')
+        $(`#new-compendium-item-name`).val('')
         if (onMap) {
             sidebar.open('compendium')
             $(`.compendium-${type}:last-child`)[0].scrollIntoView({ behavior: 'smooth', block: 'end' })
         }
+    }
+
+    // ANCHOR () NEW ITEM SUBMIT
+    function newItemSubmit() {
+        const name = $('#new-compendium-item-name').val(),
+            type = $('#new-compendium-item-modal-type').val()
+
+        axios.post(`/${type}s`, {name, campaign_id})
+            .then(({ data }) => {
+                if (data.status === 200) {
+                    pnotify.success({title: `New ${type} saved`})
+                    addNewCompendiumItem(data.item, type)
+                } else if (data.status === 500) {
+                    pnotify.error({title: 'Error', text: `Unable to save ${type}. Try again later.`})
+                }
+            })
+            .catch((error) => {
+                showValidationErrors(error.response.data.errors, type)
+            })
     }
 })
