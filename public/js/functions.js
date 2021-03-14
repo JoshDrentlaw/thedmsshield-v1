@@ -66,3 +66,30 @@ function tinymceInit(id, path, opts, dm = false) {
     options = $.extend(true, options, opts)
     return tinymce.init(options)
 }
+
+function markerIconSelect2(icon) {
+    $('#marker-icon-select').select2({
+        width: '100%',
+        minimumResultsForSearch: Infinity,
+        sorter: function (icons) {
+            icons.sort((a, b) => a.text > b.text ? 1 : -1)
+            return icons
+        },
+        templateResult: customIconResult,
+        templateSelection: customIconSelection
+    }).val(icon).trigger('change')
+}
+
+function customIconSelection(icon) {
+    if (!icon.id) {
+        return icon.text
+    }
+    return $(`<i class="fa fa-${icon.id} mr-1"></i> <span>${icon.text}</span>`)
+}
+
+function customIconResult(icon) {
+    if (!icon.id) {
+        return icon.text
+    }
+    return $(`<i class="fa fa-${icon.id} mr-1"></i> <span>${icon.text}</span>`)
+}
