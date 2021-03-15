@@ -77,6 +77,7 @@ use App\Debug\Debug;
                         }
                     ?>
                     <button class="btn btn-{{$visibleBtn}}" id="{{$itemType}}-visible"><i class="fa fa-eye{{$visibleIcon}}"></i></button>
+                    <button class="mt-5 btn btn-danger btn-block" data-toggle="modal" data-target="#delete-compendium-item-modal">Delete <?= ucwords($itemType) ?></button>
                 </div>
             </div>
         </div>

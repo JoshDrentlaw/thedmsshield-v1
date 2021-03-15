@@ -59,9 +59,32 @@ class MarkersController extends Controller
             $marker->shape = 'penta';
             $marker->selected_shape = 'square';
             $type = 'creature';
+        } elseif ($request->post('type') === 'organization') {
+            $marker->organization_id = $request->post('id');
+            $marker->icon = 'user';
+            $marker->color = 'orange';
+            $marker->selected_color = 'yellow';
+            $marker->shape = 'penta';
+            $marker->selected_shape = 'square';
+            $type = 'organization';
+        } elseif ($request->post('type') === 'item') {
+            $marker->item_id = $request->post('id');
+            $marker->icon = 'user';
+            $marker->color = 'orange';
+            $marker->selected_color = 'yellow';
+            $marker->shape = 'penta';
+            $marker->selected_shape = 'square';
+            $type = 'item';
         }
         $marker->save();
-        $marker = Marker::where('id', $marker->id)->with(['place', 'creature'])->get()[0];
+        $marker->refresh();
+        $markerUpdate = collect([
+            'map_id' => $request['map_id'],
+            'marker' => $marker,
+            'update_type' => 'new marker',
+            'marker_type' => 'map'
+        ]);
+        broadcast(new MarkerUpdate($markerUpdate))->toOthers();
         return compact('marker');
     }
 
@@ -159,20 +182,26 @@ class MarkersController extends Controller
     public function destroy($id)
     {
         $marker = Marker::find($id);
+        Debug::log($marker);
         $markerUpdate = collect([
             'map_id' => $marker->map->id,
             'id' => $marker->id,
             'update_type' => 'delete',
-            'marker_type' => 'map',
-            'marker' => $marker
+            'marker_type' => 'map'
         ]);
 
-        if ($marker->place_id) {
+        if ($marker->place_id && $marker->place) {
             $markerUpdate->put('compendium_item_id', $marker->place->id);
             $markerUpdate->put('compendium_type', 'place');
-        } else if ($marker->creature_id) {
+        } else if ($marker->creature_id && $marker->creature) {
             $markerUpdate->put('compendium_item_id', $marker->creature->id);
             $markerUpdate->put('compendium_type', 'creature');
+        } else if ($marker->organization_id && $marker->organization) {
+            $markerUpdate->put('compendium_item_id', $marker->organization->id);
+            $markerUpdate->put('compendium_type', 'organization');
+        } else if ($marker->item_id && $marker->item) {
+            $markerUpdate->put('compendium_item_id', $marker->item->id);
+            $markerUpdate->put('compendium_type', 'item');
         }
         $marker->delete();
         broadcast(new MarkerUpdate($markerUpdate))->toOthers();

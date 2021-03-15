@@ -1,6 +1,6 @@
 $(document).ready(function () {
     $(document).on('click', '#creature-visible', function () {
-        const creatureId = $('#creature-id').val(),
+        const creatureId = $('#item-id').val(),
             $this = $(this),
             visible = !$this.hasClass('btn-success')
 

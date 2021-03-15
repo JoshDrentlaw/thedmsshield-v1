@@ -187,6 +187,16 @@ class OrganizationsController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $organization = Organization::find($id);
+        $organizationUpdate = collect([
+            'campaign_id' => $organization->campaign_id,
+            'id' => $organization->id,
+            'organization' => $organization,
+            'type' => 'delete',
+            'organization_type' => 'organization'
+        ]);
+        $organization->delete();
+        broadcast(new OrganizationUpdate($organizationUpdate))->toOthers();
+        return ['status' => 200];
     }
 }

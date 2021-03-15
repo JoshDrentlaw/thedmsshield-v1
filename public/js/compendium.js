@@ -124,6 +124,25 @@ $(document).ready(function () {
             }
         })
 
+    // ANCHOR e DELETE COMPENDIUM ITEM
+    $(document).on('click', '#delete-compendium-item', function() {
+        const compendiumItemId = $('#item-id').val(),
+            type = $('#item-type').val()
+
+        axios.delete(`/${type}s/${compendiumItemId}`)
+            .then(res => {
+                if (res.status === 200) {
+                    $('#delete-compendium-item-modal').modal('hide')
+                    if (onMap) {
+                        sidebar.open('compendium')
+                        if ($('#marker-id').val()) {
+                            $('#delete-marker').trigger('click')
+                        }
+                    }
+                }
+            })
+    })
+
     // ANCHOR e TOGGLE ITEM VISIBILITY
     /* $(document).on('click', '#place-visible', function () {
         const placeId = $('#place-id').val(),
