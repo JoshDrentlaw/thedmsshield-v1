@@ -187,6 +187,16 @@ class ItemsController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $item = Item::find($id);
+        $itemUpdate = collect([
+            'campaign_id' => $item->campaign_id,
+            'id' => $item->id,
+            'item' => $item,
+            'type' => 'delete',
+            'item_type' => 'item'
+        ]);
+        $item->delete();
+        broadcast(new ItemUpdate($itemUpdate))->toOthers();
+        return ['status' => 200];
     }
 }

@@ -488,7 +488,7 @@ $(document).ready(function () {
     }
 
     function showNewMarker(marker, type) {
-        $(`.compendium-${type}[data-${type}-id="${marker[type].id}"]`).attr('data-marker-id', marker.id)
+        $(`.compendium-${type}[data-${type}-id="${marker[`${type}_id`]}"]`).attr('data-marker-id', marker.id)
         let mapMarker = addMarker(marker)
         mapMarkers.push(mapMarker)
         getSelectedMarker(marker.id, true)
@@ -534,6 +534,8 @@ $(document).ready(function () {
                         }
                     }
                 })
+            } else if (e.markerUpdate.update_type === 'new marker') {
+                mapMarkers.push(e.markerUpdate.marker)
             }
         } else if (e.markerUpdate.marker_type === 'player') {
             if (e.markerUpdate.update_type === 'movement') {
@@ -622,12 +624,12 @@ $(document).ready(function () {
     })
 
     $(document).on('click', '#delete-marker', function() {
-        const markerId = $('#marker-id').val()
-        let compendiumItemId,
-            type,
+        const markerId = $('#marker-id').val(),
+            compendiumItemId = $('#item-id').val(),
+            type = $('#item-type').val(),
             thisMapMarker = mapMarkers.filter(marker => marker.options.id == markerId)[0]
 
-        if (thisMapMarker.options.type === 'place') {
+        /* if (thisMapMarker.options.type === 'place') {
             compendiumItemId = $('#place-id').val()
             type = 'place'
         } else if (thisMapMarker.options.type === 'creature') {
@@ -639,7 +641,7 @@ $(document).ready(function () {
         } else if (thisMapMarker.options.type === 'item') {
             compendiumItemId = $('#item-id').val()
             type = 'item'
-        }
+        } */
         axios.delete(`/markers/${markerId}`)
             .then(res => {
                 if (res.status === 200) {
@@ -648,19 +650,20 @@ $(document).ready(function () {
             })
     })
 
-    function deleteMapMarker(marker, id, type) {
+    deleteMapMarker = function(marker, id, type) {
         marker.removeFrom(map)
-        $(`.marker-list-button[data-${type}-id="${id}"]`).remove()
-        $(`.compendium-${type}[data-${type}-id="${id}"]`).children().remove()
-        $(`.compendium-${type}[data-${type}-id="${id}"]`).removeAttr('data-marker-id')
-        if (isDm) {
-            $(`.compendium-${type}[data-${type}-id="${id}"]`).append(`
-                <button class="btn btn-success btn-sm float-right to-marker-btn" data-${type}-id="${id}"><i class="fa fa-map-marker-alt"></i></button>
-            `)
-            $('#marker-options').remove()
+        if ($('#delete-marker-modal').is(':visible')) {
+            $(`.compendium-${type}[data-${type}-id="${id}"]`).children().remove()
+            $(`.compendium-${type}[data-${type}-id="${id}"]`).removeAttr('data-marker-id')
+            if (isDm) {
+                $(`.compendium-${type}[data-${type}-id="${id}"]`).append(`
+                    <button class="btn btn-success btn-sm float-right to-marker-btn" data-${type}-id="${id}"><i class="fa fa-map-marker-alt"></i></button>
+                `)
+                $('#marker-options').remove()
+            }
+            pnotify.success({ title: 'Marker deleted' })
+            $('#delete-marker-modal').modal('hide')
         }
-        pnotify.success({ title: 'Marker deleted' })
-        $('#delete-marker-modal').modal('hide')
     }
 
     // ANCHOR USER COLOR

@@ -305,6 +305,28 @@ $isDm = $isDm ? 1 : 0;
         </div>
     </div>
 
+    {{-- DELETE COMPENDIUM ITEM MODAL --}}
+    <div class="modal" id="delete-compendium-item-modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Delete <span class="compendium-item-type text-capitalize"></span>?</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>This will permanently delete the selected <span class="compendium-item-type"></span>.</p>
+                    <p>Are you sure you want to delete?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-danger" id="delete-compendium-item">Delete <span class="compendium-item-type text-capitalize"></span></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     {{-- DELETE MARKER MODAL --}}
     <div class="modal" id="delete-marker-modal" tabindex="-1" role="dialog">
         <div class="modal-dialog">
@@ -360,6 +382,7 @@ $isDm = $isDm ? 1 : 0;
         let mapMarkers = []
         let setSelectedMarker
         let getSelectedMarker
+        let deleteMapMarker
 
         new Promise((res, rej) => {
             while (!Echo.socketId) {
@@ -436,6 +459,13 @@ $isDm = $isDm ? 1 : 0;
                             }
                         })
                     }
+                } else if (e.placeUpdate.type === 'delete') {
+                    if ($('#compendium-item').hasClass('active')) {
+                        sidebar.open('compendium')
+                    }
+                    $(`.compendium-place[data-place-id="${e.placeUpdate.id}"]`).remove()
+                    let marker = mapMarkers.filter(m => m.options.id == e.markerUpdate.id)[0]
+                    marker.removeFrom(map)
                 }
             }).listen('CreatureUpdate', e => {
                 if (e.creatureUpdate.type === 'edit') {
@@ -493,6 +523,13 @@ $isDm = $isDm ? 1 : 0;
                             }
                         })
                     }
+                } else if (e.creatureUpdate.type === 'delete') {
+                    if ($('#compendium-item').hasClass('active')) {
+                        sidebar.open('compendium')
+                    }
+                    $(`.compendium-creature[data-creature-id="${e.creatureUpdate.id}"]`).remove()
+                    let marker = mapMarkers.filter(m => m.options.id == e.markerUpdate.id)[0]
+                    marker.removeFrom(map)
                 }
             }).listen('OrganizationUpdate', e => {
                 if (e.organizationUpdate.type === 'edit') {
@@ -550,6 +587,13 @@ $isDm = $isDm ? 1 : 0;
                             }
                         })
                     }
+                } else if (e.organizationUpdate.type === 'delete') {
+                    if ($('#compendium-item').hasClass('active')) {
+                        sidebar.open('compendium')
+                    }
+                    $(`.compendium-organization[data-organization-id="${e.organizationUpdate.id}"]`).remove()
+                    let marker = mapMarkers.filter(m => m.options.id == e.markerUpdate.id)[0]
+                    marker.removeFrom(map)
                 }
             }).listen('ItemUpdate', e => {
                 if (e.itemUpdate.type === 'edit') {
@@ -607,6 +651,13 @@ $isDm = $isDm ? 1 : 0;
                             }
                         })
                     }
+                } else if (e.itemUpdate.type === 'delete') {
+                    if ($('#compendium-item').hasClass('active')) {
+                        sidebar.open('compendium')
+                    }
+                    $(`.compendium-item[data-item-id="${e.itemUpdate.id}"]`).remove()
+                    let marker = mapMarkers.filter(m => m.options.id == e.markerUpdate.id)[0]
+                    marker.removeFrom(map)
                 }
             })
         })
