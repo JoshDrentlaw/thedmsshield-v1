@@ -187,6 +187,16 @@ class CreaturesController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $creature = Creature::find($id);
+        $creatureUpdate = collect([
+            'campaign_id' => $creature->campaign_id,
+            'id' => $creature->id,
+            'creature' => $creature,
+            'type' => 'delete',
+            'creature_type' => 'creature'
+        ]);
+        $creature->delete();
+        broadcast(new CreatureUpdate($creatureUpdate))->toOthers();
+        return ['status' => 200];
     }
 }

@@ -8,7 +8,7 @@ class Marker extends Model
 {
     protected $table = 'markers';
 
-    protected $with = ['place', 'creature'];
+    protected $with = ['place', 'creature', 'organization', 'item'];
 
     protected $fillable = [
         'lat',
@@ -30,7 +30,87 @@ class Marker extends Model
         return $this->belongsTo('App\Models\Creature');
     }
 
+    public function organization() {
+        return $this->belongsTo('App\Models\Organization');
+    }
+
+    public function item() {
+        return $this->belongsTo('App\Models\Item');
+    }
+
     public function getPlaceIconsAttribute() {
+        return [
+            'building',
+            'warehouse',
+            'torii-gate',
+            'synagogue',
+            'store',
+            'store-alt',
+            'school',
+            'place-of-worship',
+            'mosque',
+            'monument',
+            'landmark',
+            'kaaba',
+            'industry',
+            'house-damage',
+            'hotel',
+            'hospital',
+            'hospital-alt',
+            'gopuram',
+            'city',
+            'church',
+            'university',
+            'home',
+            'dungeon',
+            'vihara',
+            'igloo',
+            'hospital-user',
+            'clinic-medical',
+            'campground',
+            'archway',
+            'house-user',
+            'hospital-user'
+        ];
+    }
+
+    public function getOrganizationIconsAttribute() {
+        return [
+            'building',
+            'warehouse',
+            'torii-gate',
+            'synagogue',
+            'store',
+            'store-alt',
+            'school',
+            'place-of-worship',
+            'mosque',
+            'monument',
+            'landmark',
+            'kaaba',
+            'industry',
+            'house-damage',
+            'hotel',
+            'hospital',
+            'hospital-alt',
+            'gopuram',
+            'city',
+            'church',
+            'university',
+            'home',
+            'dungeon',
+            'vihara',
+            'igloo',
+            'hospital-user',
+            'clinic-medical',
+            'campground',
+            'archway',
+            'house-user',
+            'hospital-user'
+        ];
+    }
+
+    public function getItemIconsAttribute() {
         return [
             'building',
             'warehouse',

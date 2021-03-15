@@ -189,6 +189,16 @@ class PlacesController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $place = Place::find($id);
+        $placeUpdate = collect([
+            'campaign_id' => $place->campaign_id,
+            'id' => $place->id,
+            'item' => $place,
+            'type' => 'delete',
+            'item_type' => 'place'
+        ]);
+        $place->delete();
+        broadcast(new PlaceUpdate($placeUpdate))->toOthers();
+        return ['status' => 200];
     }
 }
