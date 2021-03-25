@@ -360,8 +360,7 @@ $(document).ready(function () {
     function updatePlayerMarkerIcon() {
         const id = mapModel.id,
             icon = $('#player-marker-icon-select').val(),
-            color = $('#player-marker-color').val()/* ,
-            selected_color = $('#player-marker-selected_color').val() */
+            color = $('#player-marker-color').val()
 
         axios.put(`/maps/${id}/player_marker`, { icon, color, selected_color: color, map_id })
             .then(res => {
@@ -371,16 +370,8 @@ $(document).ready(function () {
                         shape: 'star',
                         prefix: 'fa',
                         svg: true
-                    })/* ,
-                    selectedIcon = new L.ExtraMarkers.icon({
-                        icon: `fa-${icon}`,
-                        markerColor: color,
-                        shape: 'star',
-                        prefix: 'fa',
-                        svg: true
-                    }) */
+                    })
                 playerMarker.options.mainIcon = mainIcon
-                // playerMarker.options.selectedIcon = selec                           tedIcon
                 playerMarker.setIcon(playerMarker.options.mainIcon)
             })
     }
@@ -388,6 +379,7 @@ $(document).ready(function () {
     function updateMarkerIcon(id, icon) {
         mapMarkers.forEach(marker => {
             if (marker.options.id == id) {
+                console.log('found the marker')
                 let color, selectedColor, shape
                 if (marker.options.type === 'place') {
                     color = 'blue'
@@ -420,6 +412,7 @@ $(document).ready(function () {
                     })
                 marker.options.mainIcon = mainIcon
                 marker.options.selectedIcon = selectedIcon
+                marker.setIcon(marker.options.selectedIcon)
             }
         })
     }
@@ -514,8 +507,6 @@ $(document).ready(function () {
                 marker.setLatLng(L.latLng(e.markerUpdate.lat, e.markerUpdate.lng))
             } else if (e.markerUpdate.update_type === 'icon') {
                 updateMarkerIcon(e.markerUpdate.id, e.markerUpdate.icon)
-                marker = mapMarkers.filter(m => m.options.id == e.markerUpdate.id)[0]
-                marker.setIcon(marker.options.mainIcon)
             } else if (e.markerUpdate.update_type === 'delete') {
                 let thisMapMarker = mapMarkers.filter(marker => marker.options.id == e.markerUpdate.marker.id)[0]
                 deleteMapMarker(thisMapMarker, e.markerUpdate.compendium_item_id, e.markerUpdate.compendium_type)
@@ -629,19 +620,6 @@ $(document).ready(function () {
             type = $('#item-type').val(),
             thisMapMarker = mapMarkers.filter(marker => marker.options.id == markerId)[0]
 
-        /* if (thisMapMarker.options.type === 'place') {
-            compendiumItemId = $('#place-id').val()
-            type = 'place'
-        } else if (thisMapMarker.options.type === 'creature') {
-            compendiumItemId = $('#creature-id').val()
-            type = 'creature'
-        } else if (thisMapMarker.options.type === 'organization') {
-            compendiumItemId = $('#organization-id').val()
-            type = 'organization'
-        } else if (thisMapMarker.options.type === 'item') {
-            compendiumItemId = $('#item-id').val()
-            type = 'item'
-        } */
         axios.delete(`/markers/${markerId}`)
             .then(res => {
                 if (res.status === 200) {
