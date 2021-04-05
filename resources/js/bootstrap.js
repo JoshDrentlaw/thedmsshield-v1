@@ -85,7 +85,7 @@ window.tinymce = tinymce
  * 
  *  */
 import Tabulator from 'tabulator-tables'
-window.tabulator = Tabulator
+window.Tabulator = Tabulator
 
 /**
  * Echo exposes an expressive API for subscribing to channels and listening

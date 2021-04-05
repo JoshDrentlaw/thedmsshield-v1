@@ -78,10 +78,51 @@ if ($campaign->cover_public_id) {
     </div>
     {{-- CAMPAIGN COMPENDIUM --}}
     <div class="card mb-4">
+        <div class="card-header d-flex justify-content-between">
+            <h2>
+                <i class="fa fa-book"></i>
+                Compendium
+            </h2>
+        </div>
         <div class="card-body">
             <x-compendium :campaign="$campaign" :is-dm="$isDm" path="campaign" />
         </div>
     </div>
+    @if ($isDm)
+        {{-- DM TOOLS --}}
+        <div class="card mb-4">
+            <div class="card-header d-flex justify-content-between">
+                <h2>
+                    <i class="fa fa-tools"></i>
+                    DM Tools
+                </h2>
+            </div>
+            <div class="card-body">
+                <div class="card mb-4">
+                    <div class="card-header d-flex justify-content-between">
+                        <h2 class="d-inline-block">
+                            <i class="fa fa-table"></i>
+                            Random Tables
+                        </h2>
+                        <button class="btn btn-success float-right add-random-table" data-campaign-id="{{$campaign->id}}" data-campaign-name="{{$campaign->name}}" data-toggle="modal" data-target="#new-random-table-modal">
+                            New Random Table
+                        </button>
+                    </div>
+                    <div class="card-body">
+                        <div class="list-group" id="random-table-list">
+                            @forelse($campaign->random_tables as $table)
+                                <li class="list-group-item list-group-item-action show-random-table" data-id="{{$table->id}}" data-toggle="modal" data-target="#show-random-table-modal">
+                                    {{$table->name}}
+                                </li>
+                            @empty
+                                <p>No random tables...</p>
+                            @endforelse
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endif
 </div>
 
 {{-- ADD MAP MODAL --}}
@@ -233,6 +274,65 @@ if ($campaign->cover_public_id) {
         </div>
     </div>
 </div>
+
+{{-- NEW RANDOM TABLES MODAL --}}
+<div class="modal" id="new-random-table-modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">New Random Table</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                {{-- <x-create-random-table /> --}}
+                <form>
+                    <div class="form-group">
+                        <label for="random-table-name">Name</label>
+                        <input type="text" name="name" id="random-table-name" class="form-control" placeholder="Enter a name for this table" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Table Results</label>
+                        <small class="form-text">Your random table will always have a column for that rows target result, but beyond that you can add as many other columns as you'd like.</small>
+                        {{-- <small class="form-text">For each row you can set a single number or range of numbers that will select this row.</small> --}}
+                        <div class="btn-group my-2" role="group" aria-label="Table tools">
+                            <button type="button" class="btn btn-primary btn-sm" id="add-table-column">Add Column</button>
+                            <button type="button" class="btn btn-primary btn-sm" id="add-table-row">Add Row</button>
+                        </div>
+                    </div>
+                </form>
+                <div id="new-random-table" class="table-bordered"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="new-random-table-submit">Submit</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{{-- SHOW RANDOM TABLES MODAL --}}
+<div class="modal" id="show-random-table-modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="random-table-name"></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                {{-- <x-show-random-table /> --}}
+                <div id="show-random-table" class="table-bordered"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="get-random-table-result">Get Result</button>
+            </div>
+        </div>
+    </div>
+</div>
 @endsection
 
 @section('scripts')
@@ -243,4 +343,5 @@ if ($campaign->cover_public_id) {
     </script>
     <script src="{{ asset('js/campaign.js') . '?' . time() }}"></script>
     <script src="{{ asset('js/compendium.js') . '?' . time() }}"></script>
+    <script src="{{ asset('js/randomTables.js') . '?' . time() }}"></script>
 @endsection
