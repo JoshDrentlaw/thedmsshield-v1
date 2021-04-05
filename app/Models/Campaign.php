@@ -15,6 +15,10 @@ class Campaign extends Model
         return $this->belongsToMany('App\Models\Player');
     }
 
+    public function invites() {
+        return $this->hasMany('App\Models\Invites');
+    }
+
     public function maps() {
         return $this->hasMany('App\Models\Map');
     }
@@ -35,8 +39,8 @@ class Campaign extends Model
         return $this->hasMany('App\Models\Creature');
     }
 
-    public function invites() {
-        return $this->hasMany('App\Models\Invites');
+    public function random_tables() {
+        return $this->hasMany('App\Models\RandomTable');
     }
 
     public function getIsDmAttribute()
