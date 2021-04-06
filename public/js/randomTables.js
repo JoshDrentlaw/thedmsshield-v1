@@ -188,22 +188,16 @@ $(document).ready(function () {
         axios.get(`/randomTables/${$(e.relatedTarget).data('id')}`)
             .then(res => {
                 if (res.status === 200) {
-                    const data = JSON.parse(res.data.table_data),
-                        columns = []
 
-                    for (let k in data[0]) {
-                        if (k !== 'targetNumber') {
-                            columns.push({ title: k, field: k })
-                        }
-                    }
+                    $('#random-table-name-header').text(res.data.name)
                     currentRandomTable = new Tabulator('#show-random-table', {
                         minHeight: '200px',
                         maxHeight: '400px',
-                        data,
-                        columns: [
-                            { title: '#', field: 'targetNumber', width: 50, maxWidth: 100 },
-                            ...columns
+                        data: JSON.parse(res.data.table_data),
+                        autoColumnsDefinitions: [
+                            { title: '#', field: 'targetNumber', width: 70, maxWidth: 100 }
                         ],
+                        autoColumns: true,
                         responsiveLayout: true,
                         reactiveData: true,
                         index: 'targetNumber',
