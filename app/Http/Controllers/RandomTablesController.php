@@ -86,7 +86,8 @@ class RandomTablesController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $table = RandomTable::find($id);
+        return $table->update($request->post());
     }
 
     /**
