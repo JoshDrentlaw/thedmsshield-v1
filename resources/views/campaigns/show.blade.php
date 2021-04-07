@@ -297,8 +297,8 @@ if ($campaign->cover_public_id) {
                         <small class="form-text">Your random table will always have a column for that rows target result, but beyond that you can add as many other columns as you'd like.</small>
                         {{-- <small class="form-text">For each row you can set a single number or range of numbers that will select this row.</small> --}}
                         <div class="btn-group my-2" role="group" aria-label="Table tools">
-                            <button type="button" class="btn btn-primary btn-sm" id="add-table-column">Add Column</button>
-                            <button type="button" class="btn btn-primary btn-sm" id="add-table-row">Add Row</button>
+                            <button type="button" class="btn btn-primary btn-sm add-table-column">Add Column</button>
+                            <button type="button" class="btn btn-primary btn-sm add-table-row">Add Row</button>
                         </div>
                     </div>
                 </form>
@@ -324,6 +324,11 @@ if ($campaign->cover_public_id) {
             </div>
             <div class="modal-body">
                 {{-- <x-show-random-table /> --}}
+                <input type="hidden" id="current-random-table-id">
+                <div class="btn-group my-2" role="group" aria-label="Table tools">
+                    <button type="button" class="btn btn-primary btn-sm add-table-column">Add Column</button>
+                    <button type="button" class="btn btn-primary btn-sm add-table-row">Add Row</button>
+                </div>
                 <div id="show-random-table" class="table-bordered"></div>
             </div>
             <div class="modal-footer">
