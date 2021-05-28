@@ -39,6 +39,6 @@
         "pnotify": "^5.1.2",
         "select2": "^4.0.13",
         "tabulator-tables": "^4.9.3",
-        "tinymce": "^5.4.2"
+        "tinymce": "^5.7.1"
     }
 }
